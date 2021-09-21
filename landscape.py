@@ -2,7 +2,7 @@
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
-from panda3d.core import GeoMipTerrain
+from panda3d.core import GeoMipTerrain, PNMImage
 
 
 def set_camera(g):
@@ -37,6 +37,20 @@ def init(g):
         g['Gnd'].getRoot().reparentTo(g['SB'].render)
         g['Gnd'].getRoot().setSz(100)
         g['Gnd'].generate()
+        hm = g['Gnd'].heightfield()
+        print("DBUG:Terrain:HM:{}x{}".format(hm.getXSize(), hm.getYSize()))
+        cm = g['Gnd'].colorMap()
+        print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
+        for x in range(hm.getXSize()-1):
+            for y in range(hm.getYSize()-1):
+                hv=hm.getGrayVal(x,y)
+                if hv < 62:
+                    cm.setBlue(x,y,1)
+                elif hv > 170:
+                    cm.setRed(x,y,1)
+                else:
+                    cm.setGreen(x,y,1)
+
     g['CamX'] = 0
     g['CamY'] = 0
     g['CamZ'] = 250
