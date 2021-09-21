@@ -2,6 +2,7 @@
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
+from panda3d.core import GeoMipTerrain
 
 
 def move_camera(task):
@@ -14,8 +15,15 @@ def move_camera(task):
 
 def init(g):
     g['SB'] = ShowBase()
-    g['Gnd'] = g['SB'].loader.loadModel("models/environment")
-    g['Gnd'].reparentTo(g['SB'].render)
+    if False:
+        g['Gnd'] = g['SB'].loader.loadModel("models/environment")
+        g['Gnd'].reparentTo(g['SB'].render)
+    else:
+        g['Gnd'] = GeoMipTerrain("Gnd")
+        g['Gnd'].setHeightfield("./gnd_hm.jpg")
+        g['Gnd'].getRoot().reparentTo(g['SB'].render)
+        g['Gnd'].getRoot().setSz(100)
+        g['Gnd'].generate()
     g['CamX'] = 0
     g['CamY'] = 0
     g['CamZ'] = 1
