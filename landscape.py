@@ -5,7 +5,8 @@ from direct.task import Task
 
 
 def move_camera(task):
-    g['CamX'] += 0.1
+    if (task.frame%24) == 0:
+        g['CamX'] += 0.1
     g['SB'].camera.setPos(g['CamX'], g['CamY'], g['CamZ'])
     g['SB'].camera.setHpr(0, 0, 0)
     return Task.cont
