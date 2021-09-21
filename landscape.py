@@ -17,6 +17,11 @@ def move_camera(task):
     return Task.cont
 
 
+def update_gnd(task):
+    g['Gnd'].update()
+    return Task.cont
+
+
 def init(g):
     g['SB'] = ShowBase()
     if False:
@@ -41,6 +46,7 @@ def init(g):
 def prepare(g):
     g['SB'].useDrive()
     #g['SB'].taskMgr.add(move_camera, 'MoveCameraTsk')
+    g['SB'].taskMgr.add(update_gnd, 'UpdateGnd')
 
 
 g = {}
