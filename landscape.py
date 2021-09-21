@@ -22,7 +22,8 @@ def init(g):
 
 
 def prepare(g):
-    g['SB'].taskMgr.add(move_camera, 'MoveCameraTsk')
+    g['SB'].useDrive()
+    #g['SB'].taskMgr.add(move_camera, 'MoveCameraTsk')
 
 
 g = {}
