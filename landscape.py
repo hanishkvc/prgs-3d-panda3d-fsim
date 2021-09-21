@@ -39,14 +39,16 @@ def init(g):
         g['Gnd'].generate()
         hm = g['Gnd'].heightfield()
         print("DBUG:Terrain:HM:{}x{}".format(hm.getXSize(), hm.getYSize()))
+        cm = PNMImage(hm.getXSize(), hm.getYSize())
+        g['Gnd'].setColorMap(cm)
         cm = g['Gnd'].colorMap()
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
-        for x in range(hm.getXSize()-1):
-            for y in range(hm.getYSize()-1):
+        for x in range(hm.getXSize()):
+            for y in range(hm.getYSize()):
                 hv=hm.getGrayVal(x,y)
-                if hv < 62:
+                if hv < 25:
                     cm.setBlue(x,y,1)
-                elif hv > 170:
+                elif hv > 75:
                     cm.setRed(x,y,1)
                 else:
                     cm.setGreen(x,y,1)
