@@ -19,13 +19,13 @@ class FSim(ShowBase):
         self.camera.setPos(0, 0, 25)
         self.camera.setHpr(0, 0, 0)
         print("DBUG:Init:Camera:", self.camera.getPos())
+        print("DBUG:Init:Camera:", self.camera.getPos())
 
 
     def create_terrain(self):
         self.terrain = GeoMipTerrain("Gnd")
         #self.terrain.setHeightField("./gnd_hf.png")
         hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
-        self.terrain.setHeightfield(hf)
         print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
         # Setup a height map
         for x in range(hf.getXSize()):
@@ -36,9 +36,9 @@ class FSim(ShowBase):
                     hf.setGray(x, y, 0.5)
                 else:
                     hf.setGray(x, y, 1)
+        self.terrain.setHeightfield(hf)
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
-        self.terrain.setColorMap(cm)
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
         for x in range(hf.getXSize()):
             for y in range(hf.getYSize()):
@@ -49,6 +49,7 @@ class FSim(ShowBase):
                     cm.setRed(x, y, 1)
                 else:
                     cm.setGreen(x, y, 1)
+        self.terrain.setColorMap(cm)
         self.terrain.setBlockSize(32)
         self.terrain.setNear(5)
         self.terrain.setFar(50)
