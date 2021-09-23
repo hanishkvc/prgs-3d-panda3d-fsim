@@ -10,11 +10,12 @@ class FSim(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
-        self.d = Vec3(0, 0.1, 0)
+        self.cpos = Vec3(0, 0, 25)
+        self.ctrans = Vec3(0, 0.1, 0)
         self.gndWidth = 129
         self.gndHeight = 129
         self.create_terrain()
-        self.camera.setPos(0, 0, 25)
+        self.camera.setPos(self.cpos)
         self.camera.setHpr(0, 0, 0)
         print("DBUG:Init:Camera:", self.camera.getPos())
         print("DBUG:Init:Camera:", self.camera.getPos())
@@ -60,13 +61,10 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:Camera:{}:Deltas:{}".format(self.camera.getPos(), self.d))
+            print("DBUG:Update:24:Camera:{}:Trans:{}".format(self.camera.getPos(), self.ctrans))
             self.terrain.update()
-        x = self.camera.getX()+self.d.x
-        y = self.camera.getY()+self.d.y
-        z = self.camera.getZ()+self.d.z
-        #print("DBUG:Update:", x, y, z)
-        self.camera.setPos(x, y, z)
+        self.cpos += self.ctrans
+        self.camera.setPos(self.cpos)
         return Task.cont
 
 
