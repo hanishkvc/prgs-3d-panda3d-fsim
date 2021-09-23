@@ -8,6 +8,7 @@ from panda3d.core import GeoMipTerrain, PNMImage
 class FSim(ShowBase):
 
     def __init__(self):
+        ShowBase.__init__(self)
         # Camera is the Main Actor for now
         self.dX = 0
         self.dY = 0.1
@@ -57,17 +58,17 @@ class FSim(ShowBase):
         self.terrain.generate()
 
 
-        def update(self, task):
-            x = self.camera.getX()*self.dX
-            y = self.camera.getY()*self.dY
-            z = self.camera.getZ()*self.dZ
-            self.camera.setPos(x, y, z)
-            return Task.cont
+    def update(self, task):
+        x = self.camera.getX()*self.dX
+        y = self.camera.getY()*self.dY
+        z = self.camera.getZ()*self.dZ
+        self.camera.setPos(x, y, z)
+        return Task.cont
 
 
-        def prepare(self):
-            #self.useDrive()
-            self.taskMgr.add(update, 'UpdateFSim')
+    def prepare(self):
+        self.useDrive()
+        self.taskMgr.add(self.update, 'UpdateFSim')
 
 
 fsim = FSim()
