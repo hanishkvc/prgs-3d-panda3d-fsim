@@ -51,7 +51,7 @@ class FSim(ShowBase):
                     cm.setGreen(x, y, 1)
         self.terrain.setColorMap(cm)
         self.terrain.setBlockSize(32)
-        self.terrain.setNear(5)
+        self.terrain.setNear(10)
         self.terrain.setFar(50)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
@@ -63,6 +63,7 @@ class FSim(ShowBase):
     def update(self, task):
         if (task.frame%24) == 0:
             print("DBUG:Update:Camera:{}:Deltas:{}".format(self.camera.getPos(), [self.dX, self.dY, self.dZ]))
+            self.terrain.update()
         x = self.camera.getX()+self.dX
         y = self.camera.getY()+self.dY
         z = self.camera.getZ()+self.dZ
