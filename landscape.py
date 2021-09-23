@@ -16,8 +16,9 @@ class FSim(ShowBase):
         self.gndWidth = 129
         self.gndHeight = 129
         self.create_terrain()
-        self.camera.setPos(0, 0, 5)
+        self.camera.setPos(0, 0, 25)
         self.camera.setHpr(0, 0, 0)
+        print("DBUG:Init:Camera:", self.camera.getPos())
 
 
     def create_terrain(self):
@@ -59,9 +60,12 @@ class FSim(ShowBase):
 
 
     def update(self, task):
-        x = self.camera.getX()*self.dX
-        y = self.camera.getY()*self.dY
-        z = self.camera.getZ()*self.dZ
+        if (task.frame%24) == 0:
+            print("DBUG:Update:Camera:{}:Deltas:{}".format(self.camera.getPos(), [self.dX, self.dY, self.dZ]))
+        x = self.camera.getX()+self.dX
+        y = self.camera.getY()+self.dY
+        z = self.camera.getZ()+self.dZ
+        #print("DBUG:Update:", x, y, z)
         self.camera.setPos(x, y, z)
         return Task.cont
 
