@@ -70,9 +70,9 @@ class FSim(ShowBase):
 
     def keys_handler(self, key):
         if key == 'w':
-            self.ctrans += 0.1
+            self.ctrans.y += 0.1
         elif key == 's':
-            self.ctrans -= 0.1
+            self.ctrans.y -= 0.1
 
 
     def setup_keyshandler(self):
