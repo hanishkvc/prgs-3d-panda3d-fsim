@@ -2,7 +2,7 @@
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
-from panda3d.core import GeoMipTerrain, PNMImage
+from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 
 
 class FSim(ShowBase):
@@ -10,9 +10,7 @@ class FSim(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
-        self.dX = 0
-        self.dY = 0.1
-        self.dZ = 0
+        self.d = Vec3(0, 0.1, 0)
         self.gndWidth = 129
         self.gndHeight = 129
         self.create_terrain()
@@ -62,11 +60,11 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:Camera:{}:Deltas:{}".format(self.camera.getPos(), [self.dX, self.dY, self.dZ]))
+            print("DBUG:Update:Camera:{}:Deltas:{}".format(self.camera.getPos(), self.d))
             self.terrain.update()
-        x = self.camera.getX()+self.dX
-        y = self.camera.getY()+self.dY
-        z = self.camera.getZ()+self.dZ
+        x = self.camera.getX()+self.d.x
+        y = self.camera.getY()+self.d.y
+        z = self.camera.getZ()+self.d.z
         #print("DBUG:Update:", x, y, z)
         self.camera.setPos(x, y, z)
         return Task.cont
