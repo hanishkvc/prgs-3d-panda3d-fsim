@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# fsim - a simple flight simulator
+# HanishKVC, 2021
+# GPL
+#
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
