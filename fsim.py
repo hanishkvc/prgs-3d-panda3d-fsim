@@ -68,8 +68,21 @@ class FSim(ShowBase):
         return Task.cont
 
 
+    def keys_handler(self, key):
+        if key == 'w':
+            self.ctrans += 0.1
+        elif key == 's':
+            self.ctrans -= 0.1
+
+
+    def setup_keyshandler(self):
+        self.accept("w", self.keys_handler, [ 'w' ])
+        self.accept("s", self.keys_handler, [ 's' ])
+
+
     def prepare(self):
-        self.useDrive()
+        #self.useDrive()
+        self.setup_keyshandler()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
 
