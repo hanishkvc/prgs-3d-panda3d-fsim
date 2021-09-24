@@ -73,10 +73,14 @@ class FSim(ShowBase):
 
 
     def keys_handler(self, key):
-        if key == 'w':
+        if key == 'a':
             self.ctrans.y += 0.1
-        elif key == 's':
+        elif key == 'd':
             self.ctrans.y -= 0.1
+        elif key == 'w':
+            self.ctrans.z -= 0.1
+        elif key == 's':
+            self.ctrans.z += 0.1
         elif key == 'q':
             self.ctrans.x -= 0.1
         elif key == 'e':
@@ -88,6 +92,8 @@ class FSim(ShowBase):
         self.accept("s", self.keys_handler, [ 's' ])
         self.accept("q", self.keys_handler, [ 'q' ])
         self.accept("e", self.keys_handler, [ 'e' ])
+        self.accept("a", self.keys_handler, [ 'a' ])
+        self.accept("d", self.keys_handler, [ 'd' ])
 
 
     def prepare(self):
