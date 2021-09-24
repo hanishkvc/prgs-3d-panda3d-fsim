@@ -38,6 +38,7 @@ class FSim(ShowBase):
             dlnp = self.render.attachNewNode(dl)
             dlnp.setHpr(0, -60, 0)
             self.render.setLight(dlnp)
+            dl.setShadowCaster(True, 256, 256)
         self.render.setShaderAuto()
 
 
