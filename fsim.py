@@ -75,9 +75,14 @@ class FSim(ShowBase):
         self.terrain.setFar(50)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
-        tRoot.setSz(100)
+        tRoot.setSz(10)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
+        # Add some objects
+        p = self.loader.loadModel("models/panda-model")
+        p.setPos(50,100,0)
+        p.setScale(0.01)
+        p.reparentTo(self.render)
 
 
     def update(self, task):
