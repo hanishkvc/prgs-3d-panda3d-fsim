@@ -15,15 +15,15 @@ class FSim(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
-        self.cpos = Vec3(0, 0, 25)
+        self.cDefPos = Vec3(0, 0, 25)
+        self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
-        self.cface = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 513
         self.gndHeight = 513
         self.create_terrain()
-        self.camera.setPos(self.cpos)
-        self.camera.setHpr(self.cface)
+        self.camera.setPos(self.cDefPos)
+        self.camera.setHpr(self.cDefFace)
 
 
     def setup_lights(self, bAmbient=False, bDirectional=True):
@@ -90,8 +90,7 @@ class FSim(ShowBase):
             self.terrain.update()
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
-        self.cpos += self.ctrans
-        self.camera.setFluidPos(self.cpos)
+        self.camera.setFluidPos(self.camera, self.ctrans)
         return Task.cont
 
 
