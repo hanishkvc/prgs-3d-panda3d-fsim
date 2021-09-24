@@ -75,7 +75,7 @@ class FSim(ShowBase):
         self.terrain.setFar(50)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
-        tRoot.setSz(10)
+        tRoot.setSz(100)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
         # Add some objects
@@ -108,6 +108,8 @@ class FSim(ShowBase):
             self.ctrans.x -= 0.01
         elif key == 'e':
             self.ctrans.x += 0.01
+        elif key == 'x':
+            self.ctrans = Vec3(0,0,0)
 
 
     def setup_keyshandler(self):
@@ -117,6 +119,7 @@ class FSim(ShowBase):
         self.accept("e", self.keys_handler, [ 'e' ])
         self.accept("a", self.keys_handler, [ 'a' ])
         self.accept("d", self.keys_handler, [ 'd' ])
+        self.accept("x", self.keys_handler, [ 'x' ])
 
 
     def prepare(self):
