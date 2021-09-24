@@ -6,7 +6,7 @@
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
-from panda3d.core import GeoMipTerrain, PNMImage, Vec3
+from panda3d.core import GeoMipTerrain, PNMImage, Vec3, DirectionalLight
 
 
 class FSim(ShowBase):
@@ -25,6 +25,15 @@ class FSim(ShowBase):
         self.camera.setHpr(self.cface)
         print("DBUG:Init:Camera:", self.camera.getPos())
         print("DBUG:Init:Camera:", self.camera.getPos())
+
+
+    def setup_lights(self):
+        dl = DirectionalLight('DirLight')
+        #dl.setColor((0.8, 0.8, 0.5, 1))
+        dlnp = self.render.attachNewNode(dl)
+        dlnp.setPos(0,0,200)
+        self.render.setLight(dlnp)
+        #self.render.setShaderAuto()
 
 
     def create_terrain(self):
@@ -67,8 +76,7 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:240:Camera:{}:Trans:{}".format(self.camera.getPos(), self.ctrans))
-            print("DBUG:Update:241:Camera:{}:Rotat:{}".format(self.cam.getPos(self.render), self.crot))
+            print("DBUG:Update:24:Camera:{}:Trans:{}:Rot:{}".format(self.camera.getPos(), self.ctrans, self.crot))
             self.terrain.update()
         self.cpos += self.ctrans
         self.camera.setFluidPos(self.cpos)
@@ -102,6 +110,7 @@ class FSim(ShowBase):
     def prepare(self):
         self.disableMouse()
         #self.useDrive()
+        self.setup_lights()
         self.setup_keyshandler()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
