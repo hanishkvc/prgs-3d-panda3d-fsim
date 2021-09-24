@@ -67,7 +67,7 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:240:Camera:{}:Trans:{}".format(self.camera.getPos(), self.ctrans))
+            print("DBUG:Update:240:Camera:{}:Trans:{}".format(base.camera.getPos(), self.ctrans))
             print("DBUG:Update:241:Camera:{}:Rotat:{}".format(self.camera.getPos(self.terrain.getRoot()), self.crot))
             self.terrain.update()
         self.cpos += self.ctrans
