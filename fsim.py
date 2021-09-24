@@ -6,7 +6,8 @@
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
-from panda3d.core import GeoMipTerrain, PNMImage, Vec3, DirectionalLight
+from panda3d.core import GeoMipTerrain, PNMImage, Vec3
+from panda3d.core import AmbientLight, DirectionalLight
 
 
 class FSim(ShowBase):
@@ -18,8 +19,8 @@ class FSim(ShowBase):
         self.ctrans = Vec3(0, 0, 0)
         self.cface = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
-        self.gndWidth = 129
-        self.gndHeight = 129
+        self.gndWidth = 513
+        self.gndHeight = 513
         self.create_terrain()
         self.camera.setPos(self.cpos)
         self.camera.setHpr(self.cface)
@@ -27,12 +28,18 @@ class FSim(ShowBase):
         print("DBUG:Init:Camera:", self.camera.getPos())
 
 
-    def setup_lights(self):
-        dl = DirectionalLight('DirLight')
-        #dl.setColor((0.8, 0.8, 0.5, 1))
-        dlnp = self.render.attachNewNode(dl)
-        dlnp.setPos(0,0,200)
-        self.render.setLight(dlnp)
+    def setup_lights(self, bAmbient=False, bDirectional=True):
+        if bAmbient:
+            al = AmbientLight('AmbLight')
+            al.setColor((0.5, 0.5, 0.5, 1))
+            alnp = self.render.attachNewNode(al)
+            self.render.setLight(alnp)
+        if bDirectional:
+            dl = DirectionalLight('DirLight')
+            dl.setColor((0.8, 0.8, 0.5, 1))
+            dlnp = self.render.attachNewNode(dl)
+            dlnp.setHpr(0, -60, 0)
+            self.render.setLight(dlnp)
         #self.render.setShaderAuto()
 
 
