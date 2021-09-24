@@ -24,8 +24,6 @@ class FSim(ShowBase):
         self.create_terrain()
         self.camera.setPos(self.cpos)
         self.camera.setHpr(self.cface)
-        print("DBUG:Init:Camera:", self.camera.getPos())
-        print("DBUG:Init:Camera:", self.camera.getPos())
 
 
     def setup_lights(self, bAmbient=False, bDirectional=True):
@@ -36,11 +34,11 @@ class FSim(ShowBase):
             self.render.setLight(alnp)
         if bDirectional:
             dl = DirectionalLight('DirLight')
-            dl.setColor((0.8, 0.8, 0.5, 1))
+            dl.setColor((0.9, 0.9, 0.8, 1))
             dlnp = self.render.attachNewNode(dl)
             dlnp.setHpr(0, -60, 0)
             self.render.setLight(dlnp)
-        #self.render.setShaderAuto()
+        self.render.setShaderAuto()
 
 
     def create_terrain(self):
@@ -83,8 +81,9 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:24:Camera:{}:Trans:{}:Rot:{}".format(self.camera.getPos(), self.ctrans, self.crot))
             self.terrain.update()
+        if (task.frame%2400) == 0:
+            print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
         self.cpos += self.ctrans
         self.camera.setFluidPos(self.cpos)
         return Task.cont
