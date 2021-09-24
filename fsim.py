@@ -15,12 +15,14 @@ class FSim(ShowBase):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
         self.cpos = Vec3(0, 0, 25)
-        self.ctrans = Vec3(0, 0.1, 0)
+        self.ctrans = Vec3(0, 0, 0)
+        self.cface = Vec3(0, 0, 0)
+        self.crot = Vec3(0, 0, 0)
         self.gndWidth = 129
         self.gndHeight = 129
         self.create_terrain()
         self.camera.setPos(self.cpos)
-        self.camera.setHpr(0, 0, 0)
+        self.camera.setHpr(self.cface)
         print("DBUG:Init:Camera:", self.camera.getPos())
         print("DBUG:Init:Camera:", self.camera.getPos())
 
@@ -65,7 +67,8 @@ class FSim(ShowBase):
 
     def update(self, task):
         if (task.frame%24) == 0:
-            print("DBUG:Update:24:Camera:{}:Trans:{}".format(self.camera.getPos(), self.ctrans))
+            print("DBUG:Update:240:Camera:{}:Trans:{}".format(self.camera.getPos(), self.ctrans))
+            print("DBUG:Update:241:Camera:{}:Rotat:{}".format(self.camera.getPos(self.render), self.crot))
             self.terrain.update()
         self.cpos += self.ctrans
         self.camera.setPos(self.cpos)
@@ -74,17 +77,17 @@ class FSim(ShowBase):
 
     def keys_handler(self, key):
         if key == 'a':
-            self.ctrans.y += 0.1
+            self.ctrans.y += 0.01
         elif key == 'd':
-            self.ctrans.y -= 0.1
+            self.ctrans.y -= 0.01
         elif key == 'w':
-            self.ctrans.z -= 0.1
+            self.ctrans.z -= 0.01
         elif key == 's':
-            self.ctrans.z += 0.1
+            self.ctrans.z += 0.01
         elif key == 'q':
-            self.ctrans.x -= 0.1
+            self.ctrans.x -= 0.01
         elif key == 'e':
-            self.ctrans.x += 0.1
+            self.ctrans.x += 0.01
 
 
     def setup_keyshandler(self):
