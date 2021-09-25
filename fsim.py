@@ -4,12 +4,14 @@
 # GPL
 #
 
+import time
+import sys
+
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode
-import time
 
 
 class FSim(ShowBase):
@@ -87,7 +89,7 @@ class FSim(ShowBase):
         else:
             self.terrain.setHeightfield(hfFile)
             hf = self.terrain.heightfield()
-        print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
+        print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
@@ -187,7 +189,8 @@ class FSim(ShowBase):
 
 
 terrainFile=None
-terrainFile="data/worldp1.png"
+if len(sys.argv) > 1:
+    terrainFile=sys.argv[1]
 fsim = FSim(terrainFile)
 fsim.prepare()
 fsim.run()
