@@ -108,10 +108,12 @@ class FSim(ShowBase):
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
-        print("DBUG:Terrain:BlockSize:", blockSize)
+        lodFar = blockSize/2
+        lodNear = min(8,lodFar/32)
+        print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
-        self.terrain.setNear(16)
-        self.terrain.setFar(512)
+        self.terrain.setNear(lodNear)
+        self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
         tRoot.setSx(4)
@@ -124,6 +126,7 @@ class FSim(ShowBase):
         p.setPos(50,100,0)
         p.setScale(0.01)
         p.reparentTo(self.render)
+        print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
     def update(self, task):
