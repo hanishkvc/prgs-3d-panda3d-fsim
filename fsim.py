@@ -30,11 +30,28 @@ class FSim(ShowBase):
 
 
     def setup_texts(self):
+        # Cur State
         self.textPos = TextNode('TextPos')
         self.textPos.setText('Pos:')
-        tpnp = self.aspect2d.attachNewNode(self.textPos)
-        tpnp.setPos(-1, 0, 0.9)
+        tpnp = self.render2d.attachNewNode(self.textPos)
+        tpnp.setPos(-0.9, 0, 0.9)
         tpnp.setScale(0.07)
+        self.textOr = TextNode('TextOr')
+        self.textOr.setText('Orient:')
+        tonp = self.render2d.attachNewNode(self.textOr)
+        tonp.setPos(-0.9, 0, 0.8)
+        tonp.setScale(0.07)
+        # Change Actions
+        self.textTrans = TextNode('TextTrans')
+        self.textTrans.setText('Trans:')
+        ttnp = self.render2d.attachNewNode(self.textTrans)
+        ttnp.setPos(0.5, 0, 0.9)
+        ttnp.setScale(0.07)
+        self.textRot = TextNode('TextRot')
+        self.textRot.setText('Rot:')
+        trnp = self.render2d.attachNewNode(self.textRot)
+        trnp.setPos(0.5, 0, 0.8)
+        trnp.setScale(0.07)
 
 
     def setup_lights(self, bAmbient=False, bDirectional=True):
@@ -105,9 +122,15 @@ class FSim(ShowBase):
 
     def update(self, task):
         cGP = self.camera.getPos()
+        cOr = self.camera.getHpr()
+        cTr = self.ctrans
+        cRo = self.crot
         if (task.frame%4) == 0:
             self.terrain.update()
-            self.textPos.setText("{:6.2f},{:6.2f},{:6.2f}".format(cGP[0], cGP[1], cGP[2]))
+            self.textPos.setText("P:{:6.2f},{:6.2f},{:6.2f}".format(cGP[0], cGP[1], cGP[2]))
+            self.textOr.setText("O:{:6.2f},{:6.2f},{:6.2f}".format(cOr[0], cOr[1], cOr[2]))
+            self.textTrans.setText("T:{:6.2f},{:6.2f},{:6.2f}".format(cTr[0], cTr[1], cTr[2]))
+            self.textRot.setText("R:{:6.2f},{:6.2f},{:6.2f}".format(cRo[0], cRo[1], cRo[2]))
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
         self.camera.setHpr(self.camera, self.crot)
