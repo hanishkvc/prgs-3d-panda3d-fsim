@@ -90,6 +90,7 @@ class FSim(ShowBase):
             self.terrain.update()
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
+        self.camera.setHpr(self.camera, self.crot)
         self.camera.setFluidPos(self.camera, self.ctrans)
         return Task.cont
 
@@ -104,11 +105,16 @@ class FSim(ShowBase):
         elif key == 's':
             self.ctrans.z += 0.01
         elif key == 'q':
-            self.ctrans.x -= 0.01
+            self.crot.x += 0.01
         elif key == 'e':
+            self.crot.x -= 0.01
+        elif key == 'z':
+            self.ctrans.x -= 0.01
+        elif key == 'c':
             self.ctrans.x += 0.01
         elif key == 'x':
             self.ctrans = Vec3(0,0,0)
+            self.crot = Vec3(0,0,0)
 
 
     def setup_keyshandler(self):
@@ -119,6 +125,8 @@ class FSim(ShowBase):
         self.accept("a", self.keys_handler, [ 'a' ])
         self.accept("d", self.keys_handler, [ 'd' ])
         self.accept("x", self.keys_handler, [ 'x' ])
+        self.accept("z", self.keys_handler, [ 'z' ])
+        self.accept("c", self.keys_handler, [ 'c' ])
 
 
     def prepare(self):
