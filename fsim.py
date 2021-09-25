@@ -14,7 +14,7 @@ import time
 
 class FSim(ShowBase):
 
-    def __init__(self):
+    def __init__(self, terrainFile=None):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
         self.cDefPos = Vec3(0, 0, 25)
@@ -24,8 +24,7 @@ class FSim(ShowBase):
         self.gndWidth = 4097
         self.gndHeight = 4097
         self.setup_texts()
-        #self.create_terrain("data/worldp1.png")
-        self.create_terrain()
+        self.create_terrain(terrainFile)
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
 
@@ -71,11 +70,10 @@ class FSim(ShowBase):
         self.render.setShaderAuto()
 
 
-    def create_terrain(self, hfFile=None):
+    def create_terrain(self, hfFile):
         self.terrain = GeoMipTerrain("Gnd")
         if hfFile == None:
             hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
-            print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
             # Setup a height map
             for x in range(hf.getXSize()):
                 for y in range(hf.getYSize()):
@@ -89,6 +87,7 @@ class FSim(ShowBase):
         else:
             self.terrain.setHeightfield(hfFile)
             hf = self.terrain.heightfield()
+        print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
@@ -106,7 +105,8 @@ class FSim(ShowBase):
                     cm.setGreen(x, y, 1)
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
-        blockSize = (hf.getXSize()-1)/8
+        blockSize = int((hf.getXSize()-1)/8)
+        print("DBUG:Terrain:BlockSize:", blockSize)
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(16)
         self.terrain.setFar(128)
@@ -186,7 +186,9 @@ class FSim(ShowBase):
         self.taskMgr.add(self.update, 'UpdateFSim')
 
 
-fsim = FSim()
+terrainFile=None
+terrainFile="data/worldp1.png"
+fsim = FSim(terrainFile)
 fsim.prepare()
 fsim.run()
 
