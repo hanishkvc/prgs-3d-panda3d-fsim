@@ -63,19 +63,23 @@ class FSim(ShowBase):
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
+        hfMin, hfMax = 256, 0
         for x in range(hf.getXSize()):
             for y in range(hf.getYSize()):
                 hfv = hf.getGray(x, y)
-                if hfv < 0.25:
+                hfMin = min(hfMin, hfv)
+                hfMax = max(hfMax, hfv)
+                if hfv < 0.05:
                     cm.setBlue(x, y, 1)
                 elif hfv > 0.75:
                     cm.setRed(x, y, 1)
                 else:
                     cm.setGreen(x, y, 1)
+        print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
         self.terrain.setBlockSize(32)
         self.terrain.setNear(10)
-        self.terrain.setFar(50)
+        self.terrain.setFar(100)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
         tRoot.setSz(100)
@@ -89,7 +93,7 @@ class FSim(ShowBase):
 
 
     def update(self, task):
-        if (task.frame%24) == 0:
+        if (task.frame%4) == 0:
             self.terrain.update()
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
