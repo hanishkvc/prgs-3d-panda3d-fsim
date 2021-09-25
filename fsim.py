@@ -21,7 +21,7 @@ class FSim(ShowBase):
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 513
         self.gndHeight = 513
-        self.create_terrain()
+        self.create_terrain("data/worldp1.png")
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
 
@@ -42,21 +42,24 @@ class FSim(ShowBase):
         self.render.setShaderAuto()
 
 
-    def create_terrain(self):
+    def create_terrain(self, hfFile=None):
         self.terrain = GeoMipTerrain("Gnd")
-        #self.terrain.setHeightField("./gnd_hf.png")
-        hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
-        print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
-        # Setup a height map
-        for x in range(hf.getXSize()):
-            for y in range(hf.getYSize()):
-                if x < hf.getXSize()/3:
-                    hf.setGray(x, y, 0)
-                elif x < (hf.getXSize()*2/3):
-                    hf.setGray(x, y, 0.5)
-                else:
-                    hf.setGray(x, y, 1)
-        self.terrain.setHeightfield(hf)
+        if hfFile == None:
+            hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
+            print("DBUG:Terrain:HF:{}x{}".format(hf.getXSize(), hf.getYSize()))
+            # Setup a height map
+            for x in range(hf.getXSize()):
+                for y in range(hf.getYSize()):
+                    if x < hf.getXSize()/3:
+                        hf.setGray(x, y, 0)
+                    elif x < (hf.getXSize()*2/3):
+                        hf.setGray(x, y, 0.5)
+                    else:
+                        hf.setGray(x, y, 1)
+            self.terrain.setHeightfield(hf)
+        else:
+            self.terrain.setHeightfield(hfFile)
+            hf = self.terrain.heightfield()
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
