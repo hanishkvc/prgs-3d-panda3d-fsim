@@ -99,22 +99,24 @@ class FSim(ShowBase):
                 hfv = hf.getGray(x, y)
                 hfMin = min(hfMin, hfv)
                 hfMax = max(hfMax, hfv)
-                if hfv < 0.05:
+                if hfv < 0.20:
                     cm.setBlue(x, y, 1)
-                elif hfv > 0.75:
+                elif hfv > 0.60:
                     cm.setRed(x, y, 1)
                 else:
                     cm.setGreen(x, y, 1)
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
-        blockSize = int((hf.getXSize()-1)/8)
+        blockSize = int((hf.getXSize()-1)/4)
         print("DBUG:Terrain:BlockSize:", blockSize)
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(16)
-        self.terrain.setFar(128)
+        self.terrain.setFar(512)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
-        tRoot.setSz(100)
+        tRoot.setSx(4)
+        tRoot.setSy(4)
+        tRoot.setSz(400)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
         # Add some objects
