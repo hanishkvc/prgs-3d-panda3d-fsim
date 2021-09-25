@@ -19,9 +19,10 @@ class FSim(ShowBase):
         self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
-        self.gndWidth = 513
-        self.gndHeight = 513
-        self.create_terrain("data/worldp1.png")
+        self.gndWidth = 4097
+        self.gndHeight = 4097
+        #self.create_terrain("data/worldp1.png")
+        self.create_terrain()
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
 
@@ -98,7 +99,7 @@ class FSim(ShowBase):
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
         self.camera.setHpr(self.camera, self.crot)
-        self.camera.setFluidPos(self.camera, self.ctrans)
+        self.camera.setPos(self.camera, self.ctrans)
         return Task.cont
 
 
