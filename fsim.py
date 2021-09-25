@@ -35,23 +35,23 @@ class FSim(ShowBase):
         self.textPos.setText('Pos:')
         tpnp = self.render2d.attachNewNode(self.textPos)
         tpnp.setPos(-0.9, 0, 0.9)
-        tpnp.setScale(0.07)
+        tpnp.setScale(0.04)
         self.textOr = TextNode('TextOr')
         self.textOr.setText('Orient:')
         tonp = self.render2d.attachNewNode(self.textOr)
         tonp.setPos(-0.9, 0, 0.8)
-        tonp.setScale(0.07)
+        tonp.setScale(0.04)
         # Change Actions
         self.textTrans = TextNode('TextTrans')
         self.textTrans.setText('Trans:')
         ttnp = self.render2d.attachNewNode(self.textTrans)
         ttnp.setPos(0.5, 0, 0.9)
-        ttnp.setScale(0.07)
+        ttnp.setScale(0.04)
         self.textRot = TextNode('TextRot')
         self.textRot.setText('Rot:')
         trnp = self.render2d.attachNewNode(self.textRot)
         trnp.setPos(0.5, 0, 0.8)
-        trnp.setScale(0.07)
+        trnp.setScale(0.04)
 
 
     def setup_lights(self, bAmbient=False, bDirectional=True):
