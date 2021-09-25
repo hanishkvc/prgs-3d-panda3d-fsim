@@ -9,6 +9,7 @@ from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode
+import time
 
 
 class FSim(ShowBase):
@@ -105,9 +106,9 @@ class FSim(ShowBase):
                     cm.setGreen(x, y, 1)
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
-        self.terrain.setBlockSize(32)
-        self.terrain.setNear(10)
-        self.terrain.setFar(100)
+        self.terrain.setBlockSize(256)
+        self.terrain.setNear(16)
+        self.terrain.setFar(128)
         self.terrain.setFocalPoint(self.camera)
         tRoot = self.terrain.getRoot()
         tRoot.setSz(100)
@@ -132,7 +133,10 @@ class FSim(ShowBase):
             self.textTrans.setText("T:{:6.2f},{:6.2f},{:6.2f}".format(cTr[0], cTr[1], cTr[2]))
             self.textRot.setText("R:{:6.2f},{:6.2f},{:6.2f}".format(cRo[0], cRo[1], cRo[2]))
         if (task.frame%2400) == 0:
-            print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
+            curT = time.time()
+            fps = 2400/(curT - self.updateT1)
+            self.updateT1 = curT
+            print("DBUG:Update:{}:FPS{:5.2f}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, fps, self.camera.getPos(), self.ctrans, self.crot))
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
         return Task.cont
@@ -177,6 +181,7 @@ class FSim(ShowBase):
         #self.useDrive()
         self.setup_lights()
         self.setup_keyshandler()
+        self.updateT1 = time.time()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
 
