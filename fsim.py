@@ -8,6 +8,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
+from panda3d.core import TextNode
 
 
 class FSim(ShowBase):
@@ -19,12 +20,21 @@ class FSim(ShowBase):
         self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
-        self.gndWidth = 4097
-        self.gndHeight = 4097
+        self.gndWidth = 1025
+        self.gndHeight = 1025
+        self.setup_texts()
         #self.create_terrain("data/worldp1.png")
         self.create_terrain()
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
+
+
+    def setup_texts(self):
+        self.textPos = TextNode('TextPos')
+        self.textPos.setText('Pos:')
+        tpnp = self.aspect2d.attachNewNode(self.textPos)
+        tpnp.setPos(-1, 0, 0.9)
+        tpnp.setScale(0.07)
 
 
     def setup_lights(self, bAmbient=False, bDirectional=True):
@@ -94,8 +104,10 @@ class FSim(ShowBase):
 
 
     def update(self, task):
+        cGP = self.camera.getPos()
         if (task.frame%4) == 0:
             self.terrain.update()
+            self.textPos.setText("{:6.2f},{:6.2f},{:6.2f}".format(cGP[0], cGP[1], cGP[2]))
         if (task.frame%2400) == 0:
             print("DBUG:Update:{}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, self.camera.getPos(), self.ctrans, self.crot))
         self.camera.setHpr(self.camera, self.crot)
