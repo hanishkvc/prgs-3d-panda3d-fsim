@@ -21,8 +21,8 @@ class FSim(ShowBase):
         self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
-        self.gndWidth = 1025
-        self.gndHeight = 1025
+        self.gndWidth = 4097
+        self.gndHeight = 4097
         self.setup_texts()
         #self.create_terrain("data/worldp1.png")
         self.create_terrain()
@@ -106,7 +106,8 @@ class FSim(ShowBase):
                     cm.setGreen(x, y, 1)
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
-        self.terrain.setBlockSize(256)
+        blockSize = (hf.getXSize()-1)/8
+        self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(16)
         self.terrain.setFar(128)
         self.terrain.setFocalPoint(self.camera)
