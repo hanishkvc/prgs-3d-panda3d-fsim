@@ -19,18 +19,18 @@ class FSim(ShowBase):
     def __init__(self, terrainFile=None, bTopView=True):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
-        if bTopView:
-            self.cDefPos = Vec3(8000, 8000, 32025)
-            self.cDefFace = Vec3(0, -90, 0)
-        else:
-            self.cDefPos = Vec3(0, 0, 25)
-            self.cDefFace = Vec3(0, 0, 0)
+        self.cDefPos = Vec3(0, 0, 25)
+        self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 4097
         self.gndHeight = 4097
         self.setup_texts()
         self.create_terrain(terrainFile)
+        if bTopView:
+            hf=self.terrain.heightfield()
+            self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
+            self.cDefFace = Vec3(0, -90, 0)
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
 
