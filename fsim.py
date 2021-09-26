@@ -226,17 +226,17 @@ class FSim(ShowBase):
         elif key == 'e':
             self.ctrans.z -= 0.01
         elif key == 'j':
-            self.crot.x -= 0.01
-        elif key == 'l':
             self.crot.x += 0.01
+        elif key == 'l':
+            self.crot.x -= 0.01
         elif key == 'i':
             self.crot.y += 0.01
         elif key == 'k':
             self.crot.y -= 0.01
         elif key == 'u':
-            self.crot.z += 0.01
-        elif key == 'o':
             self.crot.z -= 0.01
+        elif key == 'o':
+            self.crot.z += 0.01
         elif key == 'x':
             self.ctrans = Vec3(0,0,0)
             self.crot = Vec3(0,0,0)
