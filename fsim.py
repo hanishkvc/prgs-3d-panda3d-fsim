@@ -243,19 +243,10 @@ class FSim(ShowBase):
 
 
     def setup_ss_keyshandler(self):
-        self.accept("w-repeat", self.ss_keys_handler, [ 'w' ])
-        self.accept("s-repeat", self.ss_keys_handler, [ 's' ])
-        self.accept("q", self.ss_keys_handler, [ 'q' ])
-        self.accept("e", self.ss_keys_handler, [ 'e' ])
-        self.accept("a", self.ss_keys_handler, [ 'a' ])
-        self.accept("d", self.ss_keys_handler, [ 'd' ])
-        self.accept("x", self.ss_keys_handler, [ 'x' ])
-        self.accept("i", self.ss_keys_handler, [ 'i' ])
-        self.accept("k", self.ss_keys_handler, [ 'k' ])
-        self.accept("j", self.ss_keys_handler, [ 'j' ])
-        self.accept("l", self.ss_keys_handler, [ 'l' ])
-        self.accept("u", self.ss_keys_handler, [ 'u' ])
-        self.accept("o", self.ss_keys_handler, [ 'o' ])
+        for k in [ "w", "s", "q", "e", "a", "d", "x", "i", "k", "j", "l", "u", "o" ]:
+            self.accept("{}-repeat".format(k), self.ss_keys_handler, [ k ])
+        for k in [ "w", "s", "q", "e", "a", "d", "x", "i", "k", "j", "l", "u", "o" ]:
+            self.accept(k, self.ss_keys_handler, [ k ])
 
 
     def ac_keys_handler(self, key):
