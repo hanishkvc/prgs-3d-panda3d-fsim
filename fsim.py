@@ -58,6 +58,12 @@ class FSim(ShowBase):
         trnp = self.render2d.attachNewNode(self.textRot)
         trnp.setPos(0.5, 0, 0.8)
         trnp.setScale(0.04)
+        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot ]:
+            #t.setShadow(0.05,0.05)
+            #t.setShadowColor(0.2,0.2,0.2,1.0)
+            t.setCardColor(0.2,0.2,0.2,1.0)
+            t.setCardAsMargin(0.2,0.2,0.2,0.2)
+            t.setCardDecal(True)
 
 
     def setup_lights(self, bAmbient=True, bDirectional=True):
