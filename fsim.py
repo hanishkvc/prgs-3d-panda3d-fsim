@@ -99,10 +99,10 @@ class FSim(ShowBase):
                 hfv = hf.getGray(x, y)
                 hfMin = min(hfMin, hfv)
                 hfMax = max(hfMax, hfv)
-                if bGrayShades:
+                if self.bCMGrayShades:
                     cm.setGray(x, y, hfv)
                 else:
-                    if bNoBelowSeaLevel:
+                    if self.bHFNoBelowSeaLevel:
                         if hfv < 0.0001:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.0001)))
                         elif hfv < 0.25:
@@ -120,7 +120,7 @@ class FSim(ShowBase):
         return cm
 
 
-    def create_terrain(self, hfFile, bGrayShades=False, bNoBelowSeaLevel=True):
+    def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True):
         """
         Terrain Auto Colormap based on heightfield could be
             With Below SeaLevel data (maybe)
@@ -132,6 +132,8 @@ class FSim(ShowBase):
                 0.0001 - 0.5 : Ground and Hills plus
                 0.5   -  1.0 : Mountains etal
         """
+        self.bCMGrayShades = bCMGrayShades
+        self.bHFNoBelowSeaLevel = bHFNoBelowSeaLevel
         self.terrain = GeoMipTerrain("Gnd")
         # The Heightfield
         if hfFile == None:
