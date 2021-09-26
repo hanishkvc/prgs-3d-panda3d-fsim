@@ -120,10 +120,10 @@ class FSim(ShowBase):
                     if bNoBelowSeaLevel:
                         if hfv < 0.0001:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.0001)))
-                        elif hfv > 0.50:
-                            cm.setRed(x, y, (0.2+0.8*((hfv-0.5)/0.50)))
+                        elif hfv > 0.25:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.25)/0.75)))
                         else:
-                            cm.setGreen(x, y, (0.2+0.8*(hfv/0.50)))
+                            cm.setGreen(x, y, (0.2+0.8*(hfv/0.25)))
                     else:
                         if hfv < 0.1:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.1)))
