@@ -16,11 +16,15 @@ from panda3d.core import TextNode
 
 class FSim(ShowBase):
 
-    def __init__(self, terrainFile=None):
+    def __init__(self, terrainFile=None, bTopView=True):
         ShowBase.__init__(self)
         # Camera is the Main Actor for now
-        self.cDefPos = Vec3(0, 0, 25)
-        self.cDefFace = Vec3(0, 0, 0)
+        if bTopView:
+            self.cDefPos = Vec3(8000, 8000, 32025)
+            self.cDefFace = Vec3(0, -90, 0)
+        else:
+            self.cDefPos = Vec3(0, 0, 25)
+            self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 4097
@@ -56,7 +60,7 @@ class FSim(ShowBase):
         trnp.setScale(0.04)
 
 
-    def setup_lights(self, bAmbient=False, bDirectional=True):
+    def setup_lights(self, bAmbient=True, bDirectional=True):
         if bAmbient:
             al = AmbientLight('AmbLight')
             al.setColor((0.5, 0.5, 0.5, 1))
@@ -72,7 +76,7 @@ class FSim(ShowBase):
         self.render.setShaderAuto()
 
 
-    def create_terrain(self, hfFile):
+    def create_terrain(self, hfFile, bGrayShades=False):
         self.terrain = GeoMipTerrain("Gnd")
         if hfFile == None:
             hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
@@ -99,12 +103,15 @@ class FSim(ShowBase):
                 hfv = hf.getGray(x, y)
                 hfMin = min(hfMin, hfv)
                 hfMax = max(hfMax, hfv)
-                if hfv < 0.20:
-                    cm.setBlue(x, y, (hfv/0.20))
-                elif hfv > 0.60:
-                    cm.setRed(x, y, (1.0-hfv)/0.4)
+                if bGrayShades:
+                    cm.setGray(x, y, hfv)
                 else:
-                    cm.setGreen(x, y, (0.6-hfv)/0.4)
+                    if hfv < 0.20:
+                        cm.setBlue(x, y, (hfv/0.20))
+                    elif hfv > 0.60:
+                        cm.setRed(x, y, (1.0-hfv)/0.4)
+                    else:
+                        cm.setGreen(x, y, (0.6-hfv)/0.4)
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
@@ -120,6 +127,7 @@ class FSim(ShowBase):
         tRoot.setSy(4)
         tRoot.setSz(400)
         tRoot.reparentTo(self.render)
+        self.terrain.setBruteforce(True)
         self.terrain.generate()
         # Add some objects
         p = self.loader.loadModel("models/panda-model")
