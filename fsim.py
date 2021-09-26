@@ -5,7 +5,7 @@
 #
 
 import time
-import sys
+import sys, os
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
@@ -84,7 +84,7 @@ class FSim(ShowBase):
                 if x < hf.getXSize()/3:
                     hf.setGray(x, y, 0)
                 elif x < (hf.getXSize()*2/3):
-                    hf.setGray(x, y, 0.5)
+                    hf.setGray(x, y, 0.22)
                 else:
                     hf.setGray(x, y, 1)
         return hf
