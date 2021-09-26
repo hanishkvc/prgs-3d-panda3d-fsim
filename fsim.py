@@ -243,8 +243,8 @@ class FSim(ShowBase):
 
 
     def setup_ss_keyshandler(self):
-        self.accept("w", self.ss_keys_handler, [ 'w' ])
-        self.accept("s", self.ss_keys_handler, [ 's' ])
+        self.accept("w-repeat", self.ss_keys_handler, [ 'w' ])
+        self.accept("s-repeat", self.ss_keys_handler, [ 's' ])
         self.accept("q", self.ss_keys_handler, [ 'q' ])
         self.accept("e", self.ss_keys_handler, [ 'e' ])
         self.accept("a", self.ss_keys_handler, [ 'a' ])
