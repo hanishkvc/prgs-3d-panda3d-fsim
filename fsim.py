@@ -136,13 +136,15 @@ class FSim(ShowBase):
         self.bHFNoBelowSeaLevel = bHFNoBelowSeaLevel
         self.terrain = GeoMipTerrain("Gnd")
         # The Heightfield
+        cmFName = None
+        cmFNameSave = None
         if hfFile == None:
-            cmFName = None
             hf = self._create_heightfield()
         else:
             hfFName = "{}.hf.png".format(hfFile)
             cmFName = "{}.cm.png".format(hfFile)
             if not os.path.exists(cmFName):
+                cmFNameSave = cmFName
                 cmFName = None
             hf = PNMImage(hfFName)
         print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
@@ -151,6 +153,8 @@ class FSim(ShowBase):
             cm = self._create_colormap(hf)
         else:
             cm = PNMImage(cmFName)
+        if cmFNameSave != None:
+            cm.write(cmFNameSave)
         self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
