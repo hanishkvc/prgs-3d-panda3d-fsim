@@ -212,6 +212,52 @@ class FSim(ShowBase):
         return Task.cont
 
 
+    def ss_keys_handler(self, key):
+        if key == 'a':
+            self.ctrans.x -= 0.01
+        elif key == 'd':
+            self.ctrans.x += 0.01
+        elif key == 'w':
+            self.ctrans.y += 0.01
+        elif key == 's':
+            self.ctrans.y -= 0.01
+        elif key == 'q':
+            self.ctrans.z += 0.01
+        elif key == 'e':
+            self.ctrans.z -= 0.01
+        elif key == 'j':
+            self.crot.x -= 0.01
+        elif key == 'l':
+            self.crot.x += 0.01
+        elif key == 'i':
+            self.crot.y += 0.01
+        elif key == 'k':
+            self.crot.y -= 0.01
+        elif key == 'u':
+            self.crot.z += 0.01
+        elif key == 'o':
+            self.crot.z -= 0.01
+        elif key == 'x':
+            self.ctrans = Vec3(0,0,0)
+            self.crot = Vec3(0,0,0)
+
+
+    def setup_ss_keyshandler(self):
+        self.accept("w", self.ss_keys_handler, [ 'w' ])
+        self.accept("s", self.ss_keys_handler, [ 's' ])
+        self.accept("q", self.ss_keys_handler, [ 'q' ])
+        self.accept("e", self.ss_keys_handler, [ 'e' ])
+        self.accept("a", self.ss_keys_handler, [ 'a' ])
+        self.accept("d", self.ss_keys_handler, [ 'd' ])
+        self.accept("x", self.ss_keys_handler, [ 'x' ])
+        self.accept("i", self.ss_keys_handler, [ 'i' ])
+        self.accept("k", self.ss_keys_handler, [ 'k' ])
+        self.accept("j", self.ss_keys_handler, [ 'j' ])
+        self.accept("l", self.ss_keys_handler, [ 'l' ])
+        self.accept("u", self.ss_keys_handler, [ 'u' ])
+        self.accept("o", self.ss_keys_handler, [ 'o' ])
+
+
     def keys_handler(self, key):
         if key == 'a':
             self.ctrans.y += 0.01
