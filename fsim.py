@@ -51,14 +51,16 @@ class FSim(ShowBase):
         self.textTrans = TextNode('TextTrans')
         self.textTrans.setText('Trans:')
         ttnp = self.render2d.attachNewNode(self.textTrans)
-        ttnp.setPos(0.5, 0, 0.9)
+        ttnp.setPos(0.2, 0, 0.9)
         ttnp.setScale(0.04)
         self.textRot = TextNode('TextRot')
         self.textRot.setText('Rot:')
         trnp = self.render2d.attachNewNode(self.textRot)
-        trnp.setPos(0.5, 0, 0.8)
+        trnp.setPos(0.2, 0, 0.8)
         trnp.setScale(0.04)
+        fwFont = loader.loadFont("cmtt12.egg")
         for t in [ self.textPos, self.textOr, self.textTrans, self.textRot ]:
+            t.setFont(fwFont)
             #t.setShadow(0.05,0.05)
             #t.setShadowColor(0.2,0.2,0.2,1.0)
             t.setCardColor(0.2,0.2,0.2,1.0)
@@ -196,10 +198,10 @@ class FSim(ShowBase):
         cRo = self.crot
         if (task.frame%4) == 0:
             self.terrain.update()
-            self.textPos.setText("P:{:6.2f},{:6.2f},{:6.2f}".format(cGP[0], cGP[1], cGP[2]))
-            self.textOr.setText("O:{:6.2f},{:6.2f},{:6.2f}".format(cOr[0], cOr[1], cOr[2]))
-            self.textTrans.setText("T:{:6.2f},{:6.2f},{:6.2f}".format(cTr[0], cTr[1], cTr[2]))
-            self.textRot.setText("R:{:6.2f},{:6.2f},{:6.2f}".format(cRo[0], cRo[1], cRo[2]))
+            self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
+            self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
+            self.textTrans.setText("T:{:08.2f},{:08.2f},{:08.2f}".format(cTr[0], cTr[1], cTr[2]))
+            self.textRot.setText("R:{:08.2f},{:08.2f},{:08.2f}".format(cRo[0], cRo[1], cRo[2]))
         if (task.frame%2400) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
