@@ -118,23 +118,23 @@ class FSim(ShowBase):
                     if bNoBelowSeaLevel:
                         if hfv < 0.0001:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.0001)))
-                        elif hfv > 0.25:
-                            cm.setRed(x, y, (0.2+0.8*((hfv-0.25)/0.75)))
-                        else:
+                        elif hfv < 0.25:
                             cm.setGreen(x, y, (0.2+0.8*(hfv/0.25)))
+                        else:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.25)/0.75)))
                     else:
                         if hfv < 0.1:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.1)))
-                        elif hfv > 0.60:
-                            cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
-                        else:
+                        elif hfv < 0.60:
                             cm.setGreen(x, y, (0.2+0.8*((hfv-0.1)/0.50)))
+                        else:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
         lodFar = blockSize/2
-        lodNear = min(8,lodFar/32)
+        lodNear = max(16,lodFar/32)
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
