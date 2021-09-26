@@ -100,15 +100,17 @@ class FSim(ShowBase):
                 hfMin = min(hfMin, hfv)
                 hfMax = max(hfMax, hfv)
                 if self.bCMGrayShades:
-                    cm.setGray(x, y, hfv)
+                    cm.setXel(x, y, hfv)
                 else:
                     if self.bHFNoBelowSeaLevel:
-                        if hfv < 0.0001:
-                            cm.setBlue(x, y, (0.2+0.8*(hfv/0.0001)))
+                        if hfv < 0.000001:
+                            cm.setBlue(x, y, (0.2+0.8*(hfv/0.000001)))
                         elif hfv < 0.25:
                             cm.setGreen(x, y, (0.2+0.8*(hfv/0.25)))
+                        elif hfv < 0.75:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.25)/0.50)))
                         else:
-                            cm.setRed(x, y, (0.2+0.8*((hfv-0.25)/0.75)))
+                            cm.setXel(x, y, (0.2+0.8*((hfv-0.75)/0.25)))
                     else:
                         if hfv < 0.1:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.1)))
