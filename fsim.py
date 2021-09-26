@@ -72,7 +72,7 @@ class FSim(ShowBase):
             dlnp = self.render.attachNewNode(dl)
             dlnp.setHpr(0, -60, 0)
             self.render.setLight(dlnp)
-            dl.setShadowCaster(True, 256, 256)
+            #dl.setShadowCaster(True, 256, 256)
         self.render.setShaderAuto()
 
 
@@ -140,12 +140,13 @@ class FSim(ShowBase):
         self.terrain.setNear(lodNear)
         self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
+        self.terrain.setAutoFlatten(GeoMipTerrain.AFMStrong)
+        self.terrain.setBruteforce(True)
         tRoot = self.terrain.getRoot()
         tRoot.setSx(4)
         tRoot.setSy(4)
         tRoot.setSz(400)
         tRoot.reparentTo(self.render)
-        self.terrain.setBruteforce(True)
         self.terrain.generate()
         # Add some objects
         p = self.loader.loadModel("models/panda-model")
