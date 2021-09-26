@@ -16,7 +16,8 @@ import numpy
 fName = sys.argv[1]
 print("INFO:LoadingImage:", fName)
 fI = "{}".format(fName)
-fO = "{}.hf.png".format(fName)
+fOHF = "{}.hf.png".format(fName)
+fOCM = "{}.cm.png".format(fName)
 iI = skimage.io.imread(fI)
 
 # Adjust Image pixel values
@@ -43,6 +44,27 @@ iR = skimage.transform.resize(iC, (sNew,sNew))
 print("INFO:ImageResize:", sNew)
 
 # Save the image
-print("INFO:SavingImage:", fO)
-skimage.io.imsave(fO, iR)
+print("INFO:SavingImage:", fOHF)
+skimage.io.imsave(fOHF, iR)
+
+
+# Create ColorMap
+# Maybe convert to NumPys parallel conditional indexing and updating, later
+cN = skimage.color.gray2rgb(iR).astype(float)
+for x in range(iR.shape[0]):
+    for y in range(iR.shape[1]):
+        if iR[x,y] == 0:
+            cN[x,y] = [0, 0, 1]
+        elif iR[x,y] < 0.25:
+            gF = 0.2 + 0.8*(iR[x,y]/0.25)
+            cN[x,y] = [0, gF, 0]
+        elif iR[x,y] < 0.50:
+            rF = 0.2 + 0.8*((iR[x,y]-0.25)/0.25)
+            cN[x,y] = [rF, 0, 0]
+        else:
+            cF = 0.2 + 0.8*((iR[x,y]-0.50)/0.50)
+            cN[x,y] = cF
+
+print("INFO:SavingImage:", fOCM)
+skimage.io.imsave(fOCM, cN)
 
