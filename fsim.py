@@ -226,10 +226,24 @@ class FSim(ShowBase):
         self.taskMgr.add(self.update, 'UpdateFSim')
 
 
+def handle_args(args):
+    global terrainFile, bTopView
+    iArg = 0
+    while iArg < (len(args)-1):
+        iArg += 1
+        cArg = args[iArg]
+        if cArg == "--terrain":
+            iArg += 1
+            terrainFile = args[iArg]
+        if cArg == "--topview":
+            bTopView = True
+
+
+
 terrainFile=None
-if len(sys.argv) > 1:
-    terrainFile=sys.argv[1]
-fsim = FSim(terrainFile)
+bTopView=False
+handle_args(sys.argv)
+fsim = FSim(terrainFile, bTopView)
 fsim.prepare()
 fsim.run()
 
