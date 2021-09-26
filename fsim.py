@@ -100,10 +100,8 @@ class FSim(ShowBase):
                         hf.setGray(x, y, 0.5)
                     else:
                         hf.setGray(x, y, 1)
-            self.terrain.setHeightfield(hf)
         else:
-            self.terrain.setHeightfield(hfFile)
-            hf = self.terrain.heightfield()
+            hf = PNMImage(hfFile)
         print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
         # Color the terrain based on height
         cm = PNMImage(hf.getXSize(), hf.getYSize())
@@ -132,6 +130,7 @@ class FSim(ShowBase):
                         else:
                             cm.setGreen(x, y, (0.2+0.8*((hfv-0.1)/0.50)))
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
+        self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
         lodFar = blockSize/2
