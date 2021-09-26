@@ -76,7 +76,18 @@ class FSim(ShowBase):
         self.render.setShaderAuto()
 
 
-    def create_terrain(self, hfFile, bGrayShades=False):
+    def create_terrain(self, hfFile, bGrayShades=False, bNoBelowSeaLevel=True):
+        """
+        Terrain Auto Colormap based on heightfield could be
+            With Below SeaLevel data (maybe)
+                0.0 - 0.1 : SeaLevel and Below
+                0.1 - 0.6 : ground and hills plus
+                0.6 - 1.0 : Mountains etal
+            No Below SeatLevel:
+                0.0 - 0.0001 : Sea Level and Below
+                0.0001 - 0.5 : Ground and Hills plus
+                0.5   -  1.0 : Mountains etal
+        """
         self.terrain = GeoMipTerrain("Gnd")
         if hfFile == None:
             hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
@@ -106,12 +117,20 @@ class FSim(ShowBase):
                 if bGrayShades:
                     cm.setGray(x, y, hfv)
                 else:
-                    if hfv < 0.05:
-                        cm.setBlue(x, y, (hfv/0.05))
-                    elif hfv > 0.60:
-                        cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
+                    if bNoBelowSeaLevel:
+                        if hfv < 0.0001:
+                            cm.setBlue(x, y, (0.2+0.8*(hfv/0.0001)))
+                        elif hfv > 0.50:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.5)/0.50)))
+                        else:
+                            cm.setGreen(x, y, (0.2+0.8*(hfv/0.50)))
                     else:
-                        cm.setGreen(x, y, (0.2+((hfv-0.05)/0.55)))
+                        if hfv < 0.1:
+                            cm.setBlue(x, y, (0.2+0.8*(hfv/0.1)))
+                        elif hfv > 0.60:
+                            cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
+                        else:
+                            cm.setGreen(x, y, (0.2+0.8*((hfv-0.1)/0.50)))
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
