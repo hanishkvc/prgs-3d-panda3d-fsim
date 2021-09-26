@@ -1,6 +1,6 @@
 #!/bin/env python3
 #
-# hkvc-terrain-usgs.py - Make USGS elevation data suitable for my terrain heightfield
+# hkvc-terrain-usgs.py - Make USGS elevation data suitable for my terrain heightfield and a corresponding crude auto colormap
 # HanishKVC, 2021
 # GPL
 #
@@ -65,6 +65,13 @@ for x in range(iR.shape[0]):
             cF = 0.2 + 0.8*((iR[x,y]-0.50)/0.50)
             cN[x,y] = cF
 
+# Flip image
+bVertFlip = True
+if bVertFlip:
+    cNF = cN[::-1,:]
+else:
+    cNF = cN[:,::-1]
+
 print("INFO:SavingImage:", fOCM)
-skimage.io.imsave(fOCM, cN)
+skimage.io.imsave(fOCM, cNF)
 
