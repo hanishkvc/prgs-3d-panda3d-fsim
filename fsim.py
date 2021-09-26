@@ -109,9 +109,9 @@ class FSim(ShowBase):
                     if hfv < 0.05:
                         cm.setBlue(x, y, (hfv/0.05))
                     elif hfv > 0.60:
-                        cm.setRed(x, y, (hfv-0.6)/0.40)
+                        cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
                     else:
-                        cm.setGreen(x, y, (hfv-0.05)/0.55)
+                        cm.setGreen(x, y, (0.2+((hfv-0.05)/0.55)))
         print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
