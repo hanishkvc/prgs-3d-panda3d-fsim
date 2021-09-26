@@ -258,7 +258,7 @@ class FSim(ShowBase):
         self.accept("o", self.ss_keys_handler, [ 'o' ])
 
 
-    def keys_handler(self, key):
+    def ac_keys_handler(self, key):
         if key == 'a':
             self.ctrans.y += 0.01
         elif key == 'd':
@@ -285,24 +285,24 @@ class FSim(ShowBase):
 
 
     def setup_keyshandler(self):
-        self.accept("w", self.keys_handler, [ 'w' ])
-        self.accept("s", self.keys_handler, [ 's' ])
-        self.accept("q", self.keys_handler, [ 'q' ])
-        self.accept("e", self.keys_handler, [ 'e' ])
-        self.accept("a", self.keys_handler, [ 'a' ])
-        self.accept("d", self.keys_handler, [ 'd' ])
-        self.accept("x", self.keys_handler, [ 'x' ])
-        self.accept("z", self.keys_handler, [ 'z' ])
-        self.accept("c", self.keys_handler, [ 'c' ])
-        self.accept("r", self.keys_handler, [ 'r' ])
-        self.accept("f", self.keys_handler, [ 'f' ])
+        self.accept("w", self.ac_keys_handler, [ 'w' ])
+        self.accept("s", self.ac_keys_handler, [ 's' ])
+        self.accept("q", self.ac_keys_handler, [ 'q' ])
+        self.accept("e", self.ac_keys_handler, [ 'e' ])
+        self.accept("a", self.ac_keys_handler, [ 'a' ])
+        self.accept("d", self.ac_keys_handler, [ 'd' ])
+        self.accept("x", self.ac_keys_handler, [ 'x' ])
+        self.accept("z", self.ac_keys_handler, [ 'z' ])
+        self.accept("c", self.ac_keys_handler, [ 'c' ])
+        self.accept("r", self.ac_keys_handler, [ 'r' ])
+        self.accept("f", self.ac_keys_handler, [ 'f' ])
 
 
     def prepare(self):
         self.disableMouse()
         #self.useDrive()
         self.setup_lights()
-        self.setup_keyshandler()
+        self.setup_ss_keyshandler()
         self.updateT1 = time.time()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
