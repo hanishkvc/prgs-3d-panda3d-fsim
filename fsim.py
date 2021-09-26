@@ -76,34 +76,21 @@ class FSim(ShowBase):
         self.render.setShaderAuto()
 
 
-    def create_terrain(self, hfFile, bGrayShades=False, bNoBelowSeaLevel=True):
-        """
-        Terrain Auto Colormap based on heightfield could be
-            With Below SeaLevel data (maybe)
-                0.0 - 0.1 : SeaLevel and Below
-                0.1 - 0.6 : ground and hills plus
-                0.6 - 1.0 : Mountains etal
-            No Below SeatLevel:
-                0.0 - 0.0001 : Sea Level and Below
-                0.0001 - 0.5 : Ground and Hills plus
-                0.5   -  1.0 : Mountains etal
-        """
-        self.terrain = GeoMipTerrain("Gnd")
-        if hfFile == None:
-            hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
-            # Setup a height map
-            for x in range(hf.getXSize()):
-                for y in range(hf.getYSize()):
-                    if x < hf.getXSize()/3:
-                        hf.setGray(x, y, 0)
-                    elif x < (hf.getXSize()*2/3):
-                        hf.setGray(x, y, 0.5)
-                    else:
-                        hf.setGray(x, y, 1)
-        else:
-            hf = PNMImage(hfFile)
-        print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
-        # Color the terrain based on height
+    def _create_heightfield(self):
+        hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
+        # Setup a height map
+        for x in range(hf.getXSize()):
+            for y in range(hf.getYSize()):
+                if x < hf.getXSize()/3:
+                    hf.setGray(x, y, 0)
+                elif x < (hf.getXSize()*2/3):
+                    hf.setGray(x, y, 0.5)
+                else:
+                    hf.setGray(x, y, 1)
+        return hf
+
+
+    def _create_colormap(self, hf):
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
         hfMin, hfMax = 256, 0
@@ -129,7 +116,39 @@ class FSim(ShowBase):
                             cm.setGreen(x, y, (0.2+0.8*((hfv-0.1)/0.50)))
                         else:
                             cm.setRed(x, y, (0.2+0.8*((hfv-0.6)/0.40)))
-        print("DBUG:Terrain:HFMinMax:{},{}".format(hfMin, hfMax))
+        print("DBUG:Terrain:CM:HFMinMax:{},{}".format(hfMin, hfMax))
+        return cm
+
+
+    def create_terrain(self, hfFile, bGrayShades=False, bNoBelowSeaLevel=True):
+        """
+        Terrain Auto Colormap based on heightfield could be
+            With Below SeaLevel data (maybe)
+                0.0 - 0.1 : SeaLevel and Below
+                0.1 - 0.6 : ground and hills plus
+                0.6 - 1.0 : Mountains etal
+            No Below SeatLevel:
+                0.0 - 0.0001 : Sea Level and Below
+                0.0001 - 0.5 : Ground and Hills plus
+                0.5   -  1.0 : Mountains etal
+        """
+        self.terrain = GeoMipTerrain("Gnd")
+        # The Heightfield
+        if hfFile == None:
+            cmFName = None
+            hf = self._create_heightfield()
+        else:
+            hfFName = "{}.hf.png".format(hfFile)
+            cmFName = "{}.cm.png".format(hfFile)
+            if not os.path.exists(cmFName):
+                cmFName = None
+            hf = PNMImage(hfFName)
+        print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
+        # Color the terrain based on height
+        if cmFName == None:
+            cm = self._create_colormap(hf)
+        else:
+            cm = PNMImage(cmFName)
         self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/4)
