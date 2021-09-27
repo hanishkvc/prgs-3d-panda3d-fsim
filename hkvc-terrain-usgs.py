@@ -21,7 +21,9 @@ fOCM = "{}.cm.png".format(fName)
 iI = skimage.io.imread(fI)
 
 # Adjust Image pixel values
-def img_amplifylevels(iI):
+def img_amplifylevels(iI, bAmplify=True):
+    if not bAmplify:
+        return iI/iI.max()
     iHist = numpy.histogram(iI,20)[0]
     iHTotal = numpy.sum(iHist)
     iMult = 1
@@ -49,7 +51,7 @@ def img_resize(iC):
     return iR
 
 
-iC = img_amplifylevels(iI)
+iC = img_amplifylevels(iI, False)
 iR = img_resize(iC)
 # Save the image
 print("INFO:SavingImage:", fOHF)
