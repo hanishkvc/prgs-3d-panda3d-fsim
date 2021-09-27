@@ -130,7 +130,7 @@ class FSim(ShowBase):
         return cm
 
 
-    def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True):
+    def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True, bLODBruteForce=True):
         """
         Terrain Auto Colormap based on heightfield could be
             With Below SeaLevel data (maybe)
@@ -167,16 +167,16 @@ class FSim(ShowBase):
             cm.write(cmFNameSave)
         self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
-        blockSize = int((hf.getXSize()-1)/4)
-        lodFar = blockSize/2
-        lodNear = max(16,lodFar/32)
+        blockSize = int((hf.getXSize()-1)/8)
+        lodFar = blockSize*2
+        lodNear = max(16,lodFar/16)
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
         self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
         self.terrain.setAutoFlatten(GeoMipTerrain.AFMStrong)
-        self.terrain.setBruteforce(True)
+        self.terrain.setBruteforce(bLODBruteForce)
         tRoot = self.terrain.getRoot()
         tRoot.setSx(4)
         tRoot.setSy(4)
