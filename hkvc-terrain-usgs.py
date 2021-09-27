@@ -66,14 +66,14 @@ def img_hf2cm(iR):
         for y in range(iR.shape[1]):
             if iR[x,y] <= 0:
                 cN[x,y] = [0, 0, 1]
-            elif iR[x,y] < 0.25:
-                gF = 0.2 + 0.8*(iR[x,y]/0.25)
+            elif iR[x,y] < 0.20:
+                gF = 0.2 + 0.8*(iR[x,y]/0.20)
                 cN[x,y] = [0, gF, 0]
-            elif iR[x,y] < 0.50:
-                rF = 0.2 + 0.8*((iR[x,y]-0.25)/0.25)
+            elif iR[x,y] < 0.40:
+                rF = 0.2 + 0.8*((iR[x,y]-0.20)/0.20)
                 cN[x,y] = [rF, 0, 0]
             else:
-                cF = 0.2 + 0.8*((iR[x,y]-0.50)/0.50)
+                cF = 0.2 + 0.8*((iR[x,y]-0.40)/0.60)
                 cN[x,y] = cF
     return cN
 
