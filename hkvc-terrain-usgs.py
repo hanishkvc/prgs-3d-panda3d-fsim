@@ -64,7 +64,7 @@ def img_hf2cm(iR):
     cN = skimage.color.gray2rgb(iR).astype(float)
     for x in range(iR.shape[0]):
         for y in range(iR.shape[1]):
-            if iR[x,y] == 0:
+            if iR[x,y] <= 0:
                 cN[x,y] = [0, 0, 1]
             elif iR[x,y] < 0.25:
                 gF = 0.2 + 0.8*(iR[x,y]/0.25)
