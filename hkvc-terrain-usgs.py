@@ -12,8 +12,20 @@ import skimage.io
 import skimage.transform
 import numpy
 
+
+def handle_args(args):
+    global fName, bBoost
+    fName = args[1]
+    bBoost = False
+    iArg = 1
+    while iArg < (len(args)-1):
+        iArg += 1
+        if args[iArg] == "--boost":
+            bBoost = True
+
+
+handle_args(sys.argv)
 # Load the image
-fName = sys.argv[1]
 print("INFO:LoadingImage:", fName)
 fI = "{}".format(fName)
 fOHF = "{}.hf.png".format(fName)
@@ -30,7 +42,7 @@ def img_amplifylevels(iI, bAmplify=True):
     for i in range(4):
         iHPart = numpy.sum(iHist[:i+1])
         if (iHPart/iHTotal) > 0.9:
-            iMult = int(20/(i+1))
+            iMult = int(6/(i+1))
             break
     iAmpd = (iI/iI.max())*iMult
     iC = numpy.clip(iAmpd, 0, 1)
@@ -51,7 +63,7 @@ def img_resize(iC):
     return iR
 
 
-iC = img_amplifylevels(iI, False)
+iC = img_amplifylevels(iI, bBoost)
 iR = img_resize(iC)
 # Save the image
 print("INFO:SavingImage:", fOHF)
