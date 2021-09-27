@@ -82,8 +82,8 @@ def img_hf2cm(iR):
                 gF = 0.2 + 0.8*(iR[x,y]/0.20)
                 cN[x,y] = [0, gF, 0]
             elif iR[x,y] < 0.40:
-                rF = 0.2 + 0.8*((iR[x,y]-0.20)/0.20)
-                cN[x,y] = [rF, 0, 0]
+                shade = 0.2 + 0.8*((iR[x,y]-0.20)/0.20)
+                cN[x,y] = [0.5*shade, 0.25*shade, 0]
             else:
                 cF = 0.2 + 0.8*((iR[x,y]-0.40)/0.60)
                 cN[x,y] = cF
