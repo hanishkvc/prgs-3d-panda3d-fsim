@@ -215,7 +215,7 @@ class FSim(ShowBase):
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
             self.textTrans.setText("T:{:08.2f},{:08.2f},{:08.2f}".format(cTr[0], cTr[1], cTr[2]))
             self.textRot.setText("R:{:08.2f},{:08.2f},{:08.2f}".format(cRo[0], cRo[1], cRo[2]))
-        if (self.frameCnt%240) == 0:
+        if (self.frameCnt%2400) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
             self.updateT1 = curT
