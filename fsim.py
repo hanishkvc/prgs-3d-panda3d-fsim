@@ -7,6 +7,7 @@
 import time
 import sys, os
 
+import numpy
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
@@ -30,12 +31,14 @@ class FSim(ShowBase):
         self.gndHeight = 4097
         self.setup_texts()
         self.create_terrain(cfg['terrainFile'])
+        hf=self.terrain.heightfield()
         if cfg['bTopView']:
-            hf=self.terrain.heightfield()
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
+        self.updateCPos = self.camera.getPos()
+        self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.10
 
 
     def setup_texts(self):
@@ -174,8 +177,8 @@ class FSim(ShowBase):
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
         blockSize = 1024
-        lodFar = 4096
-        lodNear = 2048
+        lodFar = 8192
+        lodNear = 16
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
@@ -208,8 +211,9 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        if (self.frameCnt%480) == 0:
+        if ((self.updateCPos - cGP).length() > self.updateDelta):
             self.terrain.update()
+            self.updateCPos = cGP
         if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
