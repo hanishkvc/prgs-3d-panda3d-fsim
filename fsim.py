@@ -184,7 +184,7 @@ class FSim(ShowBase):
         self.terrain.setNear(lodNear)
         self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
-        self.terrain.setAutoFlatten(GeoMipTerrain.AFM_off)
+        self.terrain.setAutoFlatten(self.cfg['LODAFMode'])
         self.terrain.setBruteforce(self.cfg['bLODBruteForce'])
         tRoot = self.terrain.getRoot()
         #tRoot.setSx(4)
@@ -323,6 +323,7 @@ def handle_args(args):
         'bTopView': False,
         'bLODBruteForce': False,
         'bP3DCameraControl': False,
+        'LODAFMode': GeoMipTerrain.AFMOff,
         }
     iArg = 0
     while iArg < (len(args)-1):
@@ -335,6 +336,17 @@ def handle_args(args):
             cfg['bTopView'] = True
         elif cArg == "--bLODBruteForce":
             cfg['bLODBruteForce'] = True
+        elif cArg == "--LODAFMode":
+            iArg += 1
+            afMode = args[iArg].lower()
+            if afMode == "light":
+                cfg['LODAFMode'] = GeoMipTerrain.AFMLight
+            elif afMode == "medium":
+                cfg['LODAFMode'] = GeoMipTerrain.AFMMedium
+            elif afMode == "strong":
+                cfg['LODAFMode'] = GeoMipTerrain.AFMStrong
+            else:
+                cfg['LODAFMode'] = GeoMipTerrain.AFMOff
         elif cArg == "--help":
             print(cfg)
             exit()
