@@ -11,6 +11,7 @@ import sys
 import skimage.io
 import skimage.transform
 import numpy
+import gdal
 
 
 def handle_args(args):
@@ -24,12 +25,22 @@ def handle_args(args):
             bBoost = True
 
 
+def geotiff_info(fName):
+    g = gdal.Open(fName)
+    fULX, fXD, t1, fULY, t2, fYD = g.GetGeoTransform()
+    iXW = g.RasterXSize
+    iYH = g.RasterYSize
+    print("GeoTiff:ULX {}:XD {}:XW {}".format(fULX, fXD, iXW))
+    print("GeoTiff:ULY {}:YD {}:YH {}".format(fULY, fYD, iYH))
+
+
 handle_args(sys.argv)
 # Load the image
 print("INFO:LoadingImage:", fName)
 fI = "{}".format(fName)
 fOHF = "{}.hf.png".format(fName)
 fOCM = "{}.cm.png".format(fName)
+geotiff_info(fI)
 iI = skimage.io.imread(fI)
 
 # Adjust Image pixel values

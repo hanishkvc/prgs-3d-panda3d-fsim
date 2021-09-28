@@ -7,7 +7,9 @@ Version: v20210929IST0052
 Intro
 ########
 
-A simple dumb flight sim with a futuristic all degree freedom space ship mode for now.
+One could either use it as a simple dumb flight sim with a futuristic all degree freedom space ship mode for now.
+Or one could treat it as a simple heightfield 3D viewer.
+
 Done to get some basic feel about Panda3D, and have some fun in the process.
 Also bcas MS seems to have decided not to release MSFS on XBox1X (No No Noooo).
 
@@ -81,9 +83,10 @@ SpaceShip mode
 Terrain
 ##########
 
-It allows height fields to be used as the terrain.
+It allows height fields to be used as the terrain. It uses the GeoMipTerrain module of Panda3D for this.
 
 There is a helper script to which one can pass the USGS earth explorer GMTED2010 elevation data and inturn it will generate heightfield and colormap files which can be used by this program.
 Pass the GeoTIFF file from USGS directly, dont use any image converter to create a png or jpg or so and then pass to this program, bcas it may lose some of the detail in the process.
 
+The script resizes the passed image to be a power of 2 + 1 size image. During this process, it doesnt worry about the aspect ratio.
 
