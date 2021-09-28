@@ -176,8 +176,8 @@ class FSim(ShowBase):
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
-        blockSize = 1024
-        lodFar = 8192
+        blockSize = 32
+        lodFar = 1024
         lodNear = 16
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
@@ -187,8 +187,8 @@ class FSim(ShowBase):
         self.terrain.setAutoFlatten(GeoMipTerrain.AFMStrong)
         self.terrain.setBruteforce(self.cfg['bLODBruteForce'])
         tRoot = self.terrain.getRoot()
-        tRoot.setSx(4)
-        tRoot.setSy(4)
+        #tRoot.setSx(4)
+        #tRoot.setSy(4)
         tRoot.setSz(400)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
