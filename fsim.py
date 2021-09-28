@@ -174,8 +174,8 @@ class FSim(ShowBase):
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
         blockSize = 1024
-        lodFar = 2048
-        lodNear = 512
+        lodFar = 4096
+        lodNear = 2048
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
@@ -208,7 +208,7 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        if (self.frameCnt%240) == 0:
+        if (self.frameCnt%480) == 0:
             self.terrain.update()
         if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
