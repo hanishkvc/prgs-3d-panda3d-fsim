@@ -30,7 +30,7 @@ class FSim(ShowBase):
         self.gndWidth = 4097
         self.gndHeight = 4097
         self.setup_texts()
-        self.create_terrain(cfg['terrainFile'])
+        self.create_terrain(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
@@ -319,7 +319,7 @@ class FSim(ShowBase):
 
 def handle_args(args):
     cfg = {
-        'terrainFile': None,
+        'sTerrainFile': None,
         'bTopView': False,
         'bLODBruteForce': False,
         'bP3DCameraControl': False,
@@ -328,13 +328,16 @@ def handle_args(args):
     while iArg < (len(args)-1):
         iArg += 1
         cArg = args[iArg]
-        if cArg == "--terrain":
+        if cArg == "--sTerrainFile":
             iArg += 1
-            cfg['terrainFile'] = args[iArg]
-        elif cArg == "--topview":
+            cfg['sTerrainFile'] = args[iArg]
+        elif cArg == "--bTopView":
             cfg['bTopView'] = True
-        elif cArg == "--lodBruteForce":
+        elif cArg == "--bLODBruteForce":
             cfg['bLODBruteForce'] = True
+        elif cArg == "--help":
+            print(cfg)
+            exit()
     return cfg
 
 
