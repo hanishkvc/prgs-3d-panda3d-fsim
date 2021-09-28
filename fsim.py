@@ -16,8 +16,9 @@ from panda3d.core import TextNode
 
 class FSim(ShowBase):
 
-    def __init__(self, terrainFile=None, bTopView=True):
+    def __init__(self, cfg):
         ShowBase.__init__(self)
+        self.cfg = cfg
         # Camera is the Main Actor for now
         self.cDefPos = Vec3(0, 0, 25)
         self.cDefFace = Vec3(0, 0, 0)
@@ -26,8 +27,8 @@ class FSim(ShowBase):
         self.gndWidth = 4097
         self.gndHeight = 4097
         self.setup_texts()
-        self.create_terrain(terrainFile)
-        if bTopView:
+        self.create_terrain(cfg['terrainFile'])
+        if cfg['bTopView']:
             hf=self.terrain.heightfield()
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
@@ -107,10 +108,10 @@ class FSim(ShowBase):
                 hfv = hf.getGray(x, y)
                 hfMin = min(hfMin, hfv)
                 hfMax = max(hfMax, hfv)
-                if self.bCMGrayShades:
+                if self.cfg['bCMGrayShades']:
                     cm.setXel(x, y, hfv)
                 else:
-                    if self.bHFNoBelowSeaLevel:
+                    if self.cfg['bHFNoBelowSeaLevel']:
                         if hfv < 0.000001:
                             cm.setBlue(x, y, (0.2+0.8*(hfv/0.000001)))
                         elif hfv < 0.25:
@@ -130,7 +131,7 @@ class FSim(ShowBase):
         return cm
 
 
-    def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True, bLODBruteForce=True):
+    def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True):
         """
         Terrain Auto Colormap based on heightfield could be
             With Below SeaLevel data (maybe)
@@ -142,8 +143,8 @@ class FSim(ShowBase):
                 0.0001 - 0.5 : Ground and Hills plus
                 0.5   -  1.0 : Mountains etal
         """
-        self.bCMGrayShades = bCMGrayShades
-        self.bHFNoBelowSeaLevel = bHFNoBelowSeaLevel
+        self.cfg['bCMGrayShades'] = bCMGrayShades
+        self.cfg['bHFNoBelowSeaLevel'] = bHFNoBelowSeaLevel
         self.terrain = GeoMipTerrain("Gnd")
         # The Heightfield
         cmFName = None
@@ -170,13 +171,16 @@ class FSim(ShowBase):
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
+        blockSize = 128
+        lodFar = 128
+        lodNear = 16
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
         self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
         self.terrain.setAutoFlatten(GeoMipTerrain.AFMStrong)
-        self.terrain.setBruteforce(bLODBruteForce)
+        self.terrain.setBruteforce(self.cfg['bLODBruteForce'])
         tRoot = self.terrain.getRoot()
         tRoot.setSx(4)
         tRoot.setSy(4)
@@ -290,8 +294,10 @@ class FSim(ShowBase):
 
 
     def prepare(self):
-        self.disableMouse()
-        #self.useDrive()
+        if self.cfg['bP3DCameraControl']:
+            self.useDrive()
+        else:
+            self.disableMouse()
         self.setup_lights()
         self.setup_ss_keyshandler()
         self.updateT1 = time.time()
@@ -299,23 +305,28 @@ class FSim(ShowBase):
 
 
 def handle_args(args):
-    global terrainFile, bTopView
+    cfg = {
+        'terrainFile': None,
+        'bTopView': False,
+        'bLODBruteForce': False,
+        'bP3DCameraControl': False,
+        }
     iArg = 0
     while iArg < (len(args)-1):
         iArg += 1
         cArg = args[iArg]
         if cArg == "--terrain":
             iArg += 1
-            terrainFile = args[iArg]
-        if cArg == "--topview":
-            bTopView = True
+            cfg['terrainFile'] = args[iArg]
+        elif cArg == "--topview":
+            cfg['bTopView'] = True
+        elif cArg == "--lodBruteForce":
+            cfg['bLODBruteForce'] = True
+    return cfg
 
 
-
-terrainFile=None
-bTopView=False
 handle_args(sys.argv)
-fsim = FSim(terrainFile, bTopView)
+fsim = FSim(cfg)
 fsim.prepare()
 fsim.run()
 
