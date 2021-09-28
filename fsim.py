@@ -247,9 +247,9 @@ class FSim(ShowBase):
         elif key == 'l':
             self.crot.x -= 0.01
         elif key == 'i':
-            self.crot.y += 0.01
-        elif key == 'k':
             self.crot.y -= 0.01
+        elif key == 'k':
+            self.crot.y += 0.01
         elif key == 'u':
             self.crot.z -= 0.01
         elif key == 'o':
