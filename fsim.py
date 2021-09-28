@@ -157,6 +157,7 @@ class FSim(ShowBase):
         self.cfg['bCMGrayShades'] = bCMGrayShades
         self.cfg['bHFNoBelowSeaLevel'] = bHFNoBelowSeaLevel
         self.terrain = GeoMipTerrain("Gnd")
+        self.terrain.setMinLevel(self.cfg['LODMinLevel'])
         # The Heightfield
         cmFName = None
         cmFNameSave = None
@@ -332,6 +333,7 @@ def handle_args(args):
         'bLODBruteForce': False,
         'bP3DCameraControl': False,
         'LODAFMode': GeoMipTerrain.AFMOff,
+        'LODMinLevel': 0,
         }
     iArg = 0
     while iArg < (len(args)-1):
@@ -355,9 +357,13 @@ def handle_args(args):
                 cfg['LODAFMode'] = GeoMipTerrain.AFMStrong
             else:
                 cfg['LODAFMode'] = GeoMipTerrain.AFMOff
+        elif cArg == "--LODMinLevel":
+            iArg += 1
+            cfg['LODMinLevel'] = int(args[iArg])
         elif cArg == "--help":
             print(cfg)
             exit()
+    print("INFO:Args:",cfg)
     return cfg
 
 
