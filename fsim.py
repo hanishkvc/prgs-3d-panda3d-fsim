@@ -42,6 +42,12 @@ class FSim(ShowBase):
 
 
     def setup_texts(self):
+        # Status line
+        self.textStatus = TextNode('TextStatus')
+        self.textStatus.setText('Status:')
+        tsnp = self.render2d.attachNewNode(self.textStatus)
+        tsnp.setPos(-0.2, 0, 0.9)
+        tsnp.setScale(0.04)
         # Cur State
         self.textPos = TextNode('TextPos')
         self.textPos.setText('Pos:')
@@ -65,7 +71,7 @@ class FSim(ShowBase):
         trnp.setPos(0.2, 0, 0.8)
         trnp.setScale(0.04)
         fwFont = loader.loadFont("cmtt12.egg")
-        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot ]:
+        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot, self.textStatus ]:
             t.setFont(fwFont)
             #t.setShadow(0.05,0.05)
             #t.setShadowColor(0.2,0.2,0.2,1.0)
@@ -212,8 +218,10 @@ class FSim(ShowBase):
         cTr = self.ctrans
         cRo = self.crot
         if ((self.updateCPos - cGP).length() > self.updateDelta):
+            self.textStatus.setText("U")
             self.terrain.update()
             self.updateCPos = cGP
+            self.textStatus.setText("N")
         if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
