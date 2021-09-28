@@ -38,7 +38,7 @@ class FSim(ShowBase):
         self.camera.setPos(self.cDefPos)
         self.camera.setHpr(self.cDefFace)
         self.updateCPos = self.camera.getPos()
-        self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.10
+        self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.07
 
 
     def setup_texts(self):
@@ -176,20 +176,20 @@ class FSim(ShowBase):
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
-        blockSize = 32
+        blockSize = 256
         lodFar = 1024
-        lodNear = 16
+        lodNear = 32
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
         self.terrain.setFar(lodFar)
         self.terrain.setFocalPoint(self.camera)
-        self.terrain.setAutoFlatten(GeoMipTerrain.AFMStrong)
+        self.terrain.setAutoFlatten(GeoMipTerrain.AFM_off)
         self.terrain.setBruteforce(self.cfg['bLODBruteForce'])
         tRoot = self.terrain.getRoot()
         #tRoot.setSx(4)
         #tRoot.setSy(4)
-        tRoot.setSz(400)
+        tRoot.setSz(200)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
         # Add some objects
