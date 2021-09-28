@@ -173,9 +173,9 @@ class FSim(ShowBase):
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*2
         lodNear = max(16,lodFar/16)
-        blockSize = 128
-        lodFar = 128
-        lodNear = 16
+        blockSize = 1024
+        lodFar = 2048
+        lodNear = 512
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
@@ -213,8 +213,8 @@ class FSim(ShowBase):
         if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
-            self.textTrans.setText("T:{:08.2f},{:08.2f},{:08.2f}".format(cTr[0], cTr[1], cTr[2]))
-            self.textRot.setText("R:{:08.2f},{:08.2f},{:08.2f}".format(cRo[0], cRo[1], cRo[2]))
+            self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
+            self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
         if (self.frameCnt%2400) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
