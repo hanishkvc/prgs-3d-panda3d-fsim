@@ -19,6 +19,8 @@ class FSim(ShowBase):
     def __init__(self, cfg):
         ShowBase.__init__(self)
         self.cfg = cfg
+        self.prevFrameTime = 0.0
+        self.frameCnt = 0
         # Camera is the Main Actor for now
         self.cDefPos = Vec3(0, 0, 25)
         self.cDefFace = Vec3(0, 0, 0)
@@ -196,17 +198,24 @@ class FSim(ShowBase):
 
 
     def update(self, task):
+        timeDelta = task.time - self.prevFrameTime
+        timeDelta = timeDelta/0.04
+        if timeDelta < 1:
+            return Task.cont
+        self.prevFrameTime = task.time
+        self.frameCnt += 1
         cGP = self.camera.getPos()
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        if (task.frame%4) == 0:
+        if (self.frameCnt%240) == 0:
             self.terrain.update()
+        if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
             self.textTrans.setText("T:{:08.2f},{:08.2f},{:08.2f}".format(cTr[0], cTr[1], cTr[2]))
             self.textRot.setText("R:{:08.2f},{:08.2f},{:08.2f}".format(cRo[0], cRo[1], cRo[2]))
-        if (task.frame%2400) == 0:
+        if (self.frameCnt%240) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
             self.updateT1 = curT
@@ -325,7 +334,7 @@ def handle_args(args):
     return cfg
 
 
-handle_args(sys.argv)
+cfg = handle_args(sys.argv)
 fsim = FSim(cfg)
 fsim.prepare()
 fsim.run()
