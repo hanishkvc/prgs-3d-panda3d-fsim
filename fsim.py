@@ -217,11 +217,11 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        if ((self.updateCPos - cGP).length() > self.updateDelta):
-            self.textStatus.setText("U")
+        updateDelta = (self.updateCPos - cGP).length()
+        self.textStatus.setText("NU:{:05.2f}".format(updateDelta))
+        if (updateDelta > self.updateDelta):
             self.terrain.update()
             self.updateCPos = cGP
-            self.textStatus.setText("N")
         if (self.frameCnt%4) == 0:
             self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
             self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
