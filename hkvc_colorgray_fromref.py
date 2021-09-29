@@ -46,13 +46,17 @@ class Image:
         tImg = skimage.io.imread(self.fName)
         self.rImg = self.transpose(tImg)
 
+    @staticmethod
+    def Save(fName, img2Save):
+        tImg = self.transpose(img2Save)
+        skimage.io.imsave(fName, tImg)
+
     def save(self, fName=None, img2Save=None):
         if fName == None:
             fName = self.fName
         if type(img2Save) == type(None):
             img2Save = self.rImg
-        tImg = self.transpose(img2Save)
-        skimage.io.imsave(fName, tImg)
+        Image.Save(fName, img2Save)
 
     def getpixel_xy(self, x,y):
         return self.rImg[x,y]
@@ -121,5 +125,6 @@ def run_main():
 
 
 if __name__ == "__main__":
+    Image.Save("TEST", "ME")
     run_main()
 
