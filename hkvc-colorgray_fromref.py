@@ -11,8 +11,6 @@ import skimage.io
 import numpy
 import gdal
 
-fnRef = sys.argv[1]
-fnSrc = sys.argv[2]
 
 class Image:
 
@@ -73,10 +71,22 @@ def map_color(imgS, imgR):
     return rCM
 
 
+def handle_args(args):
+    iArg = 0
+    while iArg < (len(args)-1):
+        iArg += 1
+        if args[iArg] == "--ref":
+            refFName = args[iArg+1]
+            iArg += 1
+        elif args[iArg] == "--src":
+            srcFName = args[iArg+1]
+            iArg += 1
+    return refFName, srcFName
 
-imgRef = Image(fnRef, "VEG")
+
+fnRef, fnSrc = handle_args(sys.argv)
+imgRef = Image(fnRef, "REF")
 imgRef.print_info()
-
 imgSrc = Image(fnSrc, "Src")
 imgSrc.print_info()
 
