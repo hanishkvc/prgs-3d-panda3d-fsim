@@ -95,10 +95,16 @@ def map_color(imgS, imgR):
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     """
     rCM = skimage.color.gray2rgb(imgS.rImg)
+    colorMax = imgR.rImg.max()
+    print("imgS", imgS.rImg.shape,imgS.rImg.dtype)
+    print("imgR", imgR.rImg.shape,imgR.rImg.dtype)
+    print("rCM", rCM.shape,rCM.dtype)
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
             color = imgR.getpixel_coord(lon, lat)
+            if (color[0] > 0.8*colorMax) and (color[1] > 0.8*colorMax) and (color[2] > 0.8*colorMax):
+                print(color)
             rCM[x,y] = color
     return rCM
 
