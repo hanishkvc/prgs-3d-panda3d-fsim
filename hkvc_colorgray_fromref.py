@@ -125,10 +125,9 @@ def run_main():
 
     rCM = map_color(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
-    imgRef.save(fnCM, rCM)
+    Image.Save(fnCM, rCM)
 
 
 if __name__ == "__main__":
-    Image.Save("TEST", "ME")
     run_main()
 
