@@ -14,9 +14,10 @@ import gdal
 
 class Image:
 
-    def __init__(self, fName, tag):
+    def __init__(self, fName, tag, debug=False):
         self.fName = fName
         self.tag = tag
+        self.debug = debug
         self.load()
         self.gImg = gdal.Open(self.fName)
         self.sLon, self.dLon, t1, self.sLat, t2, self.dLat = self.gImg.GetGeoTransform()
@@ -59,7 +60,8 @@ class Image:
     def xy2coord(self, x,y):
         lon = self.sLon + self.dLon*x
         lat = self.sLat + self.dLat*y
-        print("DBUG:XY2MCO:{}:{:011.5f}, {:011.5f}:{:011.5f}, {:011.5f}".format(self.tag,x,y,lon,lat))
+        if self.debug:
+            print("DBUG:XY2MCO:{}:{:011.5f}, {:011.5f}:{:011.5f}, {:011.5f}".format(self.tag,x,y,lon,lat))
         return lon, lat
 
     def coord2xy(self, lon, lat):
@@ -71,7 +73,8 @@ class Image:
         x = cLonDelta/self.dLon
         cLatDelta = lat - self.sLat
         y = cLatDelta/self.dLat
-        print("DBUG:MCO2XY:{}:{:011.5f}, {:011.5f}:{:011.5f}, {:011.5f}".format(self.tag,lon,lat,x,y))
+        if self.debug:
+            print("DBUG:MCO2XY:{}:{:011.5f}, {:011.5f}:{:011.5f}, {:011.5f}".format(self.tag,lon,lat,x,y))
         return round(x),round(y)
 
     def getpixel_coord(self, lon, lat):
