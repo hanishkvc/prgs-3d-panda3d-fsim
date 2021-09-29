@@ -94,7 +94,8 @@ def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     """
-    rCM = skimage.color.gray2rgb(imgS.rImg)
+    rCM = numpy.zeros((imgS.rImg.shape[0],imgS.rImg.shape[1],imgR.rImg.shape[2]), dtype=numpy.uint16)
+    print(rCM.shape, rCM.dtype)
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
