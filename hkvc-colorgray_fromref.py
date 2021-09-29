@@ -19,7 +19,13 @@ class Image:
     def __init__(self, fName, tag):
         self.fName = fName
         self.tag = tag
-        self.rImg = skimage.io.imread(self.fName)
+        tImg = skimage.io.imread(self.fName)
+        if len(tImg.shape) == 2:
+            self.rImg = tImg.transpose()
+        elif len(tImg.shape) == 3:
+            self.rImg = tImg.transpose(1,0,2)
+        else:
+            raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
         self.gImg = gdal.Open(self.fName)
         self.sLon, self.dLon, t1, self.sLat, t2, self.dLat = self.gImg.GetGeoTransform()
         self.XW, self.YH = self.gImg.RasterXSize, self.gImg.RasterYSize
@@ -47,7 +53,7 @@ class Image:
         x = cLonDelta/self.dLon
         cLatDelta = lat - self.sLat
         y = cLatDelta/self.dLat
-        return x,y
+        return round(x),round(y)
 
     def get_coord(self, lon, lat):
         x,y = self.coord2xy(lon, lat)
