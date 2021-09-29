@@ -30,6 +30,11 @@ class Image:
     def get_xy(x,y):
         return self.rImg[x,y]
 
+    def xy2coord(x,y):
+        lon = self.sLon + self.dLon*x
+        lat = self.sLat + self.dLat*y
+        return lon, lat
+
     def coord2xy(lon, lat):
         if (lon < self.sLon) or (lon > self.eLon):
             return None
@@ -46,6 +51,19 @@ class Image:
         return self.get_xy(x,y)
 
 
+def map_color(imgS, imgR):
+    """
+    Color gray scale imgS to match equivalent map coord position color in imgR and return the same
+    """
+    rCM = skimage.color.gray2rgb(imgS.rImg)
+    for x in range(imgS.XW):
+        for y in range(imgS.YH):
+            lon, lat = imgS.xy2coord(x,y)
+            color = imgR.get_coord(lon, lat)
+            rCM[x,y] = color
+    return rCM
+
+
 
 imgVeg = Image(fnVeg, "VEG")
 imgVeg.print_info()
@@ -53,4 +71,6 @@ imgVeg.print_info()
 imgHF = Image(fnHF, "HF")
 imgHF.print_info()
 
+rCM = map_color(imgHF, imgVeg)
+skimage.io.imsave("{}.cm.png".format(imgHF.fName), rCM)
 
