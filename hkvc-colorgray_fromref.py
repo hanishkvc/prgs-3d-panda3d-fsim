@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# Created World Vegetation NDVI data based colormap for heightfields
+# Color a Grayscale image based on color at corresponding location in a reference image
+# The grayscale and reference images need to be GeoTiff images.
+# The Color image generated will be a png.
+# This can be used to color say a heightfield image based on World Vegetation NDVI data
 # HanishKVC, 2021
 # GPL
 
@@ -8,8 +11,8 @@ import skimage.io
 import numpy
 import gdal
 
-fnVeg = sys.argv[1]
-fnHF = sys.argv[2]
+fnRef = sys.argv[1]
+fnSrc = sys.argv[2]
 
 class Image:
 
@@ -65,12 +68,12 @@ def map_color(imgS, imgR):
 
 
 
-imgVeg = Image(fnVeg, "VEG")
-imgVeg.print_info()
+imgRef = Image(fnRef, "VEG")
+imgRef.print_info()
 
-imgHF = Image(fnHF, "HF")
-imgHF.print_info()
+imgSrc = Image(fnSrc, "Src")
+imgSrc.print_info()
 
-rCM = map_color(imgHF, imgVeg)
-skimage.io.imsave("{}.cm.png".format(imgHF.fName), rCM)
+rCM = map_color(imgSrc, imgRef)
+skimage.io.imsave("{}.cm.png".format(imgSrc.fName), rCM)
 
