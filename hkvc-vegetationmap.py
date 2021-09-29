@@ -18,13 +18,23 @@ class Image:
         self.tag = tag
         self.rImg = skimage.io.imread(self.fName)
         self.gImg = gdal.Open(self.fName)
-        self.XL, self.XD, t1, self.YT, t2, self.YD = self.gImg.GetGeoTransform()
+        self.sLon, self.dLon, t1, self.sLat, t2, self.dLat = self.gImg.GetGeoTransform()
         self.XW, self.YH = self.gImg.RasterXSize, self.gImg.RasterYSize
-
+        self.eLon = self.sLon + self.XW*self.dLon
+        self.eLat = self.sLat + self.YH*self.dLat
 
     def print_info(self):
-        print("{}:".format(self.tag), self.XL, self.XD, self.XW, self.YT, self.YD, self.YH)
+        print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
+        print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
 
+    def getXY(x,y):
+        return self.rImg[x,y]
+
+    def getCoOrd(lon, lat):
+        if (lon < sLon) or (lon > eLon):
+            return None
+        if (lat > sLat) or (lat < eLat):
+            return None
 
 
 imgVeg = Image(fnVeg, "VEG")
