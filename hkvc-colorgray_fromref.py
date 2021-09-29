@@ -36,7 +36,7 @@ class Image:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
 
-    def get_xy(self, x,y):
+    def getpixel_xy(self, x,y):
         return self.rImg[x,y]
 
     def xy2coord(self, x,y):
@@ -55,9 +55,9 @@ class Image:
         y = cLatDelta/self.dLat
         return round(x),round(y)
 
-    def get_coord(self, lon, lat):
+    def getpixel_coord(self, lon, lat):
         x,y = self.coord2xy(lon, lat)
-        return self.get_xy(x,y)
+        return self.getpixel_xy(x,y)
 
 
 def map_color(imgS, imgR):
@@ -68,7 +68,7 @@ def map_color(imgS, imgR):
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
-            color = imgR.get_coord(lon, lat)
+            color = imgR.getpixel_coord(lon, lat)
             rCM[x,y] = color
     return rCM
 
