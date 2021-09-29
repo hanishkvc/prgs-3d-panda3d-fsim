@@ -11,20 +11,26 @@ import gdal
 fnVeg = sys.argv[1]
 fnHF = sys.argv[2]
 
-imgVeg = skimage.io.imread(fnVeg)
-imgHF = skimage.io.imread(fnHF)
+class Image:
 
-gVeg = gdal.Open(fnVeg)
-gHF = gdal.Open(fnHF)
-
-vegXL, vegXD, t1, vegYT, t2, vegYD = gVeg.GetGeoTransform()
-hfXL, hfXD, t1, hfYT, t2, hfYD = gHF.GetGeoTransform()
-
-vegXW, vegYH = gVeg.RasterXSize, gVeg.RasterYSize
-hfXW, hfYH = gHF.RasterXSize, gHF.RasterYSize
+    def __init__(self, fName, tag):
+        self.fName = fName
+        self.tag = tag
+        self.rImg = skimage.io.imread(self.fName)
+        self.gImg = gdal.Open(self.fName)
+        self.XL, self.XD, t1, self.YT, t2, self.YD = self.gImg.GetGeoTransform()
+        self.XW, self.YH = self.gImg.RasterXSize, self.gImg.RasterYSize
 
 
-print("VEG:", vegXL, vegXD, vegXW, vegYT, vegYD, vegYH)
-print("HF:", hfXL, hfXD, hfXW, hfYT, hfYD, hfYH)
+    def print_info(self):
+        print("{}:".format(self.tag), self.XL, self.XD, self.XW, self.YT, self.YD, self.YH)
+
+
+
+imgVeg = Image(fnVeg, "VEG")
+imgVeg.print_info()
+
+imgHF = Image(fnHF, "HF")
+imgHF.print_info()
 
 
