@@ -20,7 +20,11 @@ gHF = gdal.Open(fnHF)
 vegXL, vegXD, t1, vegYT, t2, vegYD = gVeg.GetGeoTransform()
 hfXL, hfXD, t1, hfYT, t2, hfYD = gHF.GetGeoTransform()
 
-print(vegXL, vegXD, vegYT, vegYD)
-print(hfXL, hfXD, hfYT, hfYD)
+vegXW, vegYH = gVeg.RasterXSize, gVeg.RasterYSize
+hfXW, hfYH = gHF.RasterXSize, gHF.RasterYSize
+
+
+print("VEG:", vegXL, vegXD, vegXW, vegYT, vegYD, vegYH)
+print("HF:", hfXL, hfXD, hfXW, hfYT, hfYD, hfYH)
 
 
