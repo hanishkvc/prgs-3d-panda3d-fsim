@@ -27,14 +27,24 @@ class Image:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
 
-    def getXY(x,y):
+    def get_xy(x,y):
         return self.rImg[x,y]
 
-    def getCoOrd(lon, lat):
-        if (lon < sLon) or (lon > eLon):
+    def coord2xy(lon, lat):
+        if (lon < self.sLon) or (lon > self.eLon):
             return None
-        if (lat > sLat) or (lat < eLat):
+        if (lat > self.sLat) or (lat < self.eLat):
             return None
+        cLonDelta = lon - self.sLon
+        x = cLonDelta/self.dLon
+        cLatDelta = lat - self.sLat
+        y = cLatDelta/self.dLat
+        return x,y
+
+    def get_coord(lon, lat):
+        x,y = self.coord2xy(lon, lat)
+        return self.get_xy(x,y)
+
 
 
 imgVeg = Image(fnVeg, "VEG")
