@@ -29,13 +29,14 @@ class Image:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
 
-    def transpose(self, tImg):
+    @staticmethod
+    def transpose(tImg):
         if len(tImg.shape) == 2:
             rImg = tImg.transpose()
         elif len(tImg.shape) == 3:
             rImg = tImg.transpose(1,0,2)
         else:
-            raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
+            raise RuntimeError("Image: Image neither Gray or RGB")
         return rImg
 
     def load(self, fName=None):
@@ -44,11 +45,14 @@ class Image:
         else:
             self.fName = fName
         tImg = skimage.io.imread(self.fName)
-        self.rImg = self.transpose(tImg)
+        try:
+            self.rImg = Image.transpose(tImg)
+        except RuntimeError:
+            raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
     @staticmethod
     def Save(fName, img2Save):
-        tImg = self.transpose(img2Save)
+        tImg = Image.transpose(img2Save)
         skimage.io.imsave(fName, tImg)
 
     def save(self, fName=None, img2Save=None):
