@@ -49,7 +49,7 @@ class Image:
     def save(self, fName=None, img2Save=None):
         if fName == None:
             fName = self.fName
-        if img2Save == None:
+        if type(img2Save) == type(None):
             img2Save = self.rImg
         tImg = self.transpose(img2Save)
         skimage.io.imsave(fName, tImg)
@@ -116,7 +116,8 @@ def run_main():
     imgSrc.print_info()
 
     rCM = map_color(imgSrc, imgRef)
-    skimage.io.imsave("{}.cm.png".format(imgSrc.fName), rCM)
+    fnCM = "{}.cm.png".format(imgSrc.fName)
+    imgRef.save(fnCM, rCM)
 
 
 if __name__ == "__main__":
