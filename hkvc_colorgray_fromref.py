@@ -90,16 +90,23 @@ class Image:
         return self.getpixel_xy(x,y)
 
 
-def map_color(imgS, imgR):
+def map_color(imgS, imgR, bMoreBluey=True):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     """
     rCM = numpy.zeros((imgS.rImg.shape[0],imgS.rImg.shape[1],imgR.rImg.shape[2]), dtype=numpy.uint16)
     print(rCM.shape, rCM.dtype)
+    if rCM.dtype == numpy.uint16:
+        cmThreshold = 32000
+    else:
+        cmThreshold = 128
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
             color = imgR.getpixel_coord(lon, lat)
+            if bMoreBluey and (color[0] == 0) and (color[1] == 0):
+                if color[2] < cmThreshold:
+                    color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
     return rCM
 
