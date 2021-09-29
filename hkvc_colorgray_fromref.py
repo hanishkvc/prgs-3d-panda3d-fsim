@@ -17,13 +17,7 @@ class Image:
     def __init__(self, fName, tag):
         self.fName = fName
         self.tag = tag
-        tImg = skimage.io.imread(self.fName)
-        if len(tImg.shape) == 2:
-            self.rImg = tImg.transpose()
-        elif len(tImg.shape) == 3:
-            self.rImg = tImg.transpose(1,0,2)
-        else:
-            raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
+        self.load()
         self.gImg = gdal.Open(self.fName)
         self.sLon, self.dLon, t1, self.sLat, t2, self.dLat = self.gImg.GetGeoTransform()
         self.XW, self.YH = self.gImg.RasterXSize, self.gImg.RasterYSize
@@ -33,6 +27,31 @@ class Image:
     def print_info(self):
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
+
+    def transpose(self, tImg):
+        if len(tImg.shape) == 2:
+            rImg = tImg.transpose()
+        elif len(tImg.shape) == 3:
+            rImg = tImg.transpose(1,0,2)
+        else:
+            raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
+        return rImg
+
+    def load(self, fName=None):
+        if fName == None:
+            fName = self.fName
+        else:
+            self.fName = fName
+        tImg = skimage.io.imread(self.fName)
+        self.rImg = self.transpose(tImg)
+
+    def save(self, fName=None, img2Save=None):
+        if fName == None:
+            fName = self.fName
+        if img2Save == None:
+            img2Save = self.rImg
+        tImg = self.transpose(img2Save)
+        skimage.io.imsave(fName, tImg)
 
     def getpixel_xy(self, x,y):
         return self.rImg[x,y]
