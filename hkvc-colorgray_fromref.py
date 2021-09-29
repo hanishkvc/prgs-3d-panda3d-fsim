@@ -30,15 +30,15 @@ class Image:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
 
-    def get_xy(x,y):
+    def get_xy(self, x,y):
         return self.rImg[x,y]
 
-    def xy2coord(x,y):
+    def xy2coord(self, x,y):
         lon = self.sLon + self.dLon*x
         lat = self.sLat + self.dLat*y
         return lon, lat
 
-    def coord2xy(lon, lat):
+    def coord2xy(self, lon, lat):
         if (lon < self.sLon) or (lon > self.eLon):
             return None
         if (lat > self.sLat) or (lat < self.eLat):
@@ -49,7 +49,7 @@ class Image:
         y = cLatDelta/self.dLat
         return x,y
 
-    def get_coord(lon, lat):
+    def get_coord(self, lon, lat):
         x,y = self.coord2xy(lon, lat)
         return self.get_xy(x,y)
 
