@@ -84,12 +84,17 @@ def handle_args(args):
     return refFName, srcFName
 
 
-fnRef, fnSrc = handle_args(sys.argv)
-imgRef = Image(fnRef, "REF")
-imgRef.print_info()
-imgSrc = Image(fnSrc, "Src")
-imgSrc.print_info()
+def run_main():
+    fnRef, fnSrc = handle_args(sys.argv)
+    imgRef = Image(fnRef, "REF")
+    imgRef.print_info()
+    imgSrc = Image(fnSrc, "Src")
+    imgSrc.print_info()
 
-rCM = map_color(imgSrc, imgRef)
-skimage.io.imsave("{}.cm.png".format(imgSrc.fName), rCM)
+    rCM = map_color(imgSrc, imgRef)
+    skimage.io.imsave("{}.cm.png".format(imgSrc.fName), rCM)
+
+
+if __name__ == "__main__":
+    run_main()
 
