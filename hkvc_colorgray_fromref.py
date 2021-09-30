@@ -117,9 +117,7 @@ def map_color(imgS, imgR):
         rCM = numpy.round(newC).astype(rCM.dtype)
         print(rCM[100,100], rCM[530,700])
     if gCfg['bLowPass']:
-        rCM *= 0.33
-        rCM[5:-5,5:-5] += rCM[:-10,:-10]
-        rCM[5:-5,5:-5] += rCM[10:,10:]
+        rCM[5:-5,5:-5] = (rCM[5:-5,5:-5] + rCM[:-10,:-10] + rCM[10:,10:])/3
     return rCM
 
 
