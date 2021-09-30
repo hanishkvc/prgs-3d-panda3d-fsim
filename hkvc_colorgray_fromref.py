@@ -150,7 +150,7 @@ def map_color(imgS, imgR):
     if gCfg['bAddNoise']:
         rCM = add_noise(rCM)
     if gCfg['bLowPass']:
-        rCM = blur_filter(rCM)
+        rCM = blur_filter(rCM,gCfg['iBlurSize'])
     return rCM
 
 
@@ -162,6 +162,7 @@ def handle_args(args):
             'srcFName': None,
             'bAddNoise': True,
             'bLowPass': True,
+            'iBlurSize': 8,
             }
     while iArg < (len(args)-1):
         iArg += 1
@@ -177,6 +178,10 @@ def handle_args(args):
                 cfg[theOpt] = False
             else:
                 cfg[theOpt] = True
+            iArg += 1
+        elif args[iArg].startswith("--i"):
+            theOpt = args[iArg][2:]
+            cfg[theOpt] = int(args[iArg+1])
             iArg += 1
     print(cfg)
     return cfg
