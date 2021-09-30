@@ -90,16 +90,18 @@ class Image:
         return self.getpixel_xy(x,y)
 
 
-def add_noise(rImg, percent=0.1):
+def add_noise(rImg, fNoiseRatio=0.1):
     """
-    Add noise to all channels of passed raw image (numpy array)
+    Add noise to all channels of passed raw image (numpy array).
+    The max of random amount of noise added is controlled by fNoiseRatio.
+
+    As saturation arithmatic not directly supported by numpy / python
+    So for now apply a simple randomly generated multiplier.
+    Note that with this the noise applied also varies proportional to current value
+    in each pixel/location. And inturn for locations with 0 value, nothing is applied.
     """
-    # As saturation arithmatic not directly supported by numpy / python
-    # So for now apply a simple randomly generated multiplier
-    # Note that with this the noise applied also varies proportional to current value
-    # in each pixel/location. And inturn for locations with 0, nothing is applied.
     print("\tAddNoise")
-    noise = numpy.random.uniform(1-percent,1+percent,rImg.shape)
+    noise = numpy.random.uniform(1-fNoiseRatio,1+fNoiseRatio,rImg.shape)
     #print(rImg[100,100], rImg[530,700])
     newC = rImg * noise
     rImg = numpy.round(newC).astype(rImg.dtype)
@@ -107,21 +109,21 @@ def add_noise(rImg, percent=0.1):
     return rImg
 
 
-def blur_filter(rImg, width=1):
+def blur_filter(rImg, iBlurSize=1):
     """
-    Blur all channels of passed raw image (numpy array)
-    Do a NxN based filter where each pixel is average from a window around its position
-    of size -width to +width along x and y axis.
+    Blur all channels of passed raw image (numpy array) by doing a NxN based filtering
+    where each pixel is averaged from a window around its position
+    of size -iBlurSize to +iBlurSize along x and y axis.
     """
     print("\tLowPass")
-    xS = yS = width
-    xE = rImg.shape[0]-width
-    yE = rImg.shape[1]-width
+    xS = yS = iBlurSize
+    xE = rImg.shape[0]-iBlurSize
+    yE = rImg.shape[1]-iBlurSize
     fImg = rImg/rImg.max()
     dImg = numpy.zeros(rImg.shape)
     cnt = 0
-    for x in range(-width,width+1,1):
-        for y in range(-width,width+1,1):
+    for x in range(-iBlurSize,iBlurSize+1,1):
+        for y in range(-iBlurSize,iBlurSize+1,1):
             cnt += 1
             dImg[xS:xE,yS:yE] += fImg[xS+x:xE+x, yS+y:yE+y]
     fImg = (dImg*rImg.max())/cnt
@@ -148,7 +150,7 @@ def map_color(imgS, imgR):
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
     if gCfg['bAddNoise']:
-        rCM = add_noise(rCM)
+        rCM = add_noise(rCM,gCfg['fNoiseRatio'])
     if gCfg['bLowPass']:
         rCM = blur_filter(rCM,gCfg['iBlurSize'])
     return rCM
@@ -163,6 +165,7 @@ def handle_args(args):
             'bAddNoise': True,
             'bLowPass': True,
             'iBlurSize': 8,
+            'fNoiseRatio': 0.1,
             }
     while iArg < (len(args)-1):
         iArg += 1
@@ -183,6 +186,13 @@ def handle_args(args):
             theOpt = args[iArg][2:]
             cfg[theOpt] = int(args[iArg+1])
             iArg += 1
+        elif args[iArg].startswith("--f"):
+            theOpt = args[iArg][2:]
+            cfg[theOpt] = float(args[iArg+1])
+            iArg += 1
+        else:
+            print("Args:",cfg)
+            exit()
     print(cfg)
     return cfg
 
