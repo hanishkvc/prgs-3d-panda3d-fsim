@@ -90,6 +90,23 @@ class Image:
         return self.getpixel_xy(x,y)
 
 
+def add_noise(rImg, percent=0.1):
+    """
+    Add noise to all channels of passed raw image (numpy array)
+    """
+    # As saturation arithmatic not directly supported by numpy / python
+    # So for now apply a simple randomly generated multiplier
+    # Note that with this the noise applied also varies proportional to current value
+    # in each pixel/location. And inturn for locations with 0, nothing is applied.
+    print("\tAddNoise")
+    noise = numpy.random.uniform(1-percent,1+percent,rImg.shape)
+    #print(rImg[100,100], rImg[530,700])
+    newC = rImg * noise
+    rImg = numpy.round(newC).astype(rImg.dtype)
+    #print(rImg[100,100], rImg[530,700])
+    return rImg
+
+
 def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
@@ -109,16 +126,7 @@ def map_color(imgS, imgR):
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
     if gCfg['bAddNoise']:
-        # As saturation arithmatic not directly supported by numpy / python
-        # So for now apply a simple randomly generated multiplier
-        # Note that with this the noise applied also varies proportional to current value
-        # in each pixel/location. And inturn for locations with 0, nothing is applied.
-        print("\tAddNoise")
-        noise = numpy.random.uniform(0.9,1.1,rCM.shape)
-        print(rCM[100,100], rCM[530,700])
-        newC = rCM * noise
-        rCM = numpy.round(newC).astype(rCM.dtype)
-        print(rCM[100,100], rCM[530,700])
+        rCM = add_noise(rCM)
     if gCfg['bLowPass']:
         # do a 3x3 based filter
         print("\tLowPass")
