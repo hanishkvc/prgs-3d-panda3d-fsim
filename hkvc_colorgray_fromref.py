@@ -12,7 +12,7 @@ import numpy
 import gdal
 
 
-class Image:
+class GTImage:
 
     def __init__(self, fName, tag, debug=False):
         self.fName = fName
@@ -36,7 +36,7 @@ class Image:
         elif len(tImg.shape) == 3:
             rImg = tImg.transpose(1,0,2)
         else:
-            raise RuntimeError("Image: Image neither Gray or RGB")
+            raise RuntimeError("GTImage: Image neither Gray or RGB")
         return rImg
 
     def load(self, fName=None):
@@ -46,13 +46,13 @@ class Image:
             self.fName = fName
         tImg = skimage.io.imread(self.fName)
         try:
-            self.rImg = Image.transpose(tImg)
+            self.rImg = GTImage.transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
     @staticmethod
     def Save(fName, img2Save):
-        tImg = Image.transpose(img2Save)
+        tImg = GTImage.transpose(img2Save)
         skimage.io.imsave(fName, tImg)
 
     def save(self, fName=None, img2Save=None):
@@ -60,7 +60,7 @@ class Image:
             fName = self.fName
         if type(img2Save) == type(None):
             img2Save = self.rImg
-        Image.Save(fName, img2Save)
+        GTImage.Save(fName, img2Save)
 
     def getpixel_xy(self, x,y):
         return self.rImg[x,y]
@@ -134,7 +134,7 @@ def blur_filter(rImg, iBlurSize=1):
 def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
-    return rCM: the raw color map numpy array (i.e not a Image class instance)
+    return rCM: the raw color map numpy array (i.e not a GTImage class instance)
     """
     rCM = numpy.zeros((imgS.rImg.shape[0],imgS.rImg.shape[1],imgR.rImg.shape[2]), dtype=numpy.uint16)
     print("MapColor", rCM.shape, rCM.dtype)
@@ -198,14 +198,14 @@ def handle_args(args):
 
 
 def run_main():
-    imgRef = Image(gCfg['refFName'], "REF")
+    imgRef = GTImage(gCfg['refFName'], "REF")
     imgRef.print_info()
-    imgSrc = Image(gCfg['srcFName'], "Src")
+    imgSrc = GTImage(gCfg['srcFName'], "Src")
     imgSrc.print_info()
 
     rCM = map_color(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
-    Image.Save(fnCM, rCM)
+    GTImage.Save(fnCM, rCM)
 
 
 if __name__ == "__main__":
