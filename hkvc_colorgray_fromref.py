@@ -107,6 +107,24 @@ def add_noise(rImg, percent=0.1):
     return rImg
 
 
+def blur_filter(rImg, width=1):
+    """
+    Blur all channels of passed raw image (numpy array)
+    """
+    # do a 3x3 based filter
+    print("\tLowPass")
+    fImg = rImg/rImg.max()
+    fImg[1:-1,1:-1] = \
+        ( \
+        fImg[0:-2,0:-2] + fImg[1:-1,0:-2] + fImg[2:,0:-2] + \
+        fImg[0:-2,1:-1] + fImg[1:-1,1:-1] + fImg[2:,1:-1] + \
+        fImg[0:-2,2:  ] + fImg[1:-1,2:  ] + fImg[2:,2:  ] \
+        ) / 9
+    fImg = fImg*rImg.max()
+    rImg = numpy.round(fImg).astype(rImg.dtype)
+    return rImg
+
+
 def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
@@ -128,17 +146,7 @@ def map_color(imgS, imgR):
     if gCfg['bAddNoise']:
         rCM = add_noise(rCM)
     if gCfg['bLowPass']:
-        # do a 3x3 based filter
-        print("\tLowPass")
-        fCM = rCM/rCM.max()
-        fCM[1:-1,1:-1] = \
-            ( \
-            fCM[0:-2,0:-2] + fCM[1:-1,0:-2] + fCM[2:,0:-2] + \
-            fCM[0:-2,1:-1] + fCM[1:-1,1:-1] + fCM[2:,1:-1] + \
-            fCM[0:-2,2:  ] + fCM[1:-1,2:  ] + fCM[2:,2:  ] \
-            ) / 9
-        fCM = fCM*rCM.max()
-        rCM = numpy.round(fCM).astype(rCM.dtype)
+        rCM = blur_filter(rCM)
     return rCM
 
 
