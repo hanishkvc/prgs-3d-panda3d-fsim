@@ -172,9 +172,9 @@ def handle_args(args):
         elif args[iArg] == "--src":
             cfg['srcFName'] = args[iArg+1]
             iArg += 1
-        elif args[iArg] in [ "--bMoreBluey", "--bAddNoise", "--bLowPass" ]:
+        elif args[iArg].startswith("--b"):
             theOpt = args[iArg][2:]
-            if args[iArg+1].upper() in [ "FALSE", "NO" ]:
+            if args[iArg+1].upper() in [ "FALSE", "NO", "VENDA", "BEDA", "NAHI" ]:
                 cfg[theOpt] = False
             else:
                 cfg[theOpt] = True
