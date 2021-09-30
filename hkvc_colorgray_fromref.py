@@ -110,17 +110,21 @@ def add_noise(rImg, percent=0.1):
 def blur_filter(rImg, width=1):
     """
     Blur all channels of passed raw image (numpy array)
+    Do a NxN based filter where each pixel is average from a window around its position
+    of size -width to +width along x and y axis.
     """
-    # do a 3x3 based filter
     print("\tLowPass")
+    xS = yS = width
+    xE = rImg.shape[0]-width
+    yE = rImg.shape[1]-width
     fImg = rImg/rImg.max()
-    fImg[1:-1,1:-1] = \
-        ( \
-        fImg[0:-2,0:-2] + fImg[1:-1,0:-2] + fImg[2:,0:-2] + \
-        fImg[0:-2,1:-1] + fImg[1:-1,1:-1] + fImg[2:,1:-1] + \
-        fImg[0:-2,2:  ] + fImg[1:-1,2:  ] + fImg[2:,2:  ] \
-        ) / 9
-    fImg = fImg*rImg.max()
+    dImg = numpy.zeros(rImg.shape)
+    cnt = 0
+    for x in range(-width,width+1,1):
+        for y in range(-width,width+1,1):
+            cnt += 1
+            dImg[xS:xE,yS:yE] += fImg[xS+x:xE+x, yS+y:yE+y]
+    fImg = (dImg*rImg.max())/cnt
     rImg = numpy.round(fImg).astype(rImg.dtype)
     return rImg
 
