@@ -93,15 +93,13 @@ class Image:
 def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
+    return rCM: the raw color map numpy array (i.e not a Image class instance)
     """
     rCM = numpy.zeros((imgS.rImg.shape[0],imgS.rImg.shape[1],imgR.rImg.shape[2]), dtype=numpy.uint16)
-    print(rCM.shape, rCM.dtype)
-    if rCM.dtype == numpy.uint16:
-        cmThreshold = 32000
-        cmNoise = 16
-    else:
-        cmThreshold = 128
-        cmNoise = 1
+    print("MapColor", rCM.shape, rCM.dtype)
+    if gCfg['bMoreBluey']:
+        cmThreshold = int(numpy.iinfo(rCM.dtype).max/2)
+        print("BlueThreshold", cmThreshold)
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
@@ -111,18 +109,28 @@ def map_color(imgS, imgR):
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
     if gCfg['bAddNoise']:
+        # As saturation arithmatic not directly supported by numpy / python
+        # So for now apply a simple randomly generated multiplier
+        # Note that with this the noise applied also varies proportional to current value
+        # in each pixel/location. And inturn for locations with 0, nothing is applied.
+        print("\tAddNoise")
         noise = numpy.random.uniform(0.9,1.1,rCM.shape)
         print(rCM[100,100], rCM[530,700])
         newC = rCM * noise
         rCM = numpy.round(newC).astype(rCM.dtype)
         print(rCM[100,100], rCM[530,700])
     if gCfg['bLowPass']:
-        rCM[1:-1,1:-1] = \
+        # do a 3x3 based filter
+        print("\tLowPass")
+        fCM = rCM/rCM.max()
+        fCM[1:-1,1:-1] = \
             ( \
-            rCM[0:-2,0:-2] + rCM[1:-1,0:-2] + rCM[2:,0:-2] + \
-            rCM[0:-2,1:-1] + rCM[1:-1,1:-1] + rCM[2:,1:-1] + \
-            rCM[0:-2,2:  ] + rCM[1:-1,2:  ] + rCM[2:,2:  ] \
+            fCM[0:-2,0:-2] + fCM[1:-1,0:-2] + fCM[2:,0:-2] + \
+            fCM[0:-2,1:-1] + fCM[1:-1,1:-1] + fCM[2:,1:-1] + \
+            fCM[0:-2,2:  ] + fCM[1:-1,2:  ] + fCM[2:,2:  ] \
             ) / 9
+        fCM = fCM*rCM.max()
+        rCM = numpy.round(fCM).astype(rCM.dtype)
     return rCM
 
 
