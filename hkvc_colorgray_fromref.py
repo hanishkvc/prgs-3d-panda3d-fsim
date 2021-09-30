@@ -109,9 +109,13 @@ def map_color(imgS, imgR):
             if gCfg['bMoreBluey'] and (color[0] == 0) and (color[1] == 0):
                 if color[2] < cmThreshold:
                     color[2] = 0.5*cmThreshold + color[2]*1.2
-            if gCfg['bAddNoise']:
-                color += numpy.random.randint(-cmNoise,cmNoise,3).astype(numpy.uint16)
             rCM[x,y] = color
+    if gCfg['bAddNoise']:
+        noise = numpy.random.uniform(0.9,1.1,rCM.shape)
+        print(rCM[100,100], rCM[530,700])
+        newC = rCM * noise
+        rCM = numpy.round(newC).astype(rCM.dtype)
+        print(rCM[100,100], rCM[530,700])
     return rCM
 
 
