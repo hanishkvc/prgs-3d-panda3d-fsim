@@ -116,6 +116,10 @@ def map_color(imgS, imgR):
         newC = rCM * noise
         rCM = numpy.round(newC).astype(rCM.dtype)
         print(rCM[100,100], rCM[530,700])
+    if gCfg['bLowPass']:
+        rCM *= 0.33
+        rCM[5:-5,5:-5] += rCM[:-10,:-10]
+        rCM[5:-5,5:-5] += rCM[10:,10:]
     return rCM
 
 
@@ -126,6 +130,7 @@ def handle_args(args):
             'refFName': None,
             'srcFName': None,
             'bAddNoise': True,
+            'bLowPass': True,
             }
     while iArg < (len(args)-1):
         iArg += 1
