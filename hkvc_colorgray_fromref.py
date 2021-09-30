@@ -90,7 +90,7 @@ class Image:
         return self.getpixel_xy(x,y)
 
 
-def map_color(imgS, imgR, bMoreBluey=True):
+def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     """
@@ -104,7 +104,7 @@ def map_color(imgS, imgR, bMoreBluey=True):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
             color = imgR.getpixel_coord(lon, lat)
-            if bMoreBluey and (color[0] == 0) and (color[1] == 0):
+            if gCfg['bMoreBluey'] and (color[0] == 0) and (color[1] == 0):
                 if color[2] < cmThreshold:
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
@@ -113,22 +113,30 @@ def map_color(imgS, imgR, bMoreBluey=True):
 
 def handle_args(args):
     iArg = 0
+    cfg = {
+            'bMoreBluey': True,
+            'refFName': None,
+            'srcFName': None,
+            }
     while iArg < (len(args)-1):
         iArg += 1
         if args[iArg] == "--ref":
-            refFName = args[iArg+1]
+            cfg['refFName'] = args[iArg+1]
             iArg += 1
         elif args[iArg] == "--src":
-            srcFName = args[iArg+1]
+            cfg['srcFName'] = args[iArg+1]
             iArg += 1
-    return refFName, srcFName
+        elif args[iArg] == "--bMoreBluey":
+            if args[iArg+1].upper() in [ "FALSE", "NO" ]:
+                cfg['bMoreBluey'] = False
+            iArg += 1
+    return cfg
 
 
 def run_main():
-    fnRef, fnSrc = handle_args(sys.argv)
-    imgRef = Image(fnRef, "REF")
+    imgRef = Image(gCfg['refFName'], "REF")
     imgRef.print_info()
-    imgSrc = Image(fnSrc, "Src")
+    imgSrc = Image(gCfg['srcFName'], "Src")
     imgSrc.print_info()
 
     rCM = map_color(imgSrc, imgRef)
@@ -137,5 +145,6 @@ def run_main():
 
 
 if __name__ == "__main__":
+    gCfg = handle_args(sys.argv)
     run_main()
 
