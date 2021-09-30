@@ -117,7 +117,8 @@ def map_color(imgS, imgR):
         rCM = numpy.round(newC).astype(rCM.dtype)
         print(rCM[100,100], rCM[530,700])
     if gCfg['bLowPass']:
-        rCM[5:-5,5:-5] = (rCM[5:-5,5:-5] + rCM[:-10,:-10] + rCM[10:,10:])/3
+        i = 1
+        rCM[i:-i,i:-i] = (rCM[i:-i,i:-i] + rCM[:-(2*i),:-(2*i)] + rCM[2*i:,2*i:])/3
     return rCM
 
 
@@ -138,13 +139,14 @@ def handle_args(args):
         elif args[iArg] == "--src":
             cfg['srcFName'] = args[iArg+1]
             iArg += 1
-        elif args[iArg] in [ "--bMoreBluey", "--bAddNoise" ]:
+        elif args[iArg] in [ "--bMoreBluey", "--bAddNoise", "--bLowPass" ]:
             theOpt = args[iArg][2:]
             if args[iArg+1].upper() in [ "FALSE", "NO" ]:
                 cfg[theOpt] = False
             else:
                 cfg[theOpt] = True
             iArg += 1
+    print(cfg)
     return cfg
 
 
