@@ -98,8 +98,10 @@ def map_color(imgS, imgR):
     print(rCM.shape, rCM.dtype)
     if rCM.dtype == numpy.uint16:
         cmThreshold = 32000
+        cmNoise = 1024
     else:
         cmThreshold = 128
+        cmNoise = 4
     for x in range(imgS.XW):
         for y in range(imgS.YH):
             lon, lat = imgS.xy2coord(x,y)
@@ -107,6 +109,8 @@ def map_color(imgS, imgR):
             if gCfg['bMoreBluey'] and (color[0] == 0) and (color[1] == 0):
                 if color[2] < cmThreshold:
                     color[2] = 0.5*cmThreshold + color[2]*1.2
+            if gCfg['bAddNoise']:
+                color += numpy.random.randint(0,cmNoise,3)
             rCM[x,y] = color
     return rCM
 
@@ -117,6 +121,7 @@ def handle_args(args):
             'bMoreBluey': True,
             'refFName': None,
             'srcFName': None,
+            'bAddNoise': True,
             }
     while iArg < (len(args)-1):
         iArg += 1
@@ -126,9 +131,12 @@ def handle_args(args):
         elif args[iArg] == "--src":
             cfg['srcFName'] = args[iArg+1]
             iArg += 1
-        elif args[iArg] == "--bMoreBluey":
+        elif args[iArg] in [ "--bMoreBluey", "--bAddNoise" ]:
+            theOpt = args[iArg][2:]
             if args[iArg+1].upper() in [ "FALSE", "NO" ]:
-                cfg['bMoreBluey'] = False
+                cfg[theOpt] = False
+            else:
+                cfg[theOpt] = True
             iArg += 1
     return cfg
 
