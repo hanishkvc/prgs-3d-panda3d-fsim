@@ -110,7 +110,7 @@ def map_color(imgS, imgR):
                 if color[2] < cmThreshold:
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             if gCfg['bAddNoise']:
-                color += numpy.random.randint(0,cmNoise,3).astype(numpy.uint16)
+                color += numpy.random.randint(-cmNoise,cmNoise,3).astype(numpy.uint16)
             rCM[x,y] = color
     return rCM
 
