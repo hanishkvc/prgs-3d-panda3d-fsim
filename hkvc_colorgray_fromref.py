@@ -115,7 +115,7 @@ def blur_filter(rImg, iBlurSize=1):
     where each pixel is averaged from a window around its position
     of size -iBlurSize to +iBlurSize along x and y axis.
     """
-    print("\tLowPass")
+    print("\tBlur")
     xS = yS = iBlurSize
     xE = rImg.shape[0]-iBlurSize
     yE = rImg.shape[1]-iBlurSize
@@ -151,7 +151,7 @@ def map_color(imgS, imgR):
             rCM[x,y] = color
     if gCfg['bAddNoise']:
         rCM = add_noise(rCM,gCfg['fNoiseRatio'])
-    if gCfg['bLowPass']:
+    if gCfg['bBlur']:
         rCM = blur_filter(rCM,gCfg['iBlurSize'])
     return rCM
 
@@ -159,13 +159,13 @@ def map_color(imgS, imgR):
 def handle_args(args):
     iArg = 0
     cfg = {
-            'bMoreBluey': True,
             'refFName': None,
             'srcFName': None,
+            'bMoreBluey': True,
             'bAddNoise': True,
-            'bLowPass': True,
-            'iBlurSize': 8,
             'fNoiseRatio': 0.1,
+            'bBlur': True,
+            'iBlurSize': 8,
             }
     while iArg < (len(args)-1):
         iArg += 1
