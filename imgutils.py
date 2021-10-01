@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-# Color a Grayscale image based on color at corresponding location in a reference image
-# The grayscale and reference images need to be GeoTiff images.
-# The Color image generated will be a png.
-# This can be used to color say a heightfield image based on World Vegetation NDVI data
+# Few helper logics to work with GeoTiff and Other images
 # HanishKVC, 2021
 # GPL
 
-import sys
+
 import skimage.io
 import numpy
 import gdal
@@ -170,8 +167,6 @@ def map_gray2color(imgS, imgR):
 def handle_args(args):
     iArg = 0
     cfg = {
-            'refFName': None,
-            'srcFName': None,
             'bMoreBluey': True,
             'bAddNoise': True,
             'fNoiseRatio': 0.1,
@@ -182,11 +177,9 @@ def handle_args(args):
             }
     while iArg < (len(args)-1):
         iArg += 1
-        if args[iArg] == "--ref":
-            cfg['refFName'] = args[iArg+1]
-            iArg += 1
-        elif args[iArg] == "--src":
-            cfg['srcFName'] = args[iArg+1]
+        if args[iArg].startswith("--s"):
+            theOpt = args[iArg][2:]
+            cfg[theOpt] = args[iArg+1]
             iArg += 1
         elif args[iArg].startswith("--b"):
             theOpt = args[iArg][2:]
@@ -210,18 +203,6 @@ def handle_args(args):
     return cfg
 
 
-def run_main():
-    imgRef = GTImage(gCfg['refFName'], "REF")
-    imgRef.print_info()
-    imgSrc = GTImage(gCfg['srcFName'], "Src")
-    imgSrc.print_info()
-
-    rCM = map_gray2color(imgSrc, imgRef)
-    fnCM = "{}.cm.png".format(imgSrc.fName)
-    GTImage.Save(fnCM, rCM)
-
-
 if __name__ == "__main__":
-    gCfg = handle_args(sys.argv)
-    run_main()
+    print("ImgUtils: use this as a module")
 
