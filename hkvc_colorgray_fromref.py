@@ -131,6 +131,15 @@ def blur_filter(rImg, iBlurSize=1):
     return rImg
 
 
+def flip_img(rImg, bFlipVert=True):
+    print("\tFlip")
+    if bFlipVert:
+        tImg = rImg[:,::-1]
+    else:
+        tImg = rImg[::-1,:]
+    return tImg
+
+
 def map_color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
@@ -153,6 +162,8 @@ def map_color(imgS, imgR):
         rCM = add_noise(rCM,gCfg['fNoiseRatio'])
     if gCfg['bBlur']:
         rCM = blur_filter(rCM,gCfg['iBlurSize'])
+    if gCfg['bFlip']:
+        rCM = flip_img(rCM,gCfg['bFlipVert'])
     return rCM
 
 
@@ -166,6 +177,8 @@ def handle_args(args):
             'fNoiseRatio': 0.1,
             'bBlur': True,
             'iBlurSize': 8,
+            'bFlip': True,
+            'bFlipVert': True,
             }
     while iArg < (len(args)-1):
         iArg += 1
