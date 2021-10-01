@@ -140,7 +140,7 @@ def flip_img(rImg, bFlipVert=True):
     return tImg
 
 
-def map_color(imgS, imgR):
+def map_gray2color(imgS, imgR):
     """
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     return rCM: the raw color map numpy array (i.e not a GTImage class instance)
@@ -216,7 +216,7 @@ def run_main():
     imgSrc = GTImage(gCfg['srcFName'], "Src")
     imgSrc.print_info()
 
-    rCM = map_color(imgSrc, imgRef)
+    rCM = map_gray2color(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
     GTImage.Save(fnCM, rCM)
 
