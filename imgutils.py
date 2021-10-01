@@ -9,6 +9,9 @@ import numpy
 import gdal
 
 
+gCfg = {}
+
+
 class GTImage:
 
     def __init__(self, fName, tag, debug=False):
@@ -164,7 +167,17 @@ def map_gray2color(imgS, imgR):
     return rCM
 
 
-def handle_args(args):
+def handle_args(args, cb=None, bInitInternalCfg=True):
+    """
+    Put arguments which follow a standard template of
+        --<[s|b|i|f]ArgKey> ArgValue
+        into a dictionary.
+    For other arguments it will call a callback passed to it.
+        Else it will print the cfg dict till then and trigger exit.
+        The callback if provided should return how many additional
+        arguments (other than the arg pointed by iArg passed to it)
+        it ate from the args list passed.
+    """
     iArg = 0
     cfg = {
             'bMoreBluey': True,
@@ -197,10 +210,20 @@ def handle_args(args):
             cfg[theOpt] = float(args[iArg+1])
             iArg += 1
         else:
-            print("Args:",cfg)
-            exit()
+            if cb == None:
+                print("FoundArgs:",cfg)
+                exit()
+            else:
+                iArg += cb(args, iArg)
+    if bInitInternalCfg:
+        init(cfg)
     print(cfg)
     return cfg
+
+
+def init(cfg):
+    global gCfg
+    gCfg = cfg
 
 
 if __name__ == "__main__":

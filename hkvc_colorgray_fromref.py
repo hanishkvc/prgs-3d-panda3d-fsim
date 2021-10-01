@@ -11,53 +11,10 @@ import sys
 import imgutils as iu
 
 
-def handle_args(args):
-    iArg = 0
-    cfg = {
-            'refFName': None,
-            'srcFName': None,
-            'bMoreBluey': True,
-            'bAddNoise': True,
-            'fNoiseRatio': 0.1,
-            'bBlur': True,
-            'iBlurSize': 8,
-            'bFlip': True,
-            'bFlipVert': True,
-            }
-    while iArg < (len(args)-1):
-        iArg += 1
-        if args[iArg] == "--ref":
-            cfg['refFName'] = args[iArg+1]
-            iArg += 1
-        elif args[iArg] == "--src":
-            cfg['srcFName'] = args[iArg+1]
-            iArg += 1
-        elif args[iArg].startswith("--b"):
-            theOpt = args[iArg][2:]
-            if args[iArg+1].upper() in [ "FALSE", "NO", "VENDA", "BEDA", "NAHI" ]:
-                cfg[theOpt] = False
-            else:
-                cfg[theOpt] = True
-            iArg += 1
-        elif args[iArg].startswith("--i"):
-            theOpt = args[iArg][2:]
-            cfg[theOpt] = int(args[iArg+1])
-            iArg += 1
-        elif args[iArg].startswith("--f"):
-            theOpt = args[iArg][2:]
-            cfg[theOpt] = float(args[iArg+1])
-            iArg += 1
-        else:
-            print("Args:",cfg)
-            exit()
-    print(cfg)
-    return cfg
-
-
 def run_main():
-    imgRef = iu.GTImage(gCfg['refFName'], "REF")
+    imgRef = iu.GTImage(gCfg['sFNameRef'], "REF")
     imgRef.print_info()
-    imgSrc = iu.GTImage(gCfg['srcFName'], "Src")
+    imgSrc = iu.GTImage(gCfg['sFNameSrc'], "SRC")
     imgSrc.print_info()
 
     rCM = iu.map_gray2color(imgSrc, imgRef)
@@ -66,7 +23,6 @@ def run_main():
 
 
 if __name__ == "__main__":
-    gCfg = handle_args(sys.argv)
-    iu.init(gCfg)
+    gCfg = iu.handle_args(sys.argv)
     run_main()
 
