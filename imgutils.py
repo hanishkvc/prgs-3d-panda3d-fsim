@@ -85,7 +85,7 @@ class GTImage:
             self.sLon = self.pImg.tag[33922][3]
             self.sLat = self.pImg.tag[33922][4]
             self.dLon = self.pImg.tag[33550][0]
-            self.dLat = self.pImg.tag[33550][1]
+            self.dLat = -1*self.pImg.tag[33550][1]
         else:
             if (self.pImg.tag[34264][1] != 0) or (self.pImg.tag[34264][2] != 0) or \
                (self.pImg.tag[34264][4] != 0) or (self.pImg.tag[34264][6] != 0) or \
