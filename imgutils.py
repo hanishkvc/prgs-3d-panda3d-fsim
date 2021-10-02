@@ -25,6 +25,7 @@ class GTImage:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
         print("{}:dim".format(self.tag), self.rImg.shape)
+        print("{}:dtype".format(self.tag), self.rImg.dtype)
 
     @staticmethod
     def transpose(tImg):
@@ -44,9 +45,9 @@ class GTImage:
         self.pImg = PIL.Image.open(self.fName)
         try:
             if self.pImg.mode == 'P':
-                tImg = numpy.asarray(self.pImg.convert('RGB'))
+                tImg = numpy.array(self.pImg.convert('RGB'))
             else:
-                tImg = numpy.asarray(self.pImg)
+                tImg = numpy.array(self.pImg)
             self.rImg = GTImage.transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
