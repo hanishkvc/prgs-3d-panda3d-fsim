@@ -24,8 +24,7 @@ class GTImage:
     def print_info(self):
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
-        print("{}:dim".format(self.tag), self.rImg.shape)
-        print("{}:dtype".format(self.tag), self.rImg.dtype)
+        print("{}:dim:{}:dtype:{}:min:{}:max:{}".format(self.tag, self.rImg.shape, self.rImg.dtype, self.rImg.min(), self.rImg.max()))
 
     @staticmethod
     def transpose(tImg):
@@ -55,6 +54,7 @@ class GTImage:
     @staticmethod
     def Save(fName, img2Save):
         trImg = GTImage.transpose(img2Save)
+        print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
         tpImg =PIL.Image.fromarray(trImg)
         tpImg.save(fName)
 
