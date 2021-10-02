@@ -139,9 +139,11 @@ def add_noise(rImg, fNoiseRatio=0.1):
     in each pixel/location. And inturn for locations with 0 value, nothing is applied.
     """
     print("\tAddNoise")
+    dtypeMax = numpy.iinfo(rImg.dtype).max
     noise = numpy.random.uniform(1-fNoiseRatio,1+fNoiseRatio,rImg.shape)
     #print(rImg[100,100], rImg[530,700])
     newC = rImg * noise
+    newC[newC>dtypeMax] = dtypeMax
     rImg = numpy.round(newC).astype(rImg.dtype)
     #print(rImg[100,100], rImg[530,700])
     return rImg
@@ -183,8 +185,8 @@ def map_gray2color(imgS, imgR):
     Color gray scale imgS to match equivalent map coord position color in imgR and return the same
     return rCM: the raw color map numpy array (i.e not a GTImage class instance)
     """
-    rCM = numpy.zeros((imgS.rImg.shape[0],imgS.rImg.shape[1],imgR.rImg.shape[2]), dtype=numpy.uint16)
-    print("MapColor", rCM.shape, rCM.dtype)
+    rCM = numpy.zeros((imgS.rImg.shape[0], imgS.rImg.shape[1], imgR.rImg.shape[2]), dtype=imgR.rImg.dtype)
+    print("MapGray2Color:", rCM.shape, rCM.dtype)
     if gCfg['bMoreBluey']:
         cmThreshold = int(numpy.iinfo(rCM.dtype).max/2)
         print("BlueThreshold", cmThreshold)
