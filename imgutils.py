@@ -24,6 +24,7 @@ class GTImage:
     def print_info(self):
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
+        print("{}:dim".format(self.tag), self.rImg.shape)
 
     @staticmethod
     def transpose(tImg):
@@ -69,8 +70,11 @@ class GTImage:
             raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33550")
         if PIL.TiffTags.TAGS[34264].upper() != 'ModelTransformationTag'.upper():
             raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 34264")
-        if not self.pImg.tag[34737][0].upper().startswith('WGS'):
-            raise RuntimeError("ERRR:GTImage:GeoTiff Not WGS based?")
+        try:
+            if not self.pImg.tag[34737][0].upper().startswith('WGS'):
+                raise RuntimeError("ERRR:GTImage:GeoTiff Not WGS based?")
+        except:
+            print("WARN:GTImage:GeoTiff GeoAsciiParamsTag missing")
         if self.pImg.tag.get(34264) == None:
             if (self.pImg.tag[33922][0] != 0) or (self.pImg.tag[33922][1] != 0) or (self.pImg.tag[33922][2] != 0):
                 raise RuntimeError("ERRR:GTImage:GeoTiff ModelTiePoint not at 0,0,0 is unsupported")
