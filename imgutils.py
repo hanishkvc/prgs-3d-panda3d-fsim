@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# Few helper logics to work with GeoTiff and Other images
+# Few helper logics to work with GeoTiff and Other images.
+# This uses PIL for opening and saving and own logic for others.
 # HanishKVC, 2021
 # GPL
 
 
-import skimage.io
+import PIL.Image
 import numpy
-import gdal
 
 
 gCfg = {}
@@ -19,11 +19,7 @@ class GTImage:
         self.tag = tag
         self.debug = debug
         self.load()
-        self.gImg = gdal.Open(self.fName)
-        self.sLon, self.dLon, t1, self.sLat, t2, self.dLat = self.gImg.GetGeoTransform()
-        self.XW, self.YH = self.gImg.RasterXSize, self.gImg.RasterYSize
-        self.eLon = self.sLon + self.XW*self.dLon
-        self.eLat = self.sLat + self.YH*self.dLat
+        self.parse_geotiff()
 
     def print_info(self):
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
@@ -44,16 +40,18 @@ class GTImage:
             fName = self.fName
         else:
             self.fName = fName
-        tImg = skimage.io.imread(self.fName)
+        self.pImg = PIL.Image.open(self.fName)
         try:
+            tImg = numpy.asarray(self.pImg)
             self.rImg = GTImage.transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
     @staticmethod
     def Save(fName, img2Save):
-        tImg = GTImage.transpose(img2Save)
-        skimage.io.imsave(fName, tImg)
+        trImg = GTImage.transpose(img2Save)
+        tpImg =PIL.Image.fromarray(trImg)
+        tpImg.save(fName)
 
     def save(self, fName=None, img2Save=None):
         if fName == None:
@@ -61,6 +59,23 @@ class GTImage:
         if type(img2Save) == type(None):
             img2Save = self.rImg
         GTImage.Save(fName, img2Save)
+
+    def parse_geotiff(self):
+        if PIL.TiffTags.TAGS[33922].upper() != 'ModelTiepointTag'.upper():
+            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33922")
+        if PIL.TiffTags.TAGS[34737].upper() != 'GeoAsciiParamsTag'.upper():
+            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 34737")
+        if PIL.TiffTags.TAGS[33550].upper() != 'ModelPixelScaleTag'.upper():
+            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33550")
+        if not self.pImg.tag[34737][0].upper().startswith('WGS'):
+            raise RuntimeError("ERRR:GTImage:GeoTiff Not WGS based?")
+        self.sLon = self.pImg.tag[33922][3]
+        self.sLat = self.pImg.tag[33922][4]
+        self.dLon = self.pImg.tag[33550][0]
+        self.dLat = self.pImg.tag[33550][1]
+        self.XW, self.YH = self.pImg.size
+        self.eLon = self.sLon + self.XW*self.dLon
+        self.eLat = self.sLat + self.YH*self.dLat
 
     def getpixel_xy(self, x,y):
         return self.rImg[x,y]
