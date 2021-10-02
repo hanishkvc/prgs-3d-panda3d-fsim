@@ -43,7 +43,10 @@ class GTImage:
             self.fName = fName
         self.pImg = PIL.Image.open(self.fName)
         try:
-            tImg = numpy.asarray(self.pImg)
+            if self.pImg.mode == 'P':
+                tImg = numpy.asarray(self.pImg.convert('RGB'))
+            else:
+                tImg = numpy.asarray(self.pImg)
             self.rImg = GTImage.transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
