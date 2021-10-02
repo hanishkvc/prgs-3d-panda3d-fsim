@@ -61,18 +61,33 @@ class GTImage:
         GTImage.Save(fName, img2Save)
 
     def parse_geotiff(self):
-        if PIL.TiffTags.TAGS[33922].upper() != 'ModelTiepointTag'.upper():
-            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33922")
         if PIL.TiffTags.TAGS[34737].upper() != 'GeoAsciiParamsTag'.upper():
             raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 34737")
+        if PIL.TiffTags.TAGS[33922].upper() != 'ModelTiepointTag'.upper():
+            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33922")
         if PIL.TiffTags.TAGS[33550].upper() != 'ModelPixelScaleTag'.upper():
             raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 33550")
+        if PIL.TiffTags.TAGS[34264].upper() != 'ModelTransformationTag'.upper():
+            raise RuntimeError("ERRR:GTImage:GeoTiff TagMismatch wrt 34264")
         if not self.pImg.tag[34737][0].upper().startswith('WGS'):
             raise RuntimeError("ERRR:GTImage:GeoTiff Not WGS based?")
-        self.sLon = self.pImg.tag[33922][3]
-        self.sLat = self.pImg.tag[33922][4]
-        self.dLon = self.pImg.tag[33550][0]
-        self.dLat = self.pImg.tag[33550][1]
+        if self.pImg.tag.get(34264) == None:
+            if (self.pImg.tag[33922][0] != 0) or (self.pImg.tag[33922][1] != 0) or (self.pImg.tag[33922][2] != 0):
+                raise RuntimeError("ERRR:GTImage:GeoTiff ModelTiePoint not at 0,0,0 is unsupported")
+            self.sLon = self.pImg.tag[33922][3]
+            self.sLat = self.pImg.tag[33922][4]
+            self.dLon = self.pImg.tag[33550][0]
+            self.dLat = self.pImg.tag[33550][1]
+        else:
+            if (self.pImg.tag[34264][1] != 0) or (self.pImg.tag[34264][2] != 0) or \
+               (self.pImg.tag[34264][4] != 0) or (self.pImg.tag[34264][6] != 0) or \
+               (self.pImg.tag[34264][8] != 0) or (self.pImg.tag[34264][9] != 0) or (self.pImg.tag[34264][10] != 0) or (self.pImg.tag[34264][11] != 0) or \
+               (self.pImg.tag[34264][12] != 0) or (self.pImg.tag[34264][13] != 0) or (self.pImg.tag[34264][14] != 0) or (self.pImg.tag[34264][15] != 1) :
+                raise RuntimeError("ERRR:GTImage:GeoTiff ModelTransformation other than 2d scaling and translation is unsupported")
+            self.sLon = self.pImg.tag[34264][3]
+            self.sLat = self.pImg.tag[34264][7]
+            self.dLon = self.pImg.tag[34264][0]
+            self.dLat = self.pImg.tag[34264][5]
         self.XW, self.YH = self.pImg.size
         self.eLon = self.sLon + self.XW*self.dLon
         self.eLat = self.sLat + self.YH*self.dLat
