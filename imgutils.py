@@ -52,8 +52,8 @@ class GTImage:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
     @staticmethod
-    def Save(fName, img2Save):
-        trImg = GTImage.transpose(img2Save)
+    def Save(fName, rImg2Save):
+        trImg = GTImage.transpose(rImg2Save)
         print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
         tpImg =PIL.Image.fromarray(trImg)
         tpImg.save(fName)
