@@ -161,11 +161,16 @@ def blur_filter(rImg, iBlurSize=1):
     of size -iBlurSize to +iBlurSize along x and y axis.
     """
     print("\tBlur")
+    breakpoint()
     xS = yS = iBlurSize
     xE = rImg.shape[0]-iBlurSize
     yE = rImg.shape[1]-iBlurSize
     fImg = rImg/rImg.max()
     dImg = numpy.zeros(rImg.shape)
+    dImg[:iBlurSize] = fImg[:iBlurSize]
+    dImg[-iBlurSize:] = fImg[-iBlurSize:]
+    dImg[:,:iBlurSize] = fImg[:,:iBlurSize]
+    dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]
     cnt = 0
     for x in range(-iBlurSize,iBlurSize+1,1):
         for y in range(-iBlurSize,iBlurSize+1,1):
