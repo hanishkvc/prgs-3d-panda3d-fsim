@@ -161,17 +161,28 @@ def blur_filter(rImg, iBlurSize=1):
     of size -iBlurSize to +iBlurSize along x and y axis.
     """
     print("\tBlur")
-    #breakpoint()
+    breakpoint()
     xS = yS = iBlurSize
     xE = rImg.shape[0]-iBlurSize
     yE = rImg.shape[1]-iBlurSize
     fImg = rImg/rImg.max()
     dImg = numpy.zeros(rImg.shape)
-    scaleBy = (iBlurSize*2+1)**2
-    dImg[:iBlurSize] = fImg[:iBlurSize]*scaleBy
-    dImg[-iBlurSize:] = fImg[-iBlurSize:]*scaleBy
-    dImg[:,:iBlurSize] = fImg[:,:iBlurSize]*scaleBy
-    dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]*scaleBy
+    # Handle the edge rows/cols
+    #scaleBy = (iBlurSize*2+1)**2
+    #dImg[:iBlurSize] = fImg[:iBlurSize]*scaleBy
+    #dImg[-iBlurSize:] = fImg[-iBlurSize:]*scaleBy
+    #dImg[:,:iBlurSize] = fImg[:,:iBlurSize]*scaleBy
+    #dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]*scaleBy
+    for x in range(-iBlurSize,iBlurSize):
+        for y in range(-iBlurSize,iBlurSize):
+            dImg[iBlurSize:-iBlurSize,:iBlurSize] += fImg[iBlurSize+x:-iBlurSize+x, iBlurSize+y:2*iBlurSize+y]
+            dImg[iBlurSize:-iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
+    for y in range(-iBlurSize,iBlurSize):
+        for x in range(-iBlurSize,iBlurSize):
+            dImg[:iBlurSize, iBlurSize:-iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x, iBlurSize+y:-iBlurSize+y]
+            dImg[-iBlurSize:,iBlurSize:-iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x, iBlurSize+y:-iBlurSize+y]
+    #dImg[iBlurSize:-iBlurSize,:iBlurSize] /= iBlurSize
+    #dImg[iBlurSize:-iBlurSize,-iBlurSize:] /= iBlurSize
     cnt = 0
     for x in range(-iBlurSize,iBlurSize+1,1):
         for y in range(-iBlurSize,iBlurSize+1,1):
