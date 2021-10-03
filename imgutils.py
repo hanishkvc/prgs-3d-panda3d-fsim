@@ -99,6 +99,11 @@ class GTImage:
         self.XW, self.YH = self.pImg.size
         self.eLon = self.sLon + self.XW*self.dLon
         self.eLat = self.sLat + self.YH*self.dLat
+        # setup matrix transform for future/...
+        # last 2 rows mimicing the identity matrix is important for translation to work,
+        # as well as to have a invertible matrix (for being able to find a inverse of the matrix).
+        self.xy2llTrans = numpy.array([[self.dLon,0,0,self.sLon],[0,self.dLat,0,self.sLat],[0,0,1,0],[0,0,0,1]])
+        self.ll2xyTrans = numpy.linalg.inv(self.xy2llTrans)
 
     def getpixel_xy(self, x,y):
         return self.rImg[x,y]
