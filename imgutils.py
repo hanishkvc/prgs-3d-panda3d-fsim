@@ -175,10 +175,10 @@ def blur_filter(rImg, iBlurSize=1):
     dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]*scaleBy
     for x in range(-iBlurSize,iBlurSize):
         for y in range(-iBlurSize,iBlurSize):
+            # top and bottom bands
             dImg[iBlurSize:-iBlurSize,:iBlurSize] += fImg[iBlurSize+x:-iBlurSize+x, iBlurSize+y:2*iBlurSize+y]
             dImg[iBlurSize:-iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
-    for y in range(-iBlurSize,iBlurSize):
-        for x in range(-iBlurSize,iBlurSize):
+            # left and right bands
             dImg[:iBlurSize, iBlurSize:-iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x, iBlurSize+y:-iBlurSize+y]
             dImg[-iBlurSize:,iBlurSize:-iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x, iBlurSize+y:-iBlurSize+y]
     # Handle the non edge parts
