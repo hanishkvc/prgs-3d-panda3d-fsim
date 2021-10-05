@@ -184,16 +184,14 @@ def blur_filter(rImg, iBlurSize=1):
             # corners
             dImg[:iBlurSize,:iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
             dImg[-iBlurSize:,-iBlurSize:] += fImg[-2*iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
+            dImg[-iBlurSize:,:iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
+            dImg[:iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:2*iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
     # Handle the non edge parts
     cnt = 0
     for x in range(-iBlurSize,iBlurSize+1,1):
         for y in range(-iBlurSize,iBlurSize+1,1):
             cnt += 1
             dImg[xS:xE,yS:yE] += fImg[xS+x:xE+x, yS+y:yE+y]
-    # Handle the corners
-    scaleBy = (iBlurSize*2+1)**2
-    dImg[-iBlurSize:,:iBlurSize] = fImg[-iBlurSize:,:iBlurSize]*scaleBy
-    dImg[:iBlurSize,-iBlurSize:] = fImg[:iBlurSize,-iBlurSize:]*scaleBy
     # scale/average it
     fImg = (dImg*rImg.max())/cnt
     rImg = numpy.round(fImg).astype(rImg.dtype)
