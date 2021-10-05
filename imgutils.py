@@ -188,7 +188,7 @@ def blur_filter(rImg, iBlurSize=1, bBlurEdges=True):
                 dImg[-iBlurSize:,:iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
                 dImg[:iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:2*iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
     else:
-        scaleBy = ((iBlurSize+1)*2)**2
+        scaleBy = (2*iBlurSize+1)**2
         dImg[:iBlurSize] = fImg[:iBlurSize]*scaleBy
         dImg[-iBlurSize:] = fImg[-iBlurSize:]*scaleBy
         dImg[:,:iBlurSize] = fImg[:,:iBlurSize]*scaleBy
