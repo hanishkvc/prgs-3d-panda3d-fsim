@@ -63,11 +63,7 @@ def img_amplifylevels(iI, bAmplify=True):
 
 # Resize
 def img_resize(iC):
-    sMax = numpy.max(numpy.log2(iC.shape))
-    if float(int(sMax)) == sMax:
-        sNew = int(sMax)
-    else:
-        sNew = int(sMax)+1
+    sNew = numpy.ceil(numpy.max(numpy.log2(iC.shape)))
     sNew = (2**sNew)+1 # Needed for Panda3D GeoMipTerrain
     iR = skimage.transform.resize(iC, (sNew,sNew))
     print("INFO:ImageResize:", sNew)
