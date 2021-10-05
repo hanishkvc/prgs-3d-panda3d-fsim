@@ -154,7 +154,7 @@ def add_noise(rImg, fNoiseRatio=0.1):
     return rImg
 
 
-def blur_filter(rImg, iBlurSize=1):
+def blur_filter(rImg, iBlurSize=1, bBlurEdges=True):
     """
     Blur all channels of passed raw image (numpy array) by doing a NxN based filtering
     where each pixel is averaged from a window around its position
@@ -168,24 +168,25 @@ def blur_filter(rImg, iBlurSize=1):
     fImg = rImg/rImg.max()
     dImg = numpy.zeros(rImg.shape)
     # Handle the edge rows/cols
-    scaleBy = (iBlurSize+1)*2
-    dImg[:iBlurSize] = fImg[:iBlurSize]*scaleBy
-    dImg[-iBlurSize:] = fImg[-iBlurSize:]*scaleBy
-    dImg[:,:iBlurSize] = fImg[:,:iBlurSize]*scaleBy
-    dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]*scaleBy
-    for x in range(-iBlurSize,iBlurSize):
-        for y in range(-iBlurSize,iBlurSize):
-            # top and bottom bands
-            dImg[iBlurSize:-iBlurSize,:iBlurSize] += fImg[iBlurSize+x:-iBlurSize+x, iBlurSize+y:2*iBlurSize+y]
-            dImg[iBlurSize:-iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
-            # left and right bands
-            dImg[:iBlurSize, iBlurSize:-iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x, iBlurSize+y:-iBlurSize+y]
-            dImg[-iBlurSize:,iBlurSize:-iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x, iBlurSize+y:-iBlurSize+y]
-            # corners
-            dImg[:iBlurSize,:iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
-            dImg[-iBlurSize:,-iBlurSize:] += fImg[-2*iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
-            dImg[-iBlurSize:,:iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
-            dImg[:iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:2*iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
+    if bBlurEdges:
+        scaleBy = (iBlurSize+1)*2
+        dImg[:iBlurSize] = fImg[:iBlurSize]*scaleBy
+        dImg[-iBlurSize:] = fImg[-iBlurSize:]*scaleBy
+        dImg[:,:iBlurSize] = fImg[:,:iBlurSize]*scaleBy
+        dImg[:,-iBlurSize:] = fImg[:,-iBlurSize:]*scaleBy
+        for x in range(-iBlurSize,iBlurSize):
+            for y in range(-iBlurSize,iBlurSize):
+                # top and bottom bands
+                dImg[iBlurSize:-iBlurSize,:iBlurSize] += fImg[iBlurSize+x:-iBlurSize+x, iBlurSize+y:2*iBlurSize+y]
+                dImg[iBlurSize:-iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
+                # left and right bands
+                dImg[:iBlurSize, iBlurSize:-iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x, iBlurSize+y:-iBlurSize+y]
+                dImg[-iBlurSize:,iBlurSize:-iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x, iBlurSize+y:-iBlurSize+y]
+                # corners
+                dImg[:iBlurSize,:iBlurSize] += fImg[iBlurSize+x:2*iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
+                dImg[-iBlurSize:,-iBlurSize:] += fImg[-2*iBlurSize+x:-iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
+                dImg[-iBlurSize:,:iBlurSize] += fImg[-2*iBlurSize+x:-iBlurSize+x,iBlurSize+y:2*iBlurSize+y]
+                dImg[:iBlurSize,-iBlurSize:] += fImg[iBlurSize+x:2*iBlurSize+x,-2*iBlurSize+y:-iBlurSize+y]
     # Handle the non edge parts
     cnt = 0
     for x in range(-iBlurSize,iBlurSize+1,1):
@@ -228,7 +229,7 @@ def map_gray2color(imgS, imgR):
     if gCfg['bAddNoise']:
         rCM = add_noise(rCM,gCfg['fNoiseRatio'])
     if gCfg['bBlur']:
-        rCM = blur_filter(rCM,gCfg['iBlurSize'])
+        rCM = blur_filter(rCM,gCfg['iBlurSize'],gCfg['bBlurEdges'])
     if gCfg['bFlip']:
         rCM = flip_img(rCM,gCfg['bFlipVert'])
     return rCM
@@ -252,6 +253,7 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
             'fNoiseRatio': 0.1,
             'bBlur': True,
             'iBlurSize': 8,
+            'bBlurEdges': True,
             'bFlip': True,
             'bFlipVert': True,
             }
