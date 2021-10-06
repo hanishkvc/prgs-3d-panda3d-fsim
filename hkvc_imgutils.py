@@ -27,8 +27,7 @@ def run_gray2color():
 
 
 def run_reduceshades():
-    p1 = PIL.Image.open(gCfg['sFNameSrc'])
-    i1 = numpy.array(p1)
+    i1 = iu.load_rimg(gCfg['sFNameSrc'])
     #i2 = iu.reduce_shades_crude_rimg(i1,4,8)
     i2 = iu.reduce_shades_crude_rimg(i1,4,2)
     fnRS = "{}.rs.png".format(gCfg['sFNameSrc'])
@@ -42,6 +41,7 @@ def run_main():
         elif gCfg['sCmd'] == "reduceshades":
             run_reduceshades()
     except:
+        print(sys.exc_info())
         print("thisPrg --sCmd gray2color --sFNameSrc <srcImage> --sFNameRef <refImage>")
         print("thisPrg --sCmd reduceshades --sFNameSrc <srcImage>")
 

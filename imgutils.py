@@ -117,6 +117,16 @@ class GTImage:
         return self.getpixel_xy(x,y)
 
 
+def load_rimg(fName, bTranspose=False):
+    pImg = PIL.Image.open(fName)
+    rImg = numpy.array(pImg)
+    if bTranspose:
+        trImg = transpose_rimg(rImg)
+    else:
+        trImg = rImg
+    return trImg
+
+
 def save_rimg(fName, rImg, bTranspose=False):
     if bTranspose:
         trImg = transpose_rimg(rImg)
