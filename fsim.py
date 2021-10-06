@@ -12,7 +12,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
-from panda3d.core import TextNode
+from panda3d.core import TextNode, NodePath
 
 
 class FSim(ShowBase):
@@ -29,16 +29,29 @@ class FSim(ShowBase):
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 4097
         self.gndHeight = 4097
+        self.setup_mc()
         self.setup_texts()
         self.create_terrain(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
-        self.camera.setPos(self.cDefPos)
-        self.camera.setHpr(self.cDefFace)
+        self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.07
+
+
+    def setup_mc(self):
+        #self.mc = NodePath()
+        #self.mc.reparentTo(self.render)
+        self.mc = self.render.attachNewNode("MC")
+
+
+    def set_mcc(self, pos, hpr):
+        self.mc.setPos(pos)
+        self.mc.setHpr(hpr)
+        self.camera.setPos(pos)
+        self.camera.setHpr(hpr)
 
 
     def setup_texts(self):
