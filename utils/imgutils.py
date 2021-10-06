@@ -294,6 +294,27 @@ def reduce_shades_crude_rimg(rImg, numShades=8, blurSize=4):
     return tImg
 
 
+def amplify_shades_rimg(rImg, bAmplify=True):
+    """
+    Increase Image pixel values.
+    This returns a raw image with floats in range 0 to 1.
+    """
+    if not bAmplify:
+        return rImg/rImg.max()
+    iHist = numpy.histogram(rImg,20)[0]
+    iHTotal = numpy.sum(iHist)
+    iMult = 1
+    for i in range(4):
+        iHPart = numpy.sum(iHist[:i+1])
+        if (iHPart/iHTotal) > 0.9:
+            iMult = int(6/(i+1))
+            break
+    print("\tImagePixelValueAdjust", iMult)
+    ampdImg = (rImg/rImg.max())*iMult
+    clippedImg = numpy.clip(ampdImg, 0, 1)
+    return clippedImg
+
+
 def handle_args(args, cb=None, bInitInternalCfg=True):
     """
     Put arguments which follow a standard template of
