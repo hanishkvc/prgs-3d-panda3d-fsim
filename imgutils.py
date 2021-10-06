@@ -117,23 +117,24 @@ class GTImage:
         return self.getpixel_xy(x,y)
 
 
-def save_rimg(fName, rImg, bTranspose=True):
+def save_rimg(fName, rImg, bTranspose=False):
     if bTranspose:
         trImg = transpose_rimg(rImg)
     else:
         trImg = rImg
-    print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
+    print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
 
 
 def transpose_rimg(rImg):
+    print("\tTranspose")
     if len(rImg.shape) == 2:
         rImg = rImg.transpose()
     elif len(rImg.shape) == 3:
         rImg = rImg.transpose(1,0,2)
     else:
-        raise RuntimeError("imgutils:transpose_rimg: Image neither Gray or RGB")
+        raise RuntimeError("imgutils:TransposeRImg: Image neither Gray or RGB")
     return rImg
 
 

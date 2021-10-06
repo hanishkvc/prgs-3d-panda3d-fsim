@@ -19,7 +19,7 @@ def run_main():
 
     rCM = iu.map_gray2color_gti(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
-    iu.save(fnCM, rCM)
+    iu.save_rimg(fnCM, rCM, bTranspose=True)
 
 
 if __name__ == "__main__":
