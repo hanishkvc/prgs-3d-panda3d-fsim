@@ -38,7 +38,7 @@ class GTImage:
             else:
                 tImg = numpy.array(self.pImg)
             if bTranspose:
-                self.rImg = transpose(tImg)
+                self.rImg = transpose_rimg(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
@@ -47,7 +47,7 @@ class GTImage:
             fName = self.fName
         if type(rImg2Save) == type(None):
             rImg2Save = self.rImg
-        save(fName, rImg2Save, bTranspose)
+        save_rimg(fName, rImg2Save, bTranspose)
 
     def parse_geotiff(self):
         if PIL.TiffTags.TAGS[34737].upper() != 'GeoAsciiParamsTag'.upper():
@@ -117,9 +117,9 @@ class GTImage:
         return self.getpixel_xy(x,y)
 
 
-def save(fName, rImg, bTranspose=True):
+def save_rimg(fName, rImg, bTranspose=True):
     if bTranspose:
-        trImg = transpose(rImg)
+        trImg = transpose_rimg(rImg)
     else:
         trImg = rImg
     print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
@@ -127,17 +127,17 @@ def save(fName, rImg, bTranspose=True):
     tpImg.save(fName)
 
 
-def transpose(rImg):
+def transpose_rimg(rImg):
     if len(rImg.shape) == 2:
         rImg = rImg.transpose()
     elif len(rImg.shape) == 3:
         rImg = rImg.transpose(1,0,2)
     else:
-        raise RuntimeError("imgutils:transpose: Image neither Gray or RGB")
+        raise RuntimeError("imgutils:transpose_rimg: Image neither Gray or RGB")
     return rImg
 
 
-def add_noise(rImg, fNoiseRatio=0.1):
+def add_noise_rimg(rImg, fNoiseRatio=0.1):
     """
     Add noise to all channels of passed raw image (numpy array).
     The max of random amount of noise added is controlled by fNoiseRatio.
@@ -158,7 +158,7 @@ def add_noise(rImg, fNoiseRatio=0.1):
     return rImg
 
 
-def blur_filter(rImg, iBlurSize=1, bBlurEdges=True):
+def blur_filter_rimg(rImg, iBlurSize=1, bBlurEdges=True):
     """
     Blur all channels of passed raw image (numpy array) by doing a NxN based filtering
     where each pixel is averaged from a window around its position
@@ -209,7 +209,7 @@ def blur_filter(rImg, iBlurSize=1, bBlurEdges=True):
     return rImg
 
 
-def flip_img(rImg, bFlipVert=True):
+def flip_rimg(rImg, bFlipVert=True):
     print("\tFlip")
     if bFlipVert:
         tImg = rImg[:,::-1]
@@ -238,11 +238,11 @@ def map_gray2color_gti(imgS, imgR):
                     color[2] = 0.5*cmThreshold + color[2]*1.2
             rCM[x,y] = color
     if gCfg['bAddNoise']:
-        rCM = add_noise(rCM,gCfg['fNoiseRatio'])
+        rCM = add_noise_rimg(rCM,gCfg['fNoiseRatio'])
     if gCfg['bBlur']:
-        rCM = blur_filter(rCM,gCfg['iBlurSize'],gCfg['bBlurEdges'])
+        rCM = blur_filter_rimg(rCM,gCfg['iBlurSize'],gCfg['bBlurEdges'])
     if gCfg['bFlip']:
-        rCM = flip_img(rCM,gCfg['bFlipVert'])
+        rCM = flip_rimg(rCM,gCfg['bFlipVert'])
     return rCM
 
 
