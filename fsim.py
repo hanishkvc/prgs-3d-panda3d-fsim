@@ -254,9 +254,13 @@ class FSim(ShowBase):
             self.updateT1 = curT
             print("DBUG:Update:{}:FPS{:5.2f}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, fps, self.camera.getPos(), self.ctrans, self.crot))
         # Update MainChar the plane
+        self.update_mc()
+        return Task.cont
+
+
+    def update_mc_ss(self):
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
-        return Task.cont
 
 
     def ss_keys_handler(self, key):
@@ -297,6 +301,11 @@ class FSim(ShowBase):
             self.accept("{}-repeat".format(k), self.ss_keys_handler, [ k ])
         for k in [ "w", "s", "q", "e", "a", "d", "x", "i", "k", "j", "l", "u", "o" ]:
             self.accept(k, self.ss_keys_handler, [ k ])
+
+
+    def update_mc_ac(self):
+        self.camera.setHpr(self.camera, self.crot)
+        self.camera.setPos(self.camera, self.ctrans)
 
 
     def ac_keys_handler(self, key):
@@ -350,8 +359,10 @@ class FSim(ShowBase):
         self.setup_lights()
         if self.cfg['bModeAC']:
             self.setup_ac_keyshandler()
+            self.update_mc = self.update_mc_ac
         else:
             self.setup_ss_keyshandler()
+            self.update_mc = self.update_mc_ss
         self.updateT1 = time.time()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
