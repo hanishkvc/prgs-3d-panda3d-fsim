@@ -238,24 +238,31 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
+        # Update terrain or not
         updateDelta = (self.updateCPos - cPo).length()
         self.textStatus.setText("NU:{:05.2f}".format(updateDelta))
         if (updateDelta > self.updateDelta):
             self.terrain.update()
             self.updateCPos = cPo
+        # Update instruments
         if (self.frameCnt%4) == 0:
             self.update_instruments_text(cPo, cOr, cTr, cRo)
+        # Update log
         if (self.frameCnt%2400) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
             self.updateT1 = curT
             print("DBUG:Update:{}:FPS{:5.2f}:Camera:{}:Trans:{}:Rot:{}".format(task.frame, fps, self.camera.getPos(), self.ctrans, self.crot))
+        # Update MainChar the plane
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
         return Task.cont
 
 
     def ss_keys_handler(self, key):
+        """
+        Handle keys to simulate a spaceship
+        """
         if key == 'a':
             self.ctrans.x -= 0.01
         elif key == 'd':
@@ -293,6 +300,9 @@ class FSim(ShowBase):
 
 
     def ac_keys_handler(self, key):
+        """
+        Handle keys to simulate a aircraft
+        """
         if key == 'a':
             self.ctrans.y += 0.01
         elif key == 'd':
@@ -318,7 +328,7 @@ class FSim(ShowBase):
             self.crot = Vec3(0,0,0)
 
 
-    def setup_keyshandler(self):
+    def setup_ac_keyshandler(self):
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
         self.accept("q", self.ac_keys_handler, [ 'q' ])
