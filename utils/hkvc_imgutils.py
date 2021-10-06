@@ -45,6 +45,14 @@ def run_p3dhf():
     iu.save_rimg(fnHF, iR)
 
 
+def run_hf2cm():
+    iI = iu.load_rimg(gCfg['sFNameSrc'])
+    iC = iu.hf2cm_rimg(iI)
+    iF = iu.flip_rimg(iC)
+    fnCM = "{}.cm.png".format(gCfg['sFNameSrc'])
+    iu.save_rimg(fnCM, iF)
+
+
 def run_main():
     breakpoint()
     try:
@@ -54,11 +62,14 @@ def run_main():
             run_reduceshades()
         elif gCfg['sCmd'] == "p3dhf":
             run_p3dhf()
+        elif gCfg['sCmd'] == "hf2cm":
+            run_hf2cm()
     except:
         print(sys.exc_info())
         print("thisPrg --sCmd gray2color --sFNameSrc <srcImage> --sFNameRef <refImage>")
         print("thisPrg --sCmd reduceshades --sFNameSrc <srcImage>")
         print("thisPrg --sCmd p3dhf --sFNameSrc <srcImage>")
+        print("thisPrg --sCmd hf2cm --sFNameSrc <srcImage>")
 
 
 if __name__ == "__main__":

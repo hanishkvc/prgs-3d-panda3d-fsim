@@ -254,26 +254,27 @@ def flip_rimg(rImg, bFlipVert=True):
     return tImg
 
 
-def hf2cm_rimg(iR):
+def hf2cm_rimg(rImg):
     """
     Create ColorMap for the given heightfield image, based on the height (color/shade value).
     ToThink: Maybe convert to NumPys parallel conditional indexing and updating, later.
     """
-    maxV = numpy.iinfo(iR.dtype).max
-    iR = iR/maxV
+    print("\tHF2CM")
+    maxV = numpy.iinfo(rImg.dtype).max
+    rImg = rImg/maxV
     cN = numpy.zeros((rImg.shape[0], rImg.shape[1], 3), dtype=numpy.float64)
-    for x in range(iR.shape[0]):
-        for y in range(iR.shape[1]):
-            if iR[x,y] <= 0:
+    for x in range(rImg.shape[0]):
+        for y in range(rImg.shape[1]):
+            if rImg[x,y] <= 0:
                 cN[x,y] = [0, 0, 1]
-            elif iR[x,y] < 0.20:
-                gF = 0.2 + 0.8*(iR[x,y]/0.20)
+            elif rImg[x,y] < 0.20:
+                gF = 0.2 + 0.8*(rImg[x,y]/0.20)
                 cN[x,y] = [0, gF, 0]
-            elif iR[x,y] < 0.40:
-                shade = 0.2 + 0.8*((iR[x,y]-0.20)/0.20)
+            elif rImg[x,y] < 0.40:
+                shade = 0.2 + 0.8*((rImg[x,y]-0.20)/0.20)
                 cN[x,y] = [0.5*shade, 0.25*shade, 0]
             else:
-                cF = 0.2 + 0.8*((iR[x,y]-0.40)/0.60)
+                cF = 0.2 + 0.8*((rImg[x,y]-0.40)/0.60)
                 cN[x,y] = cF
     return cN
 
