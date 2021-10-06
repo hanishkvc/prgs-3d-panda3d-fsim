@@ -220,6 +220,13 @@ class FSim(ShowBase):
         print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
+    def update_instruments_text(self, cPo, cOr, cTr, cRo):
+        self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
+        self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
+        self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
+        self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
+
+
     def update(self, task):
         timeDelta = task.time - self.prevFrameTime
         timeDelta = timeDelta/0.04
@@ -227,20 +234,17 @@ class FSim(ShowBase):
             return Task.cont
         self.prevFrameTime = task.time
         self.frameCnt += 1
-        cGP = self.camera.getPos()
+        cPo = self.camera.getPos()
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        updateDelta = (self.updateCPos - cGP).length()
+        updateDelta = (self.updateCPos - cPo).length()
         self.textStatus.setText("NU:{:05.2f}".format(updateDelta))
         if (updateDelta > self.updateDelta):
             self.terrain.update()
-            self.updateCPos = cGP
+            self.updateCPos = cPo
         if (self.frameCnt%4) == 0:
-            self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cGP[0], cGP[1], cGP[2]))
-            self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
-            self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
-            self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
+            self.update_instruments_text(cPo, cOr, cTr, cRo)
         if (self.frameCnt%2400) == 0:
             curT = time.time()
             fps = 2400/(curT - self.updateT1)
