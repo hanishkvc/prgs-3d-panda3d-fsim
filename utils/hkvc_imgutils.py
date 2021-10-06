@@ -46,11 +46,11 @@ def run_p3dhf():
 
 
 def run_hf2cm():
-    iI = iu.load_rimg(gCfg['sFNameSrc'])
+    iI = iu.load_rimg(gCfg['sFNameSrc'], bTranspose=True)
     iC = iu.hf2cm_rimg(iI)
     iF = iu.flip_rimg(iC)
     fnCM = "{}.cm.png".format(gCfg['sFNameSrc'])
-    iu.save_rimg(fnCM, iF)
+    iu.save_rimg(fnCM, iF, bTranspose=True)
 
 
 def run_main():
