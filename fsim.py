@@ -348,7 +348,10 @@ class FSim(ShowBase):
         else:
             self.disableMouse()
         self.setup_lights()
-        self.setup_ss_keyshandler()
+        if self.cfg['bModeAC']:
+            self.setup_ac_keyshandler()
+        else:
+            self.setup_ss_keyshandler()
         self.updateT1 = time.time()
         self.taskMgr.add(self.update, 'UpdateFSim')
 
@@ -356,6 +359,7 @@ class FSim(ShowBase):
 def handle_args(args):
     cfg = {
         'sTerrainFile': None,
+        'bModeAC': False,
         'bTopView': False,
         'bLODBruteForce': False,
         'bP3DCameraControl': False,
@@ -369,10 +373,15 @@ def handle_args(args):
         if cArg == "--sTerrainFile":
             iArg += 1
             cfg['sTerrainFile'] = args[iArg]
-        elif cArg == "--bTopView":
-            cfg['bTopView'] = True
-        elif cArg == "--bLODBruteForce":
-            cfg['bLODBruteForce'] = True
+        elif cArg.startswith("--b"):
+            k = cArg[2:]
+            iArg += 1
+            v = args[iArg]
+            if v.lower() in [ "false", "no", "beda", "venda", "nahi" ]:
+                v = False
+            else:
+                v = True
+            cfg[k] = v
         elif cArg == "--LODAFMode":
             iArg += 1
             afMode = args[iArg].lower()
