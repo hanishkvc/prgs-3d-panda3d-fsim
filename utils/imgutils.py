@@ -148,6 +148,22 @@ def transpose_rimg(rImg):
     return rImg
 
 
+def resize_pwrof2square_rimg(rImg, extra=0):
+    """
+    Resize a given raw image to be a square which has powerof2 dimensions.
+    The resultant image could be larger than either of the input dimensions, if they werent powersof2.
+    It also allows a additional extra size to be added beyond powerof2.
+        This (rather extra=1) is needed by Panda3D GeoMipTerrain files.
+    NOTE: Currently it uses PIL Image resize.
+    """
+    sNew = numpy.ceil(numpy.max(numpy.log2(rImg.shape)))
+    sNew = (2**sNew)+extra
+    print("\tImageResize", rImg.shape, sNew)
+    pImg =PIL.Image.fromarray(rImg)
+    prImg=pImg.resize((sNew, sNew))
+    return numpy.array(prImg)
+
+
 def add_noise_rimg(rImg, fNoiseRatio=0.1):
     """
     Add noise to all channels of passed raw image (numpy array).
