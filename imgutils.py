@@ -247,6 +247,27 @@ def map_gray2color_gti(imgS, imgR):
     return rCM
 
 
+def reduce_shades_crude_rimg(rImg, numShades=8, blurSize=4):
+    """
+    Reduce the color/shades in the image to contain only numShades number of them.
+    Inturn apply a blur filter to smooth it a bit.
+    """
+    print("\tReduceShadesCrude")
+    if rImg.dtype == numpy.int32:
+        baseDiv = 256
+    else:
+        baseDiv = 1
+    div = baseDiv*numShades
+    print(rImg.shape, rImg.dtype, baseDiv, numShades, div)
+    tImg = numpy.round(rImg/div)*numShades
+    tImg[tImg > 255] = 255
+    numpy.unique(tImg)
+    tImg=tImg.astype(numpy.uint8)
+    tImg=blur_filter_rimg(tImg, blurSize)
+    numpy.unique(tImg)
+    return tImg
+
+
 def handle_args(args, cb=None, bInitInternalCfg=True):
     """
     Put arguments which follow a standard template of
