@@ -40,12 +40,13 @@ def run_reduceshades():
 def run_p3dhf():
     iI = iu.load_rimg(gCfg['sFNameSrc'])
     iA = iu.amplify_shades_rimg(iI)
-    iR = iu.resize_pwrof2square_rimg(iA)
+    iR = iu.resize_pwrof2square_rimg(iA,1)
     fnHF = "{}.hf.png".format(gCfg['sFNameSrc'])
     iu.save_rimg(fnHF, iR)
 
 
 def run_main():
+    breakpoint()
     try:
         if gCfg['sCmd'] == "gray2color":
             run_gray2color()

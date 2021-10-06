@@ -157,7 +157,7 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     NOTE: Currently it uses PIL Image resize.
     """
     sNew = numpy.ceil(numpy.max(numpy.log2(rImg.shape)))
-    sNew = (2**sNew)+extra
+    sNew = int((2**sNew)+extra)
     print("\tImageResize", rImg.shape, sNew)
     pImg =PIL.Image.fromarray(rImg)
     prImg=pImg.resize((sNew, sNew))
@@ -316,7 +316,7 @@ def amplify_shades_fimg(fImg, bAmplify=True):
 
 
 def amplify_shades_rimg(rImg, bAmplify=True):
-    maxV = numpy.iinfo(rImg.dtype).max()
+    maxV = numpy.iinfo(rImg.dtype).max
     fImg = rImg/maxV
     fImg = amplify_shades_fimg(fImg, bAmplify)
     rImg = numpy.round(fImg*maxV).astype(rImg.dtype)
