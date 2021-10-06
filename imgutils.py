@@ -26,7 +26,7 @@ class GTImage:
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
         print("{}:dim:{}:dtype:{}:min:{}:max:{}".format(self.tag, self.rImg.shape, self.rImg.dtype, self.rImg.min(), self.rImg.max()))
 
-    def load(self, fName=None):
+    def load(self, fName=None, bTranspose=True):
         if fName == None:
             fName = self.fName
         else:
@@ -37,16 +37,17 @@ class GTImage:
                 tImg = numpy.array(self.pImg.convert('RGB'))
             else:
                 tImg = numpy.array(self.pImg)
-            self.rImg = transpose(tImg)
+            if bTranspose:
+                self.rImg = transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
 
-    def save(self, fName=None, img2Save=None):
+    def save(self, fName=None, rImg2Save=None, bTranspose=True):
         if fName == None:
             fName = self.fName
-        if type(img2Save) == type(None):
-            img2Save = self.rImg
-        Save(fName, img2Save)
+        if type(rImg2Save) == type(None):
+            rImg2Save = self.rImg
+        save(fName, rImg2Save, bTranspose)
 
     def parse_geotiff(self):
         if PIL.TiffTags.TAGS[34737].upper() != 'GeoAsciiParamsTag'.upper():
@@ -116,23 +117,23 @@ class GTImage:
         return self.getpixel_xy(x,y)
 
 
-def Save(fName, rImg2Save, bTranspose=True):
+def save(fName, rImg, bTranspose=True):
     if bTranspose:
-        trImg = transpose(rImg2Save)
+        trImg = transpose(rImg)
     else:
-        trImg = rImg2Save
+        trImg = rImg
     print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
 
 
-def transpose(tImg):
-    if len(tImg.shape) == 2:
-        rImg = tImg.transpose()
-    elif len(tImg.shape) == 3:
-        rImg = tImg.transpose(1,0,2)
+def transpose(rImg):
+    if len(rImg.shape) == 2:
+        rImg = rImg.transpose()
+    elif len(rImg.shape) == 3:
+        rImg = rImg.transpose(1,0,2)
     else:
-        raise RuntimeError("GTImage: Image neither Gray or RGB")
+        raise RuntimeError("imgutils:transpose: Image neither Gray or RGB")
     return rImg
 
 
