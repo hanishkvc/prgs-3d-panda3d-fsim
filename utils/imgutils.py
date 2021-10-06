@@ -133,6 +133,15 @@ def save_rimg(fName, rImg, bTranspose=False):
     else:
         trImg = rImg
     print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
+    if trImg.dtype == numpy.int32:
+        maxV = numpy.iinfo(trImg.dtype).max
+        if trImg.min() >= 0:
+            tImg = trImg/maxV
+            trImg = tImg*255
+            trImg = trImg.astype(numpy.uint8)
+        else:
+            raise RuntimeError("imgutils:SaveRImg: int32 image data with -ve values not supported")
+        print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
 
