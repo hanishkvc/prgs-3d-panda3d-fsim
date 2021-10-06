@@ -17,9 +17,9 @@ def run_main():
     imgSrc = iu.GTImage(gCfg['sFNameSrc'], "SRC")
     imgSrc.print_info()
 
-    rCM = iu.map_gray2color(imgSrc, imgRef)
+    rCM = iu.map_gray2color_gti(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
-    iu.GTImage.Save(fnCM, rCM)
+    iu.save(fnCM, rCM)
 
 
 if __name__ == "__main__":
