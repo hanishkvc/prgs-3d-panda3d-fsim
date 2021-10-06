@@ -26,16 +26,6 @@ class GTImage:
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
         print("{}:dim:{}:dtype:{}:min:{}:max:{}".format(self.tag, self.rImg.shape, self.rImg.dtype, self.rImg.min(), self.rImg.max()))
 
-    @staticmethod
-    def transpose(tImg):
-        if len(tImg.shape) == 2:
-            rImg = tImg.transpose()
-        elif len(tImg.shape) == 3:
-            rImg = tImg.transpose(1,0,2)
-        else:
-            raise RuntimeError("GTImage: Image neither Gray or RGB")
-        return rImg
-
     def load(self, fName=None):
         if fName == None:
             fName = self.fName
@@ -47,23 +37,16 @@ class GTImage:
                 tImg = numpy.array(self.pImg.convert('RGB'))
             else:
                 tImg = numpy.array(self.pImg)
-            self.rImg = GTImage.transpose(tImg)
+            self.rImg = transpose(tImg)
         except RuntimeError:
             raise RuntimeError("{}: Image neither Gray or RGB".format(self.fName))
-
-    @staticmethod
-    def Save(fName, rImg2Save):
-        trImg = GTImage.transpose(rImg2Save)
-        print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
-        tpImg =PIL.Image.fromarray(trImg)
-        tpImg.save(fName)
 
     def save(self, fName=None, img2Save=None):
         if fName == None:
             fName = self.fName
         if type(img2Save) == type(None):
             img2Save = self.rImg
-        GTImage.Save(fName, img2Save)
+        Save(fName, img2Save)
 
     def parse_geotiff(self):
         if PIL.TiffTags.TAGS[34737].upper() != 'GeoAsciiParamsTag'.upper():
@@ -131,6 +114,26 @@ class GTImage:
     def getpixel_coord(self, lon, lat):
         x,y = self.coord2xy(lon, lat)
         return self.getpixel_xy(x,y)
+
+
+def Save(fName, rImg2Save, bTranspose=True):
+    if bTranspose:
+        trImg = transpose(rImg2Save)
+    else:
+        trImg = rImg2Save
+    print("SavingImgData:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
+    tpImg =PIL.Image.fromarray(trImg)
+    tpImg.save(fName)
+
+
+def transpose(tImg):
+    if len(tImg.shape) == 2:
+        rImg = tImg.transpose()
+    elif len(tImg.shape) == 3:
+        rImg = tImg.transpose(1,0,2)
+    else:
+        raise RuntimeError("GTImage: Image neither Gray or RGB")
+    return rImg
 
 
 def add_noise(rImg, fNoiseRatio=0.1):
