@@ -142,6 +142,12 @@ def save_rimg(fName, rImg, bTranspose=False):
         else:
             raise RuntimeError("imgutils:SaveRImg: int32 image data with -ve values not supported")
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
+    elif trImg.dtype == numpy.float64:
+        if (trImg.min() < 0) or (trImg.max() > 1):
+            raise RuntimeError("imgutils:SaveRImg: float64 with image data beyond 0.0 to 1.0 not supported")
+        trImg = trImg*255
+        trImg = trImg.astype(numpy.uint8)
+        print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
 
