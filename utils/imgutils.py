@@ -180,8 +180,22 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     return numpy.array(prImg)
 
 
-def crop_rimg(rImg, xSize, ySize):
-    rNew = rImg[:xSize,:ySize]
+def crop_rimg(rImg, xStartOrSize, yStartOrSize, xEnd=None, yEnd=None):
+    """
+    Crop the passed image data.
+    One could either specify the start and end positions wrt x and y OR
+    One could specify the size of image needed along x and y axis.
+    """
+    if xEnd == None:
+        xStart = 0
+        yStart = 0
+        xEnd = xStartOrSize
+        yEnd = yStartOrSize
+    else:
+        xStart = xStartOrSize
+        yStart = yStartOrSize
+    print("\tCrop", xStart, yStart, xEnd, yEnd)
+    rNew = rImg[xStart:xEnd,yStart:yEnd]
     return rNew
 
 

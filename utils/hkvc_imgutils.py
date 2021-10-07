@@ -59,9 +59,11 @@ def run_hf2cm(iI=None, bTranspose=True):
 
 def run_lcrop():
     iI = iu.load_rimg(gCfg['sFNameSrc'], bTranspose=gCfg['bTranspose'])
-    xS = gCfg['iXSize']
-    yS = gCfg['iYSize']
-    iC = iu.crop_rimg(iI, xS, yS)
+    xS = gCfg['iXS']
+    yS = gCfg['iYS']
+    xE = gCfg['iXE']
+    yE = gCfg['iYE']
+    iC = iu.crop_rimg(iI, xS, yS, xE, yE)
     fnC = "{}.c.png".format(gCfg['sFNameSrc'])
     iu.save_rimg(fnC, iC, bTranspose=gCfg['bTranspose'])
 
@@ -89,7 +91,7 @@ def run_main():
         print("thisPrg --sCmd p3dhf --sFNameSrc <srcImage>")
         print("thisPrg --sCmd hf2cm --sFNameSrc <srcImage>")
         print("thisPrg --sCmd p3dterrain --sFNameSrc <srcImage>")
-        print("thisPrg --sCmd lcrop --sFNameSrc <srcImage> --iXSize <int> --iYSize <int>")
+        print("thisPrg --sCmd lcrop --sFNameSrc <srcImage> --iXS <int> --iYS <int> --iXE <int> --iYE <int>")
 
 
 if __name__ == "__main__":
