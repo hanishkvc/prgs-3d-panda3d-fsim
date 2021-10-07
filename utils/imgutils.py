@@ -180,6 +180,11 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     return numpy.array(prImg)
 
 
+def crop_rimg(rImg, xSize, ySize):
+    rNew = rImg[:xSize,:ySize]
+    return rNew
+
+
 def add_noise_rimg(rImg, fNoiseRatio=0.1):
     """
     Add noise to all channels of passed raw image (numpy array).

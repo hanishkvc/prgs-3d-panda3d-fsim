@@ -57,6 +57,15 @@ def run_hf2cm(iI=None, bTranspose=True):
     iu.save_rimg(fnCM, iF, bTranspose=bTranspose)
 
 
+def run_lcrop():
+    iI = iu.load_rimg(gCfg['sFNameSrc'], bTranspose=gCfg['bTranspose'])
+    xS = gCfg['iXSize']
+    yS = gCfg['iYSize']
+    iC = iu.crop_rimg(iI, xS, yS)
+    fnC = "{}.c.png".format(gCfg['sFNameSrc'])
+    iu.save_rimg(fnC, iC, bTranspose=gCfg['bTranspose'])
+
+
 def run_main():
     breakpoint()
     try:
@@ -71,6 +80,8 @@ def run_main():
         elif gCfg['sCmd'] == "p3dterrain":
             iR = run_p3dhf(True)
             run_hf2cm(iR, True)
+        elif gCfg['sCmd'] == "lcrop":
+            run_lcrop()
     except:
         print(sys.exc_info())
         print("thisPrg --sCmd gray2color --sFNameSrc <srcImage> --sFNameRef <refImage>")
@@ -78,6 +89,7 @@ def run_main():
         print("thisPrg --sCmd p3dhf --sFNameSrc <srcImage>")
         print("thisPrg --sCmd hf2cm --sFNameSrc <srcImage>")
         print("thisPrg --sCmd p3dterrain --sFNameSrc <srcImage>")
+        print("thisPrg --sCmd lcrop --sFNameSrc <srcImage> --iXSize <int> --iYSize <int>")
 
 
 if __name__ == "__main__":
