@@ -135,12 +135,13 @@ def save_rimg(fName, rImg, bTranspose=False):
     print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     if trImg.dtype == numpy.int32:
         maxV = numpy.iinfo(trImg.dtype).max
+        minV = numpy.iinfo(trImg.dtype).min
         if trImg.min() >= 0:
             tImg = trImg/maxV
-            trImg = tImg*255
-            trImg = trImg.astype(numpy.uint8)
         else:
-            raise RuntimeError("imgutils:SaveRImg: int32 image data with -ve values not supported")
+            tImg = (trImg + abs(minV))/(2*maxV)
+        trImg = tImg*255
+        trImg = trImg.astype(numpy.uint8)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     elif trImg.dtype == numpy.float64:
         if (trImg.min() < 0) or (trImg.max() > 1):
@@ -175,7 +176,7 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     sNew = int((2**sNew)+extra)
     print("\tImageResize", rImg.shape, sNew)
     pImg =PIL.Image.fromarray(rImg)
-    prImg=pImg.resize((sNew, sNew))
+    prImg=pImg.resize((sNew, sNew), resample=PIL.Image.BICUBIC)
     return numpy.array(prImg)
 
 
