@@ -176,7 +176,7 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     sNew = int((2**sNew)+extra)
     print("\tImageResize", rImg.shape, sNew)
     pImg =PIL.Image.fromarray(rImg)
-    prImg=pImg.resize((sNew, sNew), resample=PIL.Image.BICUBIC)
+    prImg=pImg.resize((sNew, sNew), resample=PIL.Image.BILINEAR)
     return numpy.array(prImg)
 
 
