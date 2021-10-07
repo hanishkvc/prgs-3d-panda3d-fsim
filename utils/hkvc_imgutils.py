@@ -39,12 +39,12 @@ def run_reduceshades():
     iu.save_rimg(fnRS, i2)
 
 
-def run_p3dhf():
-    iI = iu.load_rimg(gCfg['sFNameSrc'])
+def run_p3dhf(bTranspose=False):
+    iI = iu.load_rimg(gCfg['sFNameSrc'], bTranspose=bTranspose)
     iA = iu.amplify_shades_rimg(iI)
     iR = iu.resize_pwrof2square_rimg(iA,1)
     fnHF = "{}.hf.png".format(gCfg['sFNameSrc'])
-    iu.save_rimg(fnHF, iR)
+    iu.save_rimg(fnHF, iR, bTranspose=bTranspose)
     return iR
 
 
@@ -69,8 +69,8 @@ def run_main():
         elif gCfg['sCmd'] == "hf2cm":
             run_hf2cm()
         elif gCfg['sCmd'] == "p3dterrain":
-            iR = run_p3dhf()
-            run_hf2cm(iR, False)
+            iR = run_p3dhf(True)
+            run_hf2cm(iR, True)
     except:
         print(sys.exc_info())
         print("thisPrg --sCmd gray2color --sFNameSrc <srcImage> --sFNameRef <refImage>")
