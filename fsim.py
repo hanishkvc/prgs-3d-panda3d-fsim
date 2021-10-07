@@ -195,10 +195,10 @@ class FSim(ShowBase):
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*2
-        lodNear = max(16,lodFar/16)
-        blockSize = 1024
-        lodFar = 2048
-        lodNear = 512
+        lodNear = max(64,lodFar/4)
+        #blockSize = 1024
+        #lodFar = 2048
+        #lodNear = 512
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
