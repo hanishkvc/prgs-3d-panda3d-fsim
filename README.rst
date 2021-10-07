@@ -2,7 +2,7 @@
 FSim Readme
 ##############
 Author: HanishKVC
-Version: v20210929IST0052
+Version: v20211007IST2026
 
 Intro
 ########
@@ -85,8 +85,31 @@ Terrain
 
 It allows height fields to be used as the terrain. It uses the GeoMipTerrain module of Panda3D for this.
 
-There is a helper script to which one can pass the USGS earth explorer GMTED2010 elevation data and inturn it will generate heightfield and colormap files which can be used by this program.
-Pass the GeoTIFF file from USGS directly, dont use any image converter to create a png or jpg or so and then pass to this program, bcas it may lose some of the detail in the process.
+Two files are expected
+
+   <terrainfilename>.hf.png - the heightfield image file corresponding to the terrain.
+   <terrainfilename>.cm.png - the color map image file corresponding to the terrain.
+
+Helper script is provided in utils folder to generate the above files from
+
+   Elevation GeoTiff file
+      for example the GMTED2010 elevation data from Nasa/USGS Earth Explorer
+
+   Reference colormap file (optional, required if one wants a preexisting coloring for the terrain being worked on is to be used)
+      for example if one is interested in having say the vegetation based coloring for the terrain, then one could pass the world vegetation GeoTiff file from Nasa/USGS/...
+
+
+Helper script
+==============
+
+One passes the elevation data file and inturn it will generate the hf.png (heightfield) and cm.png (colormap) files, which can be used by this program.
+
+NOTE: Pass the GeoTIFF file from USGS directly, dont use any image converter to create a png or jpg or so and then pass to this program, bcas it may lose some of the detail in the process.
 
 The script resizes the passed image to be a power of 2 + 1 size image. During this process, it doesnt worry about the aspect ratio.
+
+By default the colormap file generated is based on the relative height infered from the elevation image file (ie based on the intensity of the shade at corresponding pixel location).
+
+It also allows one to generate a color map based on a reference image which also contains the co-ordinates belonging to the heightfield image being processed. For this both the heightfield/elevation file as well as the reference image need to be GeoTiff images, so that the helper script can try to map the heightfield file to its corresponding location in the reference image.
+
 
