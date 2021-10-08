@@ -304,6 +304,12 @@ class FSim(ShowBase):
 
 
     def update_mc_ac(self):
+        d = self.ctrans.y - self.mcAccel2Fly
+        if d > 0:
+            lift = d/0.2
+            self.ctrans.z = lift
+        else:
+            self.ctrans.z = -0.1
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
 
@@ -312,17 +318,17 @@ class FSim(ShowBase):
         """
         Handle keys to simulate a aircraft
         """
-        if key == 'a':
+        if key == 'q':
             self.ctrans.y += 0.01
-        elif key == 'd':
+        elif key == 'e':
             self.ctrans.y -= 0.01
         elif key == 'w':
             self.crot.y -= 0.01
         elif key == 's':
             self.crot.y += 0.01
-        elif key == 'q':
+        elif key == 'a':
             self.crot.x += 0.01
-        elif key == 'e':
+        elif key == 'd':
             self.crot.x -= 0.01
         elif key == 'x':
             self.ctrans = Vec3(0,0,0)
@@ -330,6 +336,7 @@ class FSim(ShowBase):
 
 
     def setup_ac_keyshandler(self):
+        self.mcAccel2Fly = 0.5
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
         self.accept("q", self.ac_keys_handler, [ 'q' ])
