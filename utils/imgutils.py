@@ -164,7 +164,7 @@ def transpose_rimg(rImg):
     return rImg
 
 
-def resize_pwrof2square_rimg(rImg, extra=0):
+def resize_pwrof2square_rimg(rImg, extra=0, resizeFilter=-1):
     """
     Resize a given raw image to be a square which has powerof2 dimensions.
     The resultant image could be larger than either of the input dimensions, if they werent powersof2.
@@ -174,9 +174,19 @@ def resize_pwrof2square_rimg(rImg, extra=0):
     """
     sNew = numpy.ceil(numpy.max(numpy.log2(rImg.shape)))
     sNew = int((2**sNew)+extra)
-    print("\tImageResize", rImg.shape, sNew)
+    return resize_rimg(rImg, sNew, sNew, resizeFilter)
+
+
+def resize_rimg(rImg, xs, ys, resizeFilter=-1):
+    """
+    Resize the given raw image to specified size.
+    resizeFilter specifies the filter to use. Refer to PIL.Image documentation for the options.
+    """
     pImg =PIL.Image.fromarray(rImg)
-    prImg=pImg.resize((sNew, sNew), resample=PIL.Image.BILINEAR)
+    if resizeFilter < 0:
+        resizeFilter = PIL.Image.BILINEAR
+    print("\tImageResize", rImg.shape, xs, ys, resizeFilter)
+    prImg=pImg.resize((xs, ys), resample=resizeFilter)
     return numpy.array(prImg)
 
 
@@ -404,6 +414,7 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
             'bBlurEdges': True,
             'bFlip': True,
             'bFlipVert': True,
+            'iResizeFilter': PIL.Image.BILINEAR,
             }
     while iArg < (len(args)-1):
         iArg += 1
