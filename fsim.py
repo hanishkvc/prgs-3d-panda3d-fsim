@@ -317,21 +317,13 @@ class FSim(ShowBase):
         elif key == 'd':
             self.ctrans.y -= 0.01
         elif key == 'w':
-            self.ctrans.z -= 0.01
+            self.crot.y -= 0.01
         elif key == 's':
-            self.ctrans.z += 0.01
+            self.crot.y += 0.01
         elif key == 'q':
             self.crot.x += 0.01
         elif key == 'e':
             self.crot.x -= 0.01
-        elif key == 'z':
-            self.ctrans.x -= 0.01
-        elif key == 'c':
-            self.ctrans.x += 0.01
-        elif key == 'r':
-            self.crot.y += 0.01
-        elif key == 'f':
-            self.crot.y -= 0.01
         elif key == 'x':
             self.ctrans = Vec3(0,0,0)
             self.crot = Vec3(0,0,0)
@@ -345,10 +337,6 @@ class FSim(ShowBase):
         self.accept("a", self.ac_keys_handler, [ 'a' ])
         self.accept("d", self.ac_keys_handler, [ 'd' ])
         self.accept("x", self.ac_keys_handler, [ 'x' ])
-        self.accept("z", self.ac_keys_handler, [ 'z' ])
-        self.accept("c", self.ac_keys_handler, [ 'c' ])
-        self.accept("r", self.ac_keys_handler, [ 'r' ])
-        self.accept("f", self.ac_keys_handler, [ 'f' ])
 
 
     def prepare(self):
