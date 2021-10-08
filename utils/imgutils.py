@@ -127,6 +127,26 @@ def load_rimg(fName, bTranspose=False):
     return trImg
 
 
+def int32_to_uint8(dIn):
+    maxV = numpy.iinfo(dIn.dtype).max
+    minV = numpy.iinfo(dIn.dtype).min
+    if dIn.min() >= 0:
+        dTmp = dIn/maxV
+    else:
+        dTmp = (dIn + abs(minV))/(2*maxV)
+    dOut = dTmp*255
+    dOut = dOut.astype(numpy.uint8)
+    return dOut
+
+
+def float_to_uint8(dIn):
+    if (dIn.min() < 0) or (dIn.max() > 1):
+        raise RuntimeError("Float2UInt8: float data beyond 0.0 to 1.0 not supported")
+    dOut = dIn*255
+    dOut = dOut.astype(numpy.uint8)
+    return dOut
+
+
 def save_rimg(fName, rImg, bTranspose=False):
     if bTranspose:
         trImg = transpose_rimg(rImg)
@@ -134,20 +154,10 @@ def save_rimg(fName, rImg, bTranspose=False):
         trImg = rImg
     print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     if trImg.dtype == numpy.int32:
-        maxV = numpy.iinfo(trImg.dtype).max
-        minV = numpy.iinfo(trImg.dtype).min
-        if trImg.min() >= 0:
-            tImg = trImg/maxV
-        else:
-            tImg = (trImg + abs(minV))/(2*maxV)
-        trImg = tImg*255
-        trImg = trImg.astype(numpy.uint8)
+        trImg = int32_to_uint8(trImg)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     elif trImg.dtype == numpy.float64:
-        if (trImg.min() < 0) or (trImg.max() > 1):
-            raise RuntimeError("imgutils:SaveRImg: float64 with image data beyond 0.0 to 1.0 not supported")
-        trImg = trImg*255
-        trImg = trImg.astype(numpy.uint8)
+        trImg = float_to_uint8(trImg)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
