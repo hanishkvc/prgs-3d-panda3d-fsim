@@ -127,9 +127,14 @@ def load_rimg(fName, bTranspose=False):
     return trImg
 
 
-def int32_to_uint8(dIn):
-    maxV = numpy.iinfo(dIn.dtype).max
-    minV = numpy.iinfo(dIn.dtype).min
+def to_uint8(dIn, minV=None, maxV=None):
+    if maxV == None:
+        maxV = numpy.iinfo(dIn.dtype).max
+    if minV == None:
+        minV = numpy.iinfo(dIn.dtype).min
+    print("DBUG:2Uint8:", dIn.min(), dIn.max(), "expected range:", minV, maxV)
+    if (dIn.min() < minV) or (dIn.max() > maxV):
+        raise RuntimeError("2UInt8: Data beyond expected range of {} to {}".format(minV, maxV))
     if dIn.min() >= 0:
         dTmp = dIn/maxV
     else:
@@ -139,25 +144,24 @@ def int32_to_uint8(dIn):
     return dOut
 
 
-def float_to_uint8(dIn):
-    if (dIn.min() < 0) or (dIn.max() > 1):
-        raise RuntimeError("Float2UInt8: float data beyond 0.0 to 1.0 not supported")
-    dOut = dIn*255
-    dOut = dOut.astype(numpy.uint8)
-    return dOut
-
-
 def save_rimg(fName, rImg, bTranspose=False):
+    """
+    Save the raw image data array into a image file containing 8bit entities.
+        ie for gray its 8bit gray shades and for color its 8bit R, 8bit G and 8bit B values.
+    If the raw image data is
+        float, then its expected to be in the range 0.0 to 1.0.
+        int32, then its expected to be either in the range 0 to MaxInt or -MinInt to MaxInt.
+    """
     if bTranspose:
         trImg = transpose_rimg(rImg)
     else:
         trImg = rImg
     print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     if trImg.dtype == numpy.int32:
-        trImg = int32_to_uint8(trImg)
+        trImg = to_uint8(trImg)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     elif trImg.dtype == numpy.float64:
-        trImg = float_to_uint8(trImg)
+        trImg = to_uint8(trImg, 0, 1)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
