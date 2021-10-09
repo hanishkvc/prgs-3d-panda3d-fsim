@@ -313,7 +313,7 @@ class FSim(ShowBase):
             lift *= heightEffect
         else:
             lift = d/32.0
-        if ((self.ctrans.y == 0) and (cPo.z <= self.mcMinHeight)):
+        if (cPo.z <= self.mcMinHeight):
             self.ctrans.z = 0
         else:
             self.ctrans.z = lift
