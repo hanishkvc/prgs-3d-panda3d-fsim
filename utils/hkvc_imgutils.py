@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # Allow few different operations on images.
-# Option1: Color a Grayscale image based on color at corresponding location in a reference image
-#   The grayscale and reference images need to be GeoTiff images.
-#   The Color image generated will be a png.
-#   This can be used to color say a heightfield image based on World Vegetation NDVI data
+# Option1: Map a given image to represent the equivalent region in a given reference image.
+#   The source and reference images need to be GeoTiff images.
+#   The new image generated will be a png.
+#   This can be used to color say a elevation/heightfield image based on WorldVegetation/NDVI data
 # Option2: Reduce the color resolution / shades in a image
 #   This can be used to reduce the amount of detail in a heightfield to some extent.
 # Option3: Generate a Panda3D compatible heightfield png, from given heightfield image.
@@ -20,13 +20,13 @@ import sys
 import imgutils as iu
 
 
-def run_gray2color():
+def run_mapto():
     imgRef = iu.GTImage(gCfg['sFNameRef'], "REF")
     imgRef.print_info()
     imgSrc = iu.GTImage(gCfg['sFNameSrc'], "SRC")
     imgSrc.print_info()
 
-    rCM = iu.map_gray2color_gti(imgSrc, imgRef)
+    rCM = iu.mapto_ex_gti(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
     iu.save_rimg(fnCM, rCM, bTranspose=True)
 
@@ -71,8 +71,8 @@ def run_lcrop():
 def run_main():
     breakpoint()
     try:
-        if gCfg['sCmd'] == "gray2color":
-            run_gray2color()
+        if gCfg['sCmd'] == "mapto":
+            run_mapto()
         elif gCfg['sCmd'] == "reduceshades":
             run_reduceshades()
         elif gCfg['sCmd'] == "p3dhf":
@@ -86,7 +86,7 @@ def run_main():
             run_lcrop()
     except:
         print(sys.exc_info())
-        print("thisPrg --sCmd gray2color --sFNameSrc <srcImage> --sFNameRef <refImage>")
+        print("thisPrg --sCmd mapto --sFNameSrc <srcImage> --sFNameRef <refImage>")
         print("thisPrg --sCmd reduceshades --sFNameSrc <srcImage>")
         print("thisPrg --sCmd p3dhf --sFNameSrc <srcImage>")
         print("thisPrg --sCmd hf2cm --sFNameSrc <srcImage>")

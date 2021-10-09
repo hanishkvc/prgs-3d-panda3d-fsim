@@ -329,14 +329,15 @@ def hf2cm_rimg(rImg):
     return cN
 
 
-def map_gray2color_gti(imgS, imgR):
+def mapto_ex_gti(imgS, imgR):
     """
-    Color gray scale imgS to match equivalent map coord position color in imgR and return this new color image data.
+    MapToExtended: Create new raw image which maps the given imgS to match equivalent map coord position colors in imgR.
     imgS and imgR should be of GTImage type.
     return rCM: the raw color map numpy array (i.e not a GTImage class instance)
+    It optionally applies some noise, blur and flip operations, if requested.
     """
     rCM = numpy.zeros((imgS.rImg.shape[0], imgS.rImg.shape[1], imgR.rImg.shape[2]), dtype=imgR.rImg.dtype)
-    print("MapGray2Color:", rCM.shape, rCM.dtype)
+    print("\tMapToExtended:", rCM.shape, rCM.dtype)
     if gCfg['bMoreBluey']:
         cmThreshold = int(numpy.iinfo(rCM.dtype).max/2)
         print("BlueThreshold", cmThreshold)
