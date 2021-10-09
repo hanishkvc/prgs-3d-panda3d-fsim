@@ -308,10 +308,11 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         d = self.ctrans.y - self.mcAccel2Fly
         if d > 0:
-            lift = d/4.0
+            lift = d/8.0
         else:
-            lift = d/16.0
-        self.ctrans.z = lift
+            lift = d/32.0
+        if not ((self.ctrans.y == 0) and (cPo.z <= 0)):
+            self.ctrans.z = lift
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
 
