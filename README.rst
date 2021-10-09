@@ -117,6 +117,10 @@ Aircraft mode
 
    + d : turn right
 
+   + z : tilt left
+
+   + c : tilt right
+
 
 Terrain
 ##########
