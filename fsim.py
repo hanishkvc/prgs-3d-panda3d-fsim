@@ -61,6 +61,12 @@ class FSim(ShowBase):
         tsnp = self.render2d.attachNewNode(self.textStatus)
         tsnp.setPos(-0.2, 0, 0.9)
         tsnp.setScale(0.04)
+        # Status line2
+        self.textStatus2 = TextNode('TextStatus2')
+        self.textStatus2.setText('Status2:')
+        ts2np = self.render2d.attachNewNode(self.textStatus2)
+        ts2np.setPos(-0.2, 0, 0.8)
+        ts2np.setScale(0.04)
         # Cur State
         self.textPos = TextNode('TextPos')
         self.textPos.setText('Pos:')
@@ -84,7 +90,7 @@ class FSim(ShowBase):
         trnp.setPos(0.2, 0, 0.8)
         trnp.setScale(0.04)
         fwFont = loader.loadFont("cmtt12.egg")
-        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot, self.textStatus ]:
+        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot, self.textStatus, self.textStatus2 ]:
             t.setFont(fwFont)
             #t.setShadow(0.05,0.05)
             #t.setShadowColor(0.2,0.2,0.2,1.0)
@@ -227,6 +233,12 @@ class FSim(ShowBase):
         self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
 
 
+    def update_terrain_height(self, cPos):
+        hf=self.terrain.heightfield()
+        self.terrainHV = hf.getGray(int(cPos.x), int(cPos.y))
+        self.textStatus2.setText("H:{:05.2f}".format(self.terrainHV))
+
+
     def update(self, task):
         timeDelta = task.time - self.prevFrameTime
         timeDelta = timeDelta/0.04
@@ -241,6 +253,7 @@ class FSim(ShowBase):
         # Update terrain or not
         updateDelta = (self.updateCPos - cPo).length()
         self.textStatus.setText("NU:{:05.2f}".format(updateDelta))
+        self.update_terrain_height(cPo)
         if (updateDelta > self.updateDelta):
             self.terrain.update()
             self.updateCPos = cPo
