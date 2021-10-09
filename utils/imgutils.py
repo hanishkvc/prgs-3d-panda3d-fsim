@@ -163,7 +163,7 @@ def save_rimg(fName, rImg, bTranspose=False):
     if trImg.dtype == numpy.int32:
         trImg = to_uint8(trImg)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
-    elif trImg.dtype == numpy.float64:
+    elif (trImg.dtype == numpy.float64) or (trImg.dtype == numpy.float32):
         trImg = to_uint8(trImg, 0, 1)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
