@@ -313,7 +313,9 @@ class FSim(ShowBase):
             lift *= heightEffect
         else:
             lift = d/32.0
-        if not ((self.ctrans.y == 0) and (cPo.z <= 0)):
+        if ((self.ctrans.y == 0) and (cPo.z <= self.mcMinHeight)):
+            self.ctrans.z = 0
+        else:
             self.ctrans.z = lift
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
@@ -342,6 +344,7 @@ class FSim(ShowBase):
 
     def setup_ac_keyshandler(self):
         self.mcMaxHeight = 10000
+        self.mcMinHeight = 5
         self.mcAccel2Fly = 0.5
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
