@@ -354,6 +354,7 @@ class FSim(ShowBase):
         self.mcMaxHeight = 10000
         self.mcMinHeight = 5
         self.mcMinAccel4PLift = 0.2
+        self.mcMaxAngle4PLift = 60
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
         self.accept("q", self.ac_keys_handler, [ 'q' ])
