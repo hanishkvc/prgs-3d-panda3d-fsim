@@ -313,8 +313,9 @@ def hf2cm_rimg(rImg):
     ToThink: Maybe convert to NumPys parallel conditional indexing and updating, later.
     """
     print("\tHF2CM")
-    maxV = numpy.iinfo(rImg.dtype).max
-    rImg = rImg/maxV
+    if (rImg.dtype != numpy.float64) and (rImg.dtype != numpy.float32):
+        maxV = numpy.iinfo(rImg.dtype).max
+        rImg = rImg/maxV
     cN = numpy.zeros((rImg.shape[0], rImg.shape[1], 3), dtype=numpy.float64)
     for x in range(rImg.shape[0]):
         for y in range(rImg.shape[1]):
