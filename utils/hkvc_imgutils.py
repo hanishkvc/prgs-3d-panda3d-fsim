@@ -69,7 +69,8 @@ def run_lcrop():
 
 
 def run_main():
-    breakpoint()
+    if gCfg.get('bBreakPoint') != None:
+        breakpoint()
     try:
         if gCfg['sCmd'] == "mapto":
             run_mapto()
@@ -84,6 +85,8 @@ def run_main():
             run_hf2cm(iR, True)
         elif gCfg['sCmd'] == "lcrop":
             run_lcrop()
+        else:
+            raise RuntimeError("UnKnown Command:{}".format(gCfg['sCmd']))
     except:
         print(sys.exc_info())
         print("thisPrg --sCmd mapto --sFNameSrc <srcImage> --sFNameRef <refImage>")

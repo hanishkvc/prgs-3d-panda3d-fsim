@@ -14,9 +14,11 @@ gCfg = {}
 
 class GTImage:
 
-    def __init__(self, fName, tag, debug=False):
+    def __init__(self, fName, tag, debug=None):
         self.fName = fName
         self.tag = tag
+        if debug == None:
+            debug = gCfg['bDebug']
         self.debug = debug
         self.load()
         self.parse_geotiff()
@@ -132,7 +134,8 @@ def to_uint8(dIn, minV=None, maxV=None):
         maxV = numpy.iinfo(dIn.dtype).max
     if minV == None:
         minV = numpy.iinfo(dIn.dtype).min
-    print("DBUG:2Uint8:", dIn.min(), dIn.max(), "expected range:", minV, maxV)
+    if gCfg['bDebug']:
+        print("INFO:2Uint8:", dIn.min(), dIn.max(), "expected range:", minV, maxV)
     if (dIn.min() < minV) or (dIn.max() > maxV):
         raise RuntimeError("2UInt8: Data beyond expected range of {} to {}".format(minV, maxV))
     if dIn.min() >= 0:
@@ -394,7 +397,7 @@ def amplify_shades_fimg(fImg, bAmplify=True):
         if (iHPart/iHTotal) > 0.9:
             iMult = int(6/(i+1))
             break
-    print("\tImagePixelValueAdjust", iMult)
+    print("\tAmplifyShades", iMult)
     ampdImg = (fImg/fImg.max())*iMult
     clippedImg = numpy.clip(ampdImg, 0, 1)
     return clippedImg
@@ -421,6 +424,7 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
     """
     iArg = 0
     cfg = {
+            'bDebug': False,
             'bMoreBluey': True,
             'bAddNoise': True,
             'fNoiseRatio': 0.1,
