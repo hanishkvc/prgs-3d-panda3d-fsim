@@ -306,7 +306,7 @@ class FSim(ShowBase):
     def update_mc_ac(self):
         cPo = self.camera.getPos()
         cOr = self.camera.getHpr()
-        d = self.ctrans.y - self.mcAccel2Fly
+        d = self.ctrans.y - self.mcMinAccel4PLift
         if d > 0:
             lift = d/8.0
             heightEffect = (1-cPo.z/self.mcMaxHeight)
@@ -345,7 +345,7 @@ class FSim(ShowBase):
     def setup_ac_keyshandler(self):
         self.mcMaxHeight = 10000
         self.mcMinHeight = 5
-        self.mcAccel2Fly = 0.5
+        self.mcMinAccel4PLift = 0.2
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
         self.accept("q", self.ac_keys_handler, [ 'q' ])
