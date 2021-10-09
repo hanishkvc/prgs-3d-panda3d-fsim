@@ -7,8 +7,10 @@ Version: v20211007IST2026
 Intro
 ########
 
-One could either use it as a simple dumb flight sim with a futuristic all degree freedom space ship mode for now.
-Or one could treat it as a simple heightfield 3D viewer.
+One could either use it as a
+
+   simple dumb flight sim with a futuristic all degree freedom space ship mode for now.
+   Or one could treat it as a simple heightfield 3D viewer.
 
 Done to get some basic feel about Panda3D, and have some fun in the process.
 Also bcas MS seems to have decided not to release MSFS on XBox1X (No No Noooo).
@@ -16,6 +18,25 @@ Also bcas MS seems to have decided not to release MSFS on XBox1X (No No Noooo).
 
 Usage
 =======
+
+One liners
+--------------
+
+As a Terrain heightfield viewer
+
+./fsim.py --sTerrainFile data/10n060e_20101117_gmted_mea300.tif --bLODBruteForce True
+
+As a simple dumb flightsim flying a advanced spaceship with full freedom of movement.
+
+./fsim.py --sTerrainFile data/10n060e_20101117_gmted_mea300.tif --iLODMinLevel 2
+
+As a simple dumb flightsim flying a flawed aircraft with limited freedom of movement.
+
+./fsim.py --sTerrainFile data/10n060e_20101117_gmted_mea300.tif --iLODMinLevel 2 --bModeAC True
+
+
+
+
 
 Cmdline
 ----------
@@ -39,11 +60,13 @@ The supported options are
   The terrain will be generated with full level of detail throughtout. In this case the program will take more time to show the initial frame.
   And from then on the periodic terrain updates dont take any time to update, as full level detail for full terrain is already generated.
 
-* --LODMinLevel <a int>
+* --iLODMinLevel <a int>
 
   0: Full level of detail for the terrain area within the near lod distance
 
   X: Any other integer value. As the integer value increases, lesser will be the maximum amount of detail that will be in generated terrain. So also terrain generate and update will take less time.
+
+  On a machine with powerfull processor and graphics card use 0, in others use what is feasible.
 
 
 Keys
@@ -78,6 +101,21 @@ SpaceShip mode
   + u : tilt left
 
   + o : tilt right
+
+
+Aircraft mode
+
+   + q : speed up
+
+   + e : slow down
+
+   + w : pitch down
+
+   + s : pitch up
+
+   + a : turn left
+
+   + d : turn right
 
 
 Terrain
