@@ -105,9 +105,9 @@ SpaceShip mode
 
 Aircraft mode
 
-   + q : speed up
+   + i : speed up
 
-   + e : slow down
+   + k : slow down
 
    + w : pitch down
 
@@ -117,9 +117,9 @@ Aircraft mode
 
    + d : turn right
 
-   + z : tilt left
+   + q : tilt left
 
-   + c : tilt right
+   + e : tilt right
 
 
 Terrain

@@ -333,9 +333,9 @@ class FSim(ShowBase):
         """
         Handle keys to simulate a aircraft
         """
-        if key == 'q':
+        if key == 'i':
             self.ctrans.y += 0.01
-        elif key == 'e':
+        elif key == 'k':
             self.ctrans.y -= 0.01
         elif key == 'w':
             self.crot.y -= 0.01
@@ -345,9 +345,9 @@ class FSim(ShowBase):
             self.crot.x += 0.01
         elif key == 'd':
             self.crot.x -= 0.01
-        elif key == 'z':
+        elif key == 'q':
             self.crot.z -= 0.01
-        elif key == 'c':
+        elif key == 'e':
             self.crot.z += 0.01
         elif key == 'x':
             self.ctrans = Vec3(0,0,0)
@@ -366,8 +366,8 @@ class FSim(ShowBase):
         self.accept("a", self.ac_keys_handler, [ 'a' ])
         self.accept("d", self.ac_keys_handler, [ 'd' ])
         self.accept("x", self.ac_keys_handler, [ 'x' ])
-        self.accept("z", self.ac_keys_handler, [ 'z' ])
-        self.accept("c", self.ac_keys_handler, [ 'c' ])
+        self.accept("i", self.ac_keys_handler, [ 'i' ])
+        self.accept("k", self.ac_keys_handler, [ 'k' ])
 
 
     def prepare(self):
