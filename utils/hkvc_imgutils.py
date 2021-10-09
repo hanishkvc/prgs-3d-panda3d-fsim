@@ -42,7 +42,7 @@ def run_reduceshades():
 
 def run_p3dhf(bTranspose=False):
     iI = iu.load_rimg(gCfg['sFNameSrc'], bTranspose=bTranspose)
-    iA = iu.amplify_shades_fimg(iI)
+    iA = iu.amplify_shades_fimg(iI, gCfg['bBoostAmplify'])
     numpy.save("/tmp/20A.npy", iA)
     iR = iu.resize_pwrof2square_rimg(iA,1, gCfg['iResizeFilter'])
     numpy.save("/tmp/20R.npy", iR)

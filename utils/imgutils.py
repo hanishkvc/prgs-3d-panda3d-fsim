@@ -383,12 +383,12 @@ def reduce_shades_crude_rimg(rImg, numShades=8, blurSize=4):
     return tImg
 
 
-def amplify_shades_fimg(fImg, bAmplify=True):
+def amplify_shades_fimg(fImg, bBoostAmplify=True):
     """
     Increase Image pixel values.
     This returns a image data array with floats in range 0 to 1.
     """
-    if not bAmplify:
+    if not bBoostAmplify:
         return fImg/fImg.max()
     iHist = numpy.histogram(fImg,20)[0]
     iHTotal = numpy.sum(iHist)
@@ -404,10 +404,10 @@ def amplify_shades_fimg(fImg, bAmplify=True):
     return clippedImg
 
 
-def amplify_shades_rimg(rImg, bAmplify=True):
+def amplify_shades_rimg(rImg, bBoostAmplify=True):
     maxV = numpy.iinfo(rImg.dtype).max
     fImg = rImg/maxV
-    fImg = amplify_shades_fimg(fImg, bAmplify)
+    fImg = amplify_shades_fimg(fImg, bBoostAmplify)
     rImg = numpy.round(fImg*maxV).astype(rImg.dtype)
     return rImg
 
@@ -426,6 +426,7 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
     iArg = 0
     cfg = {
             'bDebug': False,
+            'bBoostAmplify': False,
             'bMoreBluey': True,
             'bAddNoise': True,
             'fNoiseRatio': 0.1,

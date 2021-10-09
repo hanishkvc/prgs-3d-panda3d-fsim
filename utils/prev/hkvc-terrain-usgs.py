@@ -44,8 +44,8 @@ geotiff_info(fI)
 iI = skimage.io.imread(fI)
 
 # Adjust Image pixel values
-def img_amplifylevels(iI, bAmplify=True):
-    if not bAmplify:
+def img_amplifylevels(iI, bBoostAmplify=True):
+    if not bBoostAmplify:
         return iI/iI.max()
     iHist = numpy.histogram(iI,20)[0]
     iHTotal = numpy.sum(iHist)
