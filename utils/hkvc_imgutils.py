@@ -47,7 +47,7 @@ def run_p3dhf(bTranspose=False):
     iR = iu.resize_pwrof2square_rimg(iA,1, gCfg['iResizeFilter'])
     numpy.save("/tmp/20R.npy", iR)
     fnHF = "{}.hf.png".format(gCfg['sFNameSrc'])
-    iu.save_rimg(fnHF, iR, bTranspose=bTranspose)
+    iu.save_rimg(fnHF, iR, bTranspose=bTranspose, bExpand=True)
     return iR
 
 

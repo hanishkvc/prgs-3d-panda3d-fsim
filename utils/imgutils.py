@@ -129,25 +129,34 @@ def load_rimg(fName, bTranspose=False):
     return trImg
 
 
-def to_uint8(dIn, minV=None, maxV=None):
+def to_uint8(dIn, minV=None, maxV=None, bExpand=False):
+    """
+    Convert given dIn data array into an array of uint8 type.
+    If minV, maxV are given then map this into the full uint8 space.
+    Else if Expand is given then map the min and or max in passed data into full uint8 space.
+    Else if not Expand then map the min and or max of dIn.dtype into full uint8 space.
+    """
     if maxV == None:
-        maxV = numpy.iinfo(dIn.dtype).max
+        if bExpand:
+            maxV = dIn.max()
+        else:
+            maxV = numpy.iinfo(dIn.dtype).max
     if minV == None:
-        minV = numpy.iinfo(dIn.dtype).min
+        if bExpand:
+            minV = dIn.min()
+        else:
+            minV = numpy.iinfo(dIn.dtype).min
     if gCfg['bDebug']:
         print("INFO:2Uint8:", dIn.min(), dIn.max(), "expected range:", minV, maxV)
     if (dIn.min() < minV) or (dIn.max() > maxV):
         raise RuntimeError("2UInt8: Data beyond expected range of {} to {}".format(minV, maxV))
-    if dIn.min() >= 0:
-        dTmp = dIn/maxV
-    else:
-        dTmp = (dIn + abs(minV))/(2*maxV)
+    dTmp = (dIn + abs(minV))/(maxV+abs(minV))
     dOut = dTmp*255
     dOut = dOut.astype(numpy.uint8)
     return dOut
 
 
-def save_rimg(fName, rImg, bTranspose=False):
+def save_rimg(fName, rImg, bTranspose=False, bExpand=False):
     """
     Save the raw image data array into a image file containing 8bit entities.
         ie for gray its 8bit gray shades and for color its 8bit R, 8bit G and 8bit B values.
@@ -161,10 +170,13 @@ def save_rimg(fName, rImg, bTranspose=False):
         trImg = rImg
     print("imgutils:SavingRImg:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     if trImg.dtype == numpy.int32:
-        trImg = to_uint8(trImg)
+        trImg = to_uint8(trImg, bExpand=bExpand)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     elif (trImg.dtype == numpy.float64) or (trImg.dtype == numpy.float32):
-        trImg = to_uint8(trImg, 0, 1)
+        if bExpand:
+            trImg = to_uint8(trImg, bExpand=bExpand)
+        else:
+            trImg = to_uint8(trImg, 0.0, 1.0)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
     tpImg.save(fName)
