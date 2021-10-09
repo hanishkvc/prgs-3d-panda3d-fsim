@@ -304,6 +304,11 @@ class FSim(ShowBase):
 
 
     def update_mc_ac(self):
+        """
+        Simulate a simple aircraft flying logic.
+        Lift is affected by
+            Speed, Height, Angle
+        """
         cPo = self.camera.getPos()
         cOr = self.camera.getHpr()
         d = self.ctrans.y - self.mcMinAccel4PLift
@@ -313,6 +318,9 @@ class FSim(ShowBase):
             lift *= heightEffect
         else:
             lift = d/32.0
+        aAdj = cOr.y/self.mcMaxAngle4PLift
+        if aAdj > 1:
+            lift -= (1-aAdj)
         if (cPo.z <= self.mcMinHeight):
             self.ctrans.z = 0
         else:
