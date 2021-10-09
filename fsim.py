@@ -378,9 +378,18 @@ def handle_args(args):
     while iArg < (len(args)-1):
         iArg += 1
         cArg = args[iArg]
-        if cArg == "--sTerrainFile":
+        if cArg.startswith("--s"):
+            k = cArg[2:]
             iArg += 1
-            cfg['sTerrainFile'] = args[iArg]
+            cfg[k] = args[iArg]
+        elif cArg.startswith("--i"):
+            k = cArg[2:]
+            iArg += 1
+            cfg[k] = int(args[iArg], 0)
+        elif cArg.startswith("--f"):
+            k = cArg[2:]
+            iArg += 1
+            cfg[k] = float(args[iArg])
         elif cArg.startswith("--b"):
             k = cArg[2:]
             iArg += 1
