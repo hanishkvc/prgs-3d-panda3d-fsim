@@ -194,7 +194,7 @@ class FSim(ShowBase):
         self.terrain.setHeightfield(hf)
         self.terrain.setColorMap(cm)
         blockSize = int((hf.getXSize()-1)/8)
-        lodFar = blockSize*2
+        lodFar = blockSize*4
         lodNear = max(64,lodFar/4)
         #blockSize = 1024
         #lodFar = 2048
