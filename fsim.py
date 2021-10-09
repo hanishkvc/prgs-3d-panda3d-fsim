@@ -309,6 +309,8 @@ class FSim(ShowBase):
         d = self.ctrans.y - self.mcAccel2Fly
         if d > 0:
             lift = d/8.0
+            heightEffect = (1-cPo.z/self.mcMaxHeight)
+            lift *= heightEffect
         else:
             lift = d/32.0
         if not ((self.ctrans.y == 0) and (cPo.z <= 0)):
@@ -339,6 +341,7 @@ class FSim(ShowBase):
 
 
     def setup_ac_keyshandler(self):
+        self.mcMaxHeight = 10000
         self.mcAccel2Fly = 0.5
         self.accept("w", self.ac_keys_handler, [ 'w' ])
         self.accept("s", self.ac_keys_handler, [ 's' ])
