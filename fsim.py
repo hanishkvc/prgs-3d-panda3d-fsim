@@ -304,12 +304,14 @@ class FSim(ShowBase):
 
 
     def update_mc_ac(self):
+        cPo = self.camera.getPos()
+        cOr = self.camera.getHpr()
         d = self.ctrans.y - self.mcAccel2Fly
         if d > 0:
-            lift = d/0.2
-            self.ctrans.z = lift
+            lift = d/4.0
         else:
-            self.ctrans.z = -0.1
+            lift = d/16.0
+        self.ctrans.z = lift
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
 
