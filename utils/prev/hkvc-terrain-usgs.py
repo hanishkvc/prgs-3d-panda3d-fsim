@@ -71,7 +71,9 @@ def img_resize(iC):
 
 
 iC = img_amplifylevels(iI, bBoost)
+numpy.save("/tmp/10A.npy", iC)
 iR = img_resize(iC)
+numpy.save("/tmp/10R.npy", iR)
 # Save the image
 print("INFO:SavingImage:", fOHF)
 skimage.io.imsave(fOHF, iR)
