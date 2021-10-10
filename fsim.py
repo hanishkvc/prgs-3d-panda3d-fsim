@@ -245,6 +245,8 @@ class FSim(ShowBase):
         except:
             print(sys.exc_info())
             self.terrainXYHeight = -999
+            crot = Vec3(-180, 0, 0)
+            self.camera.setHpr(self.camera, crot)
 
 
     def update(self, task):
