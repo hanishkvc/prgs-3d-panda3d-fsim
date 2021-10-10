@@ -340,8 +340,8 @@ class FSim(ShowBase):
         aAdj = cOr.y/self.mcMaxAngle4PLift
         if aAdj > 1:
             lift -= (1-aAdj)
-        if (cPo.z <= self.mcMinHeight):
-            self.ctrans.z = 0
+        if (cPo.z <= (self.terrainXYHeight + self.mcMinHeight)):
+            self.ctrans.z = self.mcMinHeight
         else:
             self.ctrans.z = lift
         self.camera.setHpr(self.camera, self.crot)
@@ -375,7 +375,7 @@ class FSim(ShowBase):
 
     def setup_ac_keyshandler(self):
         self.mcMaxHeight = 10000
-        self.mcMinHeight = 5
+        self.mcMinHeight = 1
         self.mcMinAccel4PLift = 0.2
         self.mcMaxAngle4PLift = 60
         self.accept("w", self.ac_keys_handler, [ 'w' ])
