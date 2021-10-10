@@ -215,7 +215,7 @@ class FSim(ShowBase):
         tRoot = self.terrain.getRoot()
         #tRoot.setSx(4)
         #tRoot.setSy(4)
-        tRoot.setSz(200)
+        tRoot.setSz(100)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
         # Add some objects
@@ -235,11 +235,14 @@ class FSim(ShowBase):
 
     def update_terrain_height(self, cPos):
         hf=self.terrain.heightfield()
-        #self.terrainHV = hf.getGray(int(cPos.x), -1*int(cPos.y)-1)
         x = int(cPos.x)
         y = hf.getYSize() - int(cPos.y) - 1
-        self.terrainHV = hf.getGray(x, y)
-        self.textStatus2.setText("H:{:05.3f}".format(self.terrainHV))
+        try:
+            self.terrainXYHeight = hf.getGray(x, y)*self.terrain.getRoot().getSz()
+            self.textStatus2.setText("H:{:05.2f}".format(self.terrainXYHeight))
+        except:
+            print(sys.exc_info())
+            self.terrainXYHeight = -999
 
 
     def update(self, task):
