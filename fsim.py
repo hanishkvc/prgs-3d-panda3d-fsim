@@ -38,7 +38,7 @@ class FSim(ShowBase):
             self.cDefFace = Vec3(0, -90, 0)
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
-        self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.07
+        self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
 
 
     def setup_mc(self):
