@@ -389,6 +389,8 @@ class FSim(ShowBase):
         self.accept("x", self.ac_keys_handler, [ 'x' ])
         self.accept("i", self.ac_keys_handler, [ 'i' ])
         self.accept("k", self.ac_keys_handler, [ 'k' ])
+        for k in [ "w", "s", "q", "e", "a", "d", "x", "i", "k" ]:
+            self.accept("{}-repeat".format(k), self.ac_keys_handler, [ k ])
 
 
     def prepare(self):
