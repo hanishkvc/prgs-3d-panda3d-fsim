@@ -235,8 +235,11 @@ class FSim(ShowBase):
 
     def update_terrain_height(self, cPos):
         hf=self.terrain.heightfield()
-        self.terrainHV = hf.getGray(int(cPos.x), int(cPos.y))
-        self.textStatus2.setText("H:{:05.2f}".format(self.terrainHV))
+        #self.terrainHV = hf.getGray(int(cPos.x), -1*int(cPos.y)-1)
+        x = int(cPos.x)
+        y = hf.getYSize() - int(cPos.y) - 1
+        self.terrainHV = hf.getGray(x, y)
+        self.textStatus2.setText("H:{:05.3f}".format(self.terrainHV))
 
 
     def update(self, task):
