@@ -17,7 +17,7 @@ b) simple less than minimal flight sim with either a
 
    1) futuristic antigrav engine ;) based spaceship kind of control mode (ie the 6 degrees of movement freedom) OR
 
-   2) a very very crude hybrid of a powered glider/aircraft.
+   2) a very very crude hybrid of a powered glider/aircraft with partial antigrav engine allowing backward flying.
 
 This was done to get some basic feel about Panda3D, and have some fun in the process.
 Also bcas MS seems to have decided not to release MSFS on XBox1X (No No Noooo).

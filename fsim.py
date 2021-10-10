@@ -15,6 +15,8 @@ from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath
 
 
+VERSION='v20211010IST2229'
+
 class FSim(ShowBase):
 
     def __init__(self, cfg):
@@ -458,6 +460,8 @@ def handle_args(args):
     return cfg
 
 
+
+print("FSim:", VERSION)
 cfg = handle_args(sys.argv)
 fsim = FSim(cfg)
 fsim.prepare()
