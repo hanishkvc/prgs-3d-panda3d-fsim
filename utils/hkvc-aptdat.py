@@ -6,6 +6,7 @@
 
 import sys
 
+import odb
 
 gbDebug = False
 
@@ -39,8 +40,7 @@ def parse_aptdat(sFName, db):
         if len(la) == 0:
             state = '0'
             if apt.get('lat'):
-                k = "{:6.2f}-{:6.2f}".format(float(apt['lat']),float(apt['lon']))
-                db[k] = apt
+                odb.set(db, apt['lat'], apt['lon'], apt)
             apt = {}
             continue
         else:
@@ -67,7 +67,8 @@ def parse_aptdat(sFName, db):
             continue
 
 
-gDB = {}
+gDB = odb.initdb()
 parse_aptdat(sys.argv[1], gDB)
 print(gDB)
+odb.store(gDB, "data/odb.pickle")
 

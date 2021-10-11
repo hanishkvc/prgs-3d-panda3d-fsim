@@ -6,6 +6,10 @@
 import pickle
 
 
+def initdb():
+    return {}
+
+
 def store(db, sFName):
     f = open(sFName, "wb+")
     pickle.dump(db, f)
