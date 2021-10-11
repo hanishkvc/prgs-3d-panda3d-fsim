@@ -37,7 +37,7 @@ class FSim(ShowBase):
         self.setup_mc()
         self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
-        self.create_models()
+        self.create_models(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
@@ -220,12 +220,22 @@ class FSim(ShowBase):
         print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
-    def create_models(self):
-        self.m1 = pp.create_cube("m1")
-        self.m1np = self.render.attachNewNode(self.m1)
-        self.m1np.setPos(100,100,5)
-        self.m1np.setScale(10)
-        #self.m1np.setTwoSided(True)
+    def create_models(self, baseFName):
+        objsFName = "{}.objects".format(baseFName)
+        f = open(objsFName)
+        self.objs = {}
+        objCnt = 0
+        for l in f:
+            objCnt += 1
+            la = l.strip()
+            la = la[1:-2].split(',')
+            x = int(la[0])
+            y = int(la[1])
+            m1 = pp.create_cube("{}".format(objCnt))
+            m1np = self.render.attachNewNode(m1)
+            m1np.setPos(x, y, 10)
+            m1np.setScale(2)
+            self.objs[objCnt] = m1np
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):

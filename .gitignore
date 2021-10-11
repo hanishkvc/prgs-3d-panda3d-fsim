@@ -1,3 +1,4 @@
 *.cm.png
 *.hf.png
+*.objects
 *__pycache__
