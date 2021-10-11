@@ -13,7 +13,6 @@ from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath, CardMaker
-from direct.gui.DirectGui import DirectFrame, DirectLabel
 
 
 VERSION='v20211010IST2229'
@@ -218,6 +217,8 @@ class FSim(ShowBase):
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
+        if ((self.frameCnt%4) == 0) and (max(cTr) > 2):
+            self.hud['frameNP'].setPos(0, 0, 0-numpy.random.random()*0.02)
         self.hud['Pos'].setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
         self.hud['Ori'].setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
         self.hud['Tra'].setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
