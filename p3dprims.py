@@ -49,7 +49,7 @@ def create_cube(name):
     m1.add_vertex((0,1,1))
     m1.add_vertex((1,1,1))
     m1.add_vertex((1,0,1))
-    m1.add_triangles([[0,1,2], [4,5,6], [0,4,5], [0,1,5]])
+    m1.add_triangles([[0,2,1], [4,6,5], [0,4,5], [0,5,1]])
     m1gn = m1.generate()
     return m1gn
 

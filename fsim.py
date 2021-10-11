@@ -225,7 +225,7 @@ class FSim(ShowBase):
         self.m1np = self.render.attachNewNode(self.m1)
         self.m1np.setPos(100,100,5)
         self.m1np.setScale(10)
-        self.m1np.setTwoSided(True)
+        #self.m1np.setTwoSided(True)
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
