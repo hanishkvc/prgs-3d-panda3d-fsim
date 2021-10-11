@@ -104,16 +104,16 @@ class FSim(ShowBase):
 
 
     def setup_hud(self):
-        self.hud = DirectFrame(frameColor = (0.1,0.2,0.1,0.4), frameSize=(-0.99,0.99,0.79,0.99))
-        self.hudPos, self.hudOr = None, None
+        self.hud = {}
+        self.hud['frame'] = DirectFrame(frameColor = (0.1,0.2,0.1,0.4), frameSize=(-0.99,0.99,0.79,0.99))
         lO = [
-                [ self.hudPos, "Pos",    (-0.9,-0.4,0.8,0.9), 0.04 ],
-                [ self.hudOr,  "Orient", (-0.9,-0.4,0.7,0.8), 0.04 ],
+                [ "Pos", (-0.9,-0.4,0.8,0.9), 0.04 ],
+                [ "Or",  (-0.9,-0.4,0.7,0.8), 0.04 ],
             ]
         for o in lO:
-            o[0] = DirectLabel(parent=self.hud, text=o[1], text_fg=(0.9,0.9,0.9,1.0), frameColor=(0.2,0.2,0.2,1.0), frameSize=o[2])
-            o[0].setPos(o[2][0], 0, o[2][3])
-            o[0].setScale(o[3])
+            self.hud[o[0]] = DirectLabel(parent=self.hud['frame'], text=o[0], text_fg=(0.9,0.9,0.9,1.0), frameColor=(0.2,0.2,0.2,1.0), frameSize=o[1])
+            self.hud[o[0]].setPos(o[1][0], 0, o[1][3])
+            self.hud[o[0]].setScale(o[2])
 
 
     def setup_lights(self, bAmbient=True, bDirectional=True):
@@ -245,7 +245,7 @@ class FSim(ShowBase):
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
         #self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
-        self.hudPos['text'] = "P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2])
+        self.hud['Pos']['text'] = "P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2])
         self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
         self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
         self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
