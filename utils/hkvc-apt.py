@@ -7,6 +7,9 @@
 import sys
 
 
+gbDebug = False
+
+
 def cleanup_line(sL):
     la = []
     prev = ''
@@ -25,7 +28,7 @@ def cleanup_line(sL):
 
 
 def parse_aptdat(sFName):
-    f = open(sFName)
+    f = open(sFName, errors='replace')
     state = '0'
     lCnt = 0
     for l in f:
@@ -38,16 +41,17 @@ def parse_aptdat(sFName):
             lon = None
             continue
         else:
-            print("DBUG:",la)
+            if gbDebug:
+                print("DBUG:ParseAptDat:{}:{}".format(lCnt,la))
         if la[0] == "1":
             if state != '0':
-                print("ParseAptDat:{}:New Airport Line before ending of prev airport data?".format(lCnt))
+                print("ERRR:ParseAptDat:{}:New Airport Line before ending of prev airport data?".format(lCnt))
                 continue
             state = 'A'
             print("INFO:A:", la[4], la[5:])
         elif la[0] == "100":
             if state != 'A':
-                print("ParseAptDat:{}:Runway data in wrong place?".format(lCnt))
+                print("ERRR:ParseAptDat:{}:Runway data in wrong place?".format(lCnt))
                 continue
             print("INFO:R:", la[9], la[10])
         else:
