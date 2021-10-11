@@ -223,6 +223,7 @@ class FSim(ShowBase):
     def create_models(self, baseFName):
         objsFName = "{}.objects".format(baseFName)
         f = open(objsFName)
+        hf=self.terrain.heightfield()
         self.objs = {}
         objCnt = 0
         for l in f:
@@ -230,7 +231,7 @@ class FSim(ShowBase):
             la = l.strip()
             la = la[1:-2].split(',')
             x = int(la[0])
-            y = int(la[1])
+            y = hf.getYSize() - int(la[1]) - 1
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
             m1np.setPos(x, y, 10)
