@@ -54,7 +54,12 @@ def parse_aptdat(sFName, db):
             apt['icao'] = la[4]
             if gbDebug:
                 print("INFO:A:", la[4], la[5:])
+        elif (la[0] == "16") or (la[0] == "17"):
+            state = 'B'
+            continue
         elif la[0] == "100":
+            if state == 'B':
+                continue
             if state != 'A':
                 print("ERRR:ParseAptDat:{}:Runway data in wrong place?".format(lCnt))
                 continue
