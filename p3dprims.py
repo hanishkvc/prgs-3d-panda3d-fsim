@@ -39,3 +39,18 @@ class Polyhedron():
         self.geomNode.addGeom(self.geom)
         return self.geomNode
 
+def create_cube(name):
+    m1 = Polyhedron(name)
+    m1.add_vertex((0,0,0))
+    m1.add_vertex((0,1,0))
+    m1.add_vertex((1,1,0))
+    m1.add_vertex((1,0,0))
+    m1.add_vertex((0,0,1))
+    m1.add_vertex((0,1,1))
+    m1.add_vertex((1,1,1))
+    m1.add_vertex((1,0,1))
+    m1.add_triangles([[0,1,2], [4,5,6], [0,4,5], [0,1,5]])
+    m1gn = m1.generate()
+    return m1gn
+
+

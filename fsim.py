@@ -14,8 +14,11 @@ from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath, CardMaker
 
+import p3dprims as pp
+
 
 VERSION='v20211010IST2229'
+
 
 class FSim(ShowBase):
 
@@ -34,6 +37,7 @@ class FSim(ShowBase):
         self.setup_mc()
         self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
+        self.create_models()
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
@@ -214,6 +218,13 @@ class FSim(ShowBase):
         p.setScale(0.01)
         p.reparentTo(self.render)
         print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
+
+
+    def create_models(self):
+        self.m1 = pp.create_cube("m1")
+        self.m1np = self.render.attachNewNode(self.m1)
+        self.m1np.setPos(100,100,5)
+        self.m1np.setScale(10)
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
