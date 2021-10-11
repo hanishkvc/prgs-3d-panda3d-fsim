@@ -12,7 +12,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
-from panda3d.core import TextNode, NodePath
+from panda3d.core import TextNode, NodePath, CardMaker
 from direct.gui.DirectGui import DirectFrame, DirectLabel
 
 
@@ -105,15 +105,27 @@ class FSim(ShowBase):
 
     def setup_hud(self):
         self.hud = {}
-        self.hud['frame'] = DirectFrame(frameColor = (0.1,0.2,0.1,0.4), frameSize=(-0.99,0.99,0.79,0.99))
+        self.hud['frame'] = CardMaker("HUD")
+        self.hud['frame'].setColor(0.1,0.2,0.1,0.2)
+        self.hud['frame'].setFrame(-0.99,0.99,0.79,0.99)
+        self.hud['frameNP'] = self.render2d.attachNewNode(self.hud['frame'].generate())
+        fwFont = loader.loadFont("cmtt12.egg")
         lO = [
                 [ "Pos", (-0.9,-0.4,0.8,0.9), 0.04 ],
                 [ "Or",  (-0.9,-0.4,0.7,0.8), 0.04 ],
             ]
         for o in lO:
-            self.hud[o[0]] = DirectLabel(parent=self.hud['frame'], text=o[0], text_fg=(0.9,0.9,0.9,1.0), frameColor=(0.2,0.2,0.2,1.0), frameSize=o[1])
-            self.hud[o[0]].setPos(o[1][0], 0, o[1][3])
-            self.hud[o[0]].setScale(o[2])
+            self.hud[o[0]] = TextNode(o[0])
+            np = self.render2d.attachNewNode(self.hud[o[0]])
+            np.setPos(o[1][0], 0, o[1][3])
+            np.setScale(o[2])
+            self.hud[o[0]].setText(o[0])
+            self.hud[o[0]].setFont(fwFont)
+            #self.hud[o[0]].setShadow(0.05,0.05)
+            #self.hud[o[0]].setShadowColor(0.2,0.2,0.2,1.0)
+            self.hud[o[0]].setCardColor(0.2,0.2,0.2,1.0)
+            self.hud[o[0]].setCardAsMargin(0.2,0.2,0.2,0.2)
+            self.hud[o[0]].setCardDecal(True)
 
 
     def setup_lights(self, bAmbient=True, bDirectional=True):
@@ -245,7 +257,7 @@ class FSim(ShowBase):
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
         #self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
-        self.hud['Pos']['text'] = "P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2])
+        self.hud['Pos'].setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
         self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
         self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
         self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
