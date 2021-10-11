@@ -79,7 +79,7 @@ class FSim(ShowBase):
         for o in lO:
             self.hud[o[0]] = TextNode(o[0])
             np = self.hud['frameNP'].attachNewNode(self.hud[o[0]])
-            np.setPos(o[1][0], 0, o[1][1])
+            np.setPos(o[1][0], 1, o[1][1])
             np.setScale(o[2])
             self.hud[o[0]].setText(o[0])
             self.hud[o[0]].setFont(fwFont)
