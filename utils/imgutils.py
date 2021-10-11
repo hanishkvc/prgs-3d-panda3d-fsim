@@ -8,6 +8,8 @@
 import PIL.Image
 import numpy
 
+import odb
+
 
 gCfg = {}
 
@@ -343,6 +345,20 @@ def hf2cm_rimg(rImg):
                 cF = 0.2 + 0.8*((rImg[x,y]-0.40)/0.60)
                 cN[x,y] = cF
     return cN
+
+
+def map_objects_gti(imgS, db):
+    """
+    For the given GeoTiff image, check if any objects are there in the given objects db, in the corresponding region.
+    """
+    ll = []
+    for x in range(imgS.XW):
+        for y in range(imgS.YH):
+            lon, lat = imgS.xy2coord(x,y)
+            obj = odb.get(db, lat, lon)
+            if obj != None:
+                ll.append([x, y, obj['icao']])
+    return ll
 
 
 def mapto_ex_gti(imgS, imgR):

@@ -11,6 +11,7 @@
 #   Note: The logic accepts elevation/heightfield/grayscale data in any file format.
 # Option4: Generate Panda3D compatible heightfield and colormap images in one go.
 #   One could give a GeoTiff image containing elevation as input for example.
+# Option5: Map objects (rather airports) belonging to a given GeoTiff's region, into a text file.
 # HanishKVC, 2021
 # GPL
 #
@@ -19,6 +20,7 @@
 import sys
 import numpy
 import imgutils as iu
+import odb
 
 
 def run_mapto():
@@ -30,6 +32,17 @@ def run_mapto():
     rCM = iu.mapto_ex_gti(imgSrc, imgRef)
     fnCM = "{}.cm.png".format(imgSrc.fName)
     iu.save_rimg(fnCM, rCM, bTranspose=True)
+
+
+def run_mapobjects():
+    imgSrc = iu.GTImage(gCfg['sFNameSrc'], "SRC")
+    imgSrc.print_info()
+    db = odb.load(gCfg['sFNameODB'])
+    ll = iu.map_objects_gti(imgSrc, db)
+    fnObjs = "{}.objects".format(imgSrc.fName)
+    f = open(fnObjs, "wt+")
+    for l in ll:
+        f.write("{}\n".format(l))
 
 
 def run_reduceshades():
@@ -72,11 +85,13 @@ def run_lcrop():
 
 
 def run_main():
-    if gCfg.get('bBreakPoint') != None:
+    if type(gCfg.get('bBreakPoint')) != type(None):
         breakpoint()
     try:
         if gCfg['sCmd'] == "mapto":
             run_mapto()
+        elif gCfg['sCmd'] == "mapobjects":
+            run_mapobjects()
         elif gCfg['sCmd'] == "reduceshades":
             run_reduceshades()
         elif gCfg['sCmd'] == "p3dhf":
@@ -98,6 +113,7 @@ def run_main():
         print("thisPrg --sCmd hf2cm --sFNameSrc <srcImage>")
         print("thisPrg --sCmd p3dterrain --sFNameSrc <srcImage>")
         print("thisPrg --sCmd lcrop --sFNameSrc <srcImage> --iXS <int> --iYS <int> --iXE <int> --iYE <int>")
+        print("thisPrg --sCmd mapobjects --sFNameSrc <srcImage> --sFNameODB <odb.pickle>")
 
 
 if __name__ == "__main__":
