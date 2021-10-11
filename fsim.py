@@ -13,6 +13,7 @@ from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath
+from direct.gui.DirectGui import DirectFrame, DirectLabel
 
 
 VERSION='v20211010IST2229'
@@ -33,6 +34,7 @@ class FSim(ShowBase):
         self.gndHeight = 4097
         self.setup_mc()
         self.setup_texts()
+        self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
@@ -99,6 +101,13 @@ class FSim(ShowBase):
             t.setCardColor(0.2,0.2,0.2,1.0)
             t.setCardAsMargin(0.2,0.2,0.2,0.2)
             t.setCardDecal(True)
+
+
+    def setup_hud(self):
+        self.hud = DirectFrame(frameColor = (0.1,0.2,0.1,0.4), frameSize=(-0.99,0.99,0.79,0.99))
+        self.hudPos = DirectLabel(parent=self.hud, text="Pos", frameColor=(0.2,0.2,0.2,1.0), frameSize=(-0.9,-0.4,0.8,0.9))
+        self.hudPos.setPos(-0.9, 0, 0.9)
+        self.hudPos.setScale(0.04)
 
 
     def setup_lights(self, bAmbient=True, bDirectional=True):
