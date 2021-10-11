@@ -107,8 +107,9 @@ class FSim(ShowBase):
         self.hud = {}
         self.hud['frame'] = CardMaker("HUD")
         self.hud['frame'].setColor(0.1,0.2,0.1,0.2)
-        self.hud['frame'].setFrame(-0.99,0.99,0.79,0.99)
+        self.hud['frame'].setFrame(-0.94,0.94,0.74,0.98)
         self.hud['frameNP'] = self.render2d.attachNewNode(self.hud['frame'].generate())
+        self.hud['frameNP'].setTransparency(True)
         fwFont = loader.loadFont("cmtt12.egg")
         lO = [
                 [ "Pos", (-0.9,-0.4,0.8,0.9), 0.04 ],
@@ -116,7 +117,7 @@ class FSim(ShowBase):
             ]
         for o in lO:
             self.hud[o[0]] = TextNode(o[0])
-            np = self.render2d.attachNewNode(self.hud[o[0]])
+            np = self.hud['frameNP'].attachNewNode(self.hud[o[0]])
             np.setPos(o[1][0], 0, o[1][3])
             np.setScale(o[2])
             self.hud[o[0]].setText(o[0])
