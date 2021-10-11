@@ -33,7 +33,6 @@ class FSim(ShowBase):
         self.gndWidth = 4097
         self.gndHeight = 4097
         self.setup_mc()
-        self.setup_texts()
         self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
@@ -58,51 +57,6 @@ class FSim(ShowBase):
         self.camera.setHpr(hpr)
 
 
-    def setup_texts(self):
-        # Status line
-        self.textStatus = TextNode('TextStatus')
-        self.textStatus.setText('Status:')
-        tsnp = self.render2d.attachNewNode(self.textStatus)
-        tsnp.setPos(-0.2, 0, 0.9)
-        tsnp.setScale(0.04)
-        # Status line2
-        self.textStatus2 = TextNode('TextStatus2')
-        self.textStatus2.setText('Status2:')
-        ts2np = self.render2d.attachNewNode(self.textStatus2)
-        ts2np.setPos(-0.2, 0, 0.8)
-        ts2np.setScale(0.04)
-        # Cur State
-        self.textPos = TextNode('TextPos')
-        self.textPos.setText('Pos:')
-        tpnp = self.render2d.attachNewNode(self.textPos)
-        tpnp.setPos(-0.9, 0, 0.9)
-        tpnp.setScale(0.04)
-        self.textOr = TextNode('TextOr')
-        self.textOr.setText('Orient:')
-        tonp = self.render2d.attachNewNode(self.textOr)
-        tonp.setPos(-0.9, 0, 0.8)
-        tonp.setScale(0.04)
-        # Change Actions
-        self.textTrans = TextNode('TextTrans')
-        self.textTrans.setText('Trans:')
-        ttnp = self.render2d.attachNewNode(self.textTrans)
-        ttnp.setPos(0.2, 0, 0.9)
-        ttnp.setScale(0.04)
-        self.textRot = TextNode('TextRot')
-        self.textRot.setText('Rot:')
-        trnp = self.render2d.attachNewNode(self.textRot)
-        trnp.setPos(0.2, 0, 0.8)
-        trnp.setScale(0.04)
-        fwFont = loader.loadFont("cmtt12.egg")
-        for t in [ self.textPos, self.textOr, self.textTrans, self.textRot, self.textStatus, self.textStatus2 ]:
-            t.setFont(fwFont)
-            #t.setShadow(0.05,0.05)
-            #t.setShadowColor(0.2,0.2,0.2,1.0)
-            t.setCardColor(0.2,0.2,0.2,1.0)
-            t.setCardAsMargin(0.2,0.2,0.2,0.2)
-            t.setCardDecal(True)
-
-
     def setup_hud(self):
         self.hud = {}
         self.hud['frame'] = CardMaker("HUD")
@@ -112,13 +66,20 @@ class FSim(ShowBase):
         self.hud['frameNP'].setTransparency(True)
         fwFont = loader.loadFont("cmtt12.egg")
         lO = [
-                [ "Pos", (-0.9,-0.4,0.8,0.9), 0.04 ],
-                [ "Or",  (-0.9,-0.4,0.7,0.8), 0.04 ],
+                # Cur State
+                [ "Pos", (-0.9, 0.9), 0.04 ],
+                [ "Ori", (-0.9, 0.8), 0.04 ],
+                # Change Actions
+                [ "Tra", ( 0.3, 0.9), 0.04 ],
+                [ "Rot", ( 0.3, 0.8), 0.04 ],
+                # Status
+                [ "S1",  (-0.1, 0.9), 0.04 ],
+                [ "S2",  (-0.1, 0.8), 0.04 ],
             ]
         for o in lO:
             self.hud[o[0]] = TextNode(o[0])
             np = self.hud['frameNP'].attachNewNode(self.hud[o[0]])
-            np.setPos(o[1][0], 0, o[1][3])
+            np.setPos(o[1][0], 0, o[1][1])
             np.setScale(o[2])
             self.hud[o[0]].setText(o[0])
             self.hud[o[0]].setFont(fwFont)
@@ -257,11 +218,10 @@ class FSim(ShowBase):
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
-        #self.textPos.setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
         self.hud['Pos'].setText("P:{:08.2f},{:08.2f},{:08.2f}".format(cPo[0], cPo[1], cPo[2]))
-        self.textOr.setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
-        self.textTrans.setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
-        self.textRot.setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
+        self.hud['Ori'].setText("O:{:08.2f},{:08.2f},{:08.2f}".format(cOr[0], cOr[1], cOr[2]))
+        self.hud['Tra'].setText("T:{:08.4f},{:08.4f},{:08.4f}".format(cTr[0], cTr[1], cTr[2]))
+        self.hud['Rot'].setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
 
 
     def update_terrain_height(self, cPos):
@@ -270,7 +230,7 @@ class FSim(ShowBase):
         y = hf.getYSize() - int(cPos.y) - 1
         try:
             self.terrainXYHeight = hf.getGray(x, y)*self.terrain.getRoot().getSz()
-            self.textStatus2.setText("H:{:05.2f}".format(self.terrainXYHeight))
+            self.hud['S2'].setText("H:{:06.3f}".format(self.terrainXYHeight/10))
         except:
             print(sys.exc_info())
             self.terrainXYHeight = -999
@@ -291,7 +251,7 @@ class FSim(ShowBase):
         cRo = self.crot
         # Update terrain or not
         updateDelta = (self.updateCPos - cPo).length()
-        self.textStatus.setText("NU:{:05.2f}".format(updateDelta))
+        self.hud['S1'].setText("NU:{:05.2f}".format(updateDelta))
         self.update_terrain_height(cPo)
         if (updateDelta > self.updateDelta):
             self.terrain.update()
