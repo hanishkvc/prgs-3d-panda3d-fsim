@@ -12,7 +12,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
-from panda3d.core import TextNode, NodePath, CardMaker, DecalEffect
+from panda3d.core import TextNode, NodePath, CardMaker
 from direct.gui.DirectGui import DirectFrame, DirectLabel
 
 
@@ -64,7 +64,6 @@ class FSim(ShowBase):
         self.hud['frame'].setFrame(-0.94,0.94,0.74,0.98)
         self.hud['frameNP'] = self.render2d.attachNewNode(self.hud['frame'].generate())
         self.hud['frameNP'].setTransparency(True)
-        self.hud['frameNP'].setEffect(DecalEffect.make())
         fwFont = loader.loadFont("cmtt12.egg")
         lO = [
                 # Cur State
@@ -80,7 +79,7 @@ class FSim(ShowBase):
         for o in lO:
             self.hud[o[0]] = TextNode(o[0])
             np = self.hud['frameNP'].attachNewNode(self.hud[o[0]])
-            np.setPos(o[1][0], 0, o[1][1])
+            np.setPos(o[1][0], 1, o[1][1])
             np.setScale(o[2])
             self.hud[o[0]].setText(o[0])
             self.hud[o[0]].setFont(fwFont)
