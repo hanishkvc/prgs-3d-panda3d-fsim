@@ -224,6 +224,16 @@ class FSim(ShowBase):
         objsFName = "{}.objects".format(baseFName)
         f = open(objsFName)
         hf=self.terrain.heightfield()
+        hdr1 = f.readline()
+        hdr2 = f.readline()
+        if not hdr2.startswith("HDR2:"):
+            raise RuntimeError("ERRR:CreateModels:Invalid Objects file:{}".format(objsFName))
+        hdr2 = hdr2.split(":")
+        oXW,oYH = hdr2[2], hdr2[4]
+        cXW = hf.getXSize()
+        cYH = hf.getYSize()
+        xMult = cXW/oXW
+        yMult = cYH/oYH
         self.objs = {}
         objCnt = 0
         for l in f:
@@ -231,10 +241,10 @@ class FSim(ShowBase):
             la = l.strip()
             la = la[1:-2].split(',')
             x = int(la[0])
-            y = hf.getYSize() - int(la[1]) - 1
+            y = cYH - int(la[1]) - 1
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
-            m1np.setPos(x, y, 10)
+            m1np.setPos(int(x*xMult), int(y*yMult), 10)
             m1np.setScale(2)
             self.objs[objCnt] = m1np
 

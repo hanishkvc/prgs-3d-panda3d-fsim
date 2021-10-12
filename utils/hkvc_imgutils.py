@@ -41,6 +41,8 @@ def run_mapobjects():
     ll = iu.map_objects_gti(imgSrc, db)
     fnObjs = "{}.objects".format(imgSrc.fName)
     f = open(fnObjs, "wt+")
+    f.write("HDR1:SLon:{}:ELon:{}:SLat:{}:ELat:{}\n".format(imgSrc.sLon, imgSrc.eLon, imgSrc.sLat, imgSrc.eLat))
+    f.write("HDR2:XWidth:{}:YHeight:{}\n".format(imgSrc.XW, imgSrc.YH))
     for l in ll:
         f.write("{}\n".format(l))
 
