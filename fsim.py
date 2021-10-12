@@ -222,7 +222,11 @@ class FSim(ShowBase):
 
     def create_models(self, baseFName):
         objsFName = "{}.objects".format(baseFName)
-        f = open(objsFName)
+        try:
+            f = open(objsFName)
+        except:
+            print("WARN:CreateModels:Returning empty handed")
+            return
         hf=self.terrain.heightfield()
         hdr1 = f.readline()
         hdr2 = f.readline()
