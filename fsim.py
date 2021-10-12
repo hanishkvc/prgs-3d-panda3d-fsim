@@ -229,11 +229,12 @@ class FSim(ShowBase):
         if not hdr2.startswith("HDR2:"):
             raise RuntimeError("ERRR:CreateModels:Invalid Objects file:{}".format(objsFName))
         hdr2 = hdr2.split(":")
-        oXW,oYH = hdr2[2], hdr2[4]
+        oXW,oYH = int(hdr2[2]), int(hdr2[4])
         cXW = hf.getXSize()
         cYH = hf.getYSize()
         xMult = cXW/oXW
         yMult = cYH/oYH
+        print("INFO:CreateModels:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
         self.objs = {}
         objCnt = 0
         for l in f:
@@ -241,10 +242,14 @@ class FSim(ShowBase):
             la = l.strip()
             la = la[1:-2].split(',')
             x = int(la[0])
-            y = cYH - int(la[1]) - 1
+            aX = int(x*xMult)
+            y = int(la[1])
+            aY = int(y*yMult)
+            ay = cYH - aY - 1
+            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, la[2]))
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
-            m1np.setPos(int(x*xMult), int(y*yMult), 10)
+            m1np.setPos(aX, aY, 10)
             m1np.setScale(2)
             self.objs[objCnt] = m1np
 
