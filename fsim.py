@@ -13,6 +13,7 @@ from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath, CardMaker
+from direct.gui.OnscreenText import OnscreenText
 
 import p3dprims as pp
 
@@ -251,6 +252,7 @@ class FSim(ShowBase):
             aY = int(y*yMult)
             aY = self.y_interchange(aY)
             self.update_xyheight_img(x, aY)
+            aZ = self.terrainXYHeight+10
             name = la[2].strip()[1:-1]
             """
             if not name in [ "VADN", "VOAT" ]:
@@ -259,8 +261,12 @@ class FSim(ShowBase):
             print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, name))
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
-            m1np.setPos(aX, aY, self.terrainXYHeight+10)
+            m1np.setPos(aX, aY, aZ)
             m1np.setScale(4)
+            txt = OnscreenText(text=name)
+            txtnp = self.render.attachNewNode(txt.node())
+            txtnp.setPos(aX+2, aY-1, aZ+1)
+            txtnp.setScale(10)
             self.objs[objCnt] = m1np
 
 
