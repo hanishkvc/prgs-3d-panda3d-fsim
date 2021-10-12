@@ -38,11 +38,12 @@ class FSim(ShowBase):
         self.setup_mc()
         self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
-        self.create_models(cfg['sTerrainFile'])
+        self.create_objects(cfg['sTerrainFile'])
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
+        self.update_objects(self.cDefPos)
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
@@ -221,7 +222,7 @@ class FSim(ShowBase):
         print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
-    def create_models(self, baseFName, bFont3D=False):
+    def create_objects(self, baseFName, bFont3D=False):
         objsFName = "{}.objects".format(baseFName)
         try:
             f = open(objsFName)
