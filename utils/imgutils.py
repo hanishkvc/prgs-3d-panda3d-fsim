@@ -7,6 +7,7 @@
 
 import PIL.Image
 import numpy
+import PIL.PngImagePlugin
 
 import odb
 
@@ -41,6 +42,14 @@ class GTImage:
         print("{}:Lon".format(self.tag), self.sLon, self.dLon, self.eLon, self.XW)
         print("{}:Lat".format(self.tag), self.sLat, self.dLat, self.eLat, self.YH)
         print("{}:dim:{}:dtype:{}:min:{}:max:{}".format(self.tag, self.rImg.shape, self.rImg.dtype, self.rImg.min(), self.rImg.max()))
+
+    def get_pnginfo(self):
+        info = PIL.PngImagePlugin.PngInfo()
+        info.add_text("SLon", str(self.sLon))
+        info.add_text("ELon", str(self.eLon))
+        info.add_text("SLat", str(self.sLat))
+        info.add_text("ELat", str(self.eLat))
+        return info
 
     def load(self, fName=None, bTranspose=True):
         if fName == None:
@@ -171,13 +180,15 @@ def to_uint8(dIn, minV=None, maxV=None, bExpand=False):
     return dOut
 
 
-def save_rimg(fName, rImg, bTranspose=False, bExpand=False):
+def save_rimg(fName, rImg, bTranspose=False, bExpand=False, pngInfo=None):
     """
     Save the raw image data array into a image file containing 8bit entities.
         ie for gray its 8bit gray shades and for color its 8bit R, 8bit G and 8bit B values.
     If the raw image data is
         float, then its expected to be in the range 0.0 to 1.0.
         int32, then its expected to be either in the range 0 to MaxInt or -MinInt to MaxInt.
+    If saving into a png file, one can pass additional info to store in the image using
+        the pngInfo argument.
     """
     if bTranspose:
         trImg = transpose_rimg(rImg)
@@ -194,7 +205,10 @@ def save_rimg(fName, rImg, bTranspose=False, bExpand=False):
             trImg = to_uint8(trImg, 0.0, 1.0)
         print("imgutils:SavingRImg:Adjust:", trImg.shape, trImg.dtype, trImg.min(), trImg.max())
     tpImg =PIL.Image.fromarray(trImg)
-    tpImg.save(fName)
+    if pngInfo == None:
+        tpImg.save(fName)
+    else:
+        tpImg.save(fName, pnginfo=pngInfo)
 
 
 def transpose_rimg(rImg):
