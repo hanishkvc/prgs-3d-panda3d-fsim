@@ -44,7 +44,7 @@ class FSim(ShowBase):
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
-        self.update_objects(self.cDefPos)
+        self.update_objects()
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
