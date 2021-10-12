@@ -285,10 +285,10 @@ class FSim(ShowBase):
             self.objs[self.objsCnt] = { 'm': m1np, 't': txtnp, 'n': name }
             self.objsNPA[self.objsCnt] = [aX, aY, aZ]
         self.uoPos = Vec3(0,0,0)
-        self.uoThread = threading.Thread(target=self.update_objects, args=[ self ])
+        self.uoThread = threading.Thread(target=self.update_objects)
 
 
-    def update_objects(self, dummy):
+    def update_objects(self):
         tX = self.objsNPA[:,0] - self.uoPos.x
         tY = self.objsNPA[:,1] - self.uoPos.y
         d = tX**2 + tY**2
