@@ -44,7 +44,7 @@ class FSim(ShowBase):
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
-        self.update_objects()
+        self.uothread_run(self.cDefPos)
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
@@ -345,6 +345,13 @@ class FSim(ShowBase):
                 self.camera.setHpr(self.camera, crot)
 
 
+    def uothread_run(self, cPos):
+        self.uoPos.x = cPos.x
+        self.uoPos.y = cPos.y
+        self.uoPos.z = cPos.z
+        self.uoThread.run()
+
+
     def update(self, task):
         timeDelta = task.time - self.prevFrameTime
         timeDelta = timeDelta/0.04
@@ -360,10 +367,7 @@ class FSim(ShowBase):
         updateDelta = (self.updateCPos - cPo).length()
         if (updateDelta > self.updateDelta):
             self.terrain.update()
-            self.uoPos.x = cPo.x
-            self.uoPos.y = cPo.y
-            self.uoPos.z = cPo.z
-            self.uoThread.run()
+            self.uothread_run(cPo)
             self.updateCPos = cPo
         # Update instruments
         if (self.frameCnt%4) == 0:
