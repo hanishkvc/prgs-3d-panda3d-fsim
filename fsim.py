@@ -333,7 +333,8 @@ class FSim(ShowBase):
             self.update_xyheight_3d(int(cPos.x), int(cPos.y))
             self.hud['S2'].setText("H:{:06.3f}".format(self.terrainXYHeight/10))
         except:
-            print(sys.exc_info())
+            if self.cfg['bDebug']:
+                print(sys.exc_info())
             self.terrainXYHeight = -999
             if self.cfg['bModeAC']:
                 crot = Vec3(-180, 0, 0)
@@ -505,6 +506,7 @@ class FSim(ShowBase):
 
 def handle_args(args):
     cfg = {
+        'bDebug': False,
         'sTerrainFile': None,
         'bModeAC': False,
         'bTopView': False,
