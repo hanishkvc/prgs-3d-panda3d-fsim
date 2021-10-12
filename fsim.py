@@ -245,7 +245,8 @@ class FSim(ShowBase):
             aX = int(x*xMult)
             y = int(la[1])
             aY = int(y*yMult)
-            aY = cYH - aY - 1
+            aY = self.y_interchange(aY)
+            self.update_xyheight_img(x, aY)
             name = la[2].strip()[1:-1]
             """
             if not name in [ "VADN", "VOAT" ]:
@@ -254,8 +255,8 @@ class FSim(ShowBase):
             print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, name))
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
-            m1np.setPos(aX, aY, 10)
-            m1np.setScale(2)
+            m1np.setPos(aX, aY, self.terrainXYHeight+10)
+            m1np.setScale(4)
             self.objs[objCnt] = m1np
 
 
@@ -269,12 +270,27 @@ class FSim(ShowBase):
         self.hud['Rot'].setText("R:{:08.4f},{:08.4f},{:08.4f}".format(cRo[0], cRo[1], cRo[2]))
 
 
-    def update_terrain_height(self, cPos):
+    def y_interchange(self, y):
+        """
+        Switch y between 3d and Image Co-Ords
+        """
         hf=self.terrain.heightfield()
-        x = int(cPos.x)
-        y = hf.getYSize() - int(cPos.y) - 1
+        return hf.getYSize() - y - 1
+
+
+    def update_xyheight_3d(self, x, y):
+        y = self.y_interchange(y)
+        self.update_xyheight_img(x, y)
+
+
+    def update_xyheight_img(self, x, y):
+        hf=self.terrain.heightfield()
+        self.terrainXYHeight = hf.getGray(x, y)*self.terrain.getRoot().getSz()
+
+
+    def update_terrain_height(self, cPos):
         try:
-            self.terrainXYHeight = hf.getGray(x, y)*self.terrain.getRoot().getSz()
+            self.update_xyheight_3d(int(cPos.x), int(cPos.y))
             self.hud['S2'].setText("H:{:06.3f}".format(self.terrainXYHeight/10))
         except:
             print(sys.exc_info())
