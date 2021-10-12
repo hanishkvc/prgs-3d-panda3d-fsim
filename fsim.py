@@ -243,10 +243,11 @@ class FSim(ShowBase):
         yMult = cYH/oYH
         print("INFO:CreateModels:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
         self.objs = {}
-        objCnt = 0
+        self.objsTxt = {}
+        self.objsNPA = numpy.zeros(1024*3).reshape(1024,3)
+        self.objsCnt = -1
         alreadyIn = set()
         for l in f:
-            objCnt += 1
             la = l.strip()
             la = la[1:-1].split(',')
             x = int(la[0])
@@ -263,12 +264,14 @@ class FSim(ShowBase):
             """
             if name in alreadyIn:
                 continue
+            self.objsCnt += 1
             alreadyIn.add(name)
-            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, name))
-            m1 = pp.create_cube("{}".format(objCnt))
+            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, x,y, aX, aY, name))
+            m1 = pp.create_cube("{}".format(self.objsCnt))
             m1np = self.render.attachNewNode(m1)
             m1np.setPos(aX, aY, aZ)
             m1np.setScale(4)
+            m1np.hide()
             txt = OnscreenText(text=name)
             txtn = txt.node()
             if bFont3D:
@@ -276,7 +279,22 @@ class FSim(ShowBase):
             txtnp = self.render.attachNewNode(txtn)
             txtnp.setPos(aX+2, aY-1, aZ+1)
             txtnp.setScale(10)
-            self.objs[objCnt] = m1np
+            txtnp.hide()
+            self.objs[self.objsCnt] = m1np
+            self.objsTxt[self.objsCnt] = txtnp
+            self.objsNPA[self.objsCnt] = [aX, aY, aZ]
+
+
+    def update_objects(self, cPos):
+        tX = self.objsNPA[:,0] - cPos.x
+        tY = self.objsNPA[:,1] - cPos.y
+        d = tX**2 + tY**2
+        l = numpy.argwhere(d < 40000)
+        for i in range(self.objsCnt):
+            if i in l:
+                self.objs[i].show()
+            else:
+                self.objs[i].hide()
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
@@ -336,6 +354,7 @@ class FSim(ShowBase):
         self.update_terrain_height(cPo)
         if (updateDelta > self.updateDelta):
             self.terrain.update()
+            self.update_objects(cPo)
             self.updateCPos = cPo
         # Update instruments
         if (self.frameCnt%4) == 0:
