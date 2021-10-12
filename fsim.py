@@ -355,14 +355,14 @@ class FSim(ShowBase):
         cRo = self.crot
         # Update terrain or not
         updateDelta = (self.updateCPos - cPo).length()
-        self.hud['S1'].setText("NU:{:05.2f}".format(updateDelta))
-        self.update_terrain_height(cPo)
         if (updateDelta > self.updateDelta):
             self.terrain.update()
             self.update_objects(cPo)
             self.updateCPos = cPo
         # Update instruments
         if (self.frameCnt%4) == 0:
+            self.hud['S1'].setText("NU:{:05.2f}".format(updateDelta))
+            self.update_terrain_height(cPo)
             self.update_instruments_text(cPo, cOr, cTr, cRo)
         # Update log
         if (self.frameCnt%2400) == 0:
