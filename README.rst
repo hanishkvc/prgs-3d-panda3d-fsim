@@ -24,6 +24,10 @@ Also bcas MS seems to have decided not to release MSFS on XBox1X (No No Noooo).
 
 This provides a 1st person (from imagniary cockpit) view.
 
+It also optionally allows airfields in the x-plane/flightgear apt.dat file to be shown as simple floating cubes with the ICAO code on one side, for now.
+The terrain as well as the objects near to the current user/plane position is shown, while far of things arent detailed (wrt terrain) or not shown (objects).
+
+
 Usage
 =======
 
@@ -54,8 +58,6 @@ The apt.dat is the airports data file from X-Plane/Flightgear (one can get this 
 Additionally for each region/terrain, one needs to create the corresponding objects file,
 which will help place the airports into the 3D scenery.
 
-NOTE: Airports/etal appear as simple floating boxes (with their ICAO code on one side) above the ground, for now.
-
 
 Creating the terrain and related file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +70,7 @@ Optionally create the <terrain>.objects file
 
 utils/hkvc_imgutils.py --sCmd mapobjects --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameODB data/odb.pickle
 
+NOTE: If objects file is missing, then the objects wont be shown.
 
 Flying
 ~~~~~~~~
@@ -224,6 +227,7 @@ Two files are expected
    <terrainfilename>.cm.png - the color map image file corresponding to the terrain.
 
 Helper script is provided in utils folder to generate these files.
+
 
 Helper script
 ==============

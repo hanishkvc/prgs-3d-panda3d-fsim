@@ -242,8 +242,8 @@ class FSim(ShowBase):
         xMult = cXW/oXW
         yMult = cYH/oYH
         print("INFO:CreateModels:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
+        self.objsDistThreshold = int(max(cXW, cYH)/4)**2
         self.objs = {}
-        self.objsTxt = {}
         self.objsNPA = numpy.zeros(1024*3).reshape(1024,3)
         self.objsCnt = -1
         alreadyIn = set()
@@ -280,8 +280,7 @@ class FSim(ShowBase):
             txtnp.setPos(aX+2, aY-1, aZ+1)
             txtnp.setScale(10)
             txtnp.hide()
-            self.objs[self.objsCnt] = m1np
-            self.objsTxt[self.objsCnt] = txtnp
+            self.objs[self.objsCnt] = { 'm': m1np, 't': txtnp, 'n': name }
             self.objsNPA[self.objsCnt] = [aX, aY, aZ]
 
 
@@ -289,12 +288,16 @@ class FSim(ShowBase):
         tX = self.objsNPA[:,0] - cPos.x
         tY = self.objsNPA[:,1] - cPos.y
         d = tX**2 + tY**2
-        l = numpy.argwhere(d < 40000)
+        l = numpy.argwhere(d < self.objsDistThreshold)
+        print("INFO:UpdateObjects:", cPos, self.objsDistThreshold, l[l < self.objsCnt])
         for i in range(self.objsCnt):
             if i in l:
-                self.objs[i].show()
+                self.objs[i]['m'].show()
+                self.objs[i]['t'].show()
+                print(self.objs[i]['n'], d[i])
             else:
-                self.objs[i].hide()
+                self.objs[i]['m'].hide()
+                self.objs[i]['t'].hide()
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
