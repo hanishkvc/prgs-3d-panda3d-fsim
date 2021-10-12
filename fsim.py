@@ -240,13 +240,18 @@ class FSim(ShowBase):
         for l in f:
             objCnt += 1
             la = l.strip()
-            la = la[1:-2].split(',')
+            la = la[1:-1].split(',')
             x = int(la[0])
             aX = int(x*xMult)
             y = int(la[1])
             aY = int(y*yMult)
-            ay = cYH - aY - 1
-            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, la[2]))
+            aY = cYH - aY - 1
+            name = la[2].strip()[1:-1]
+            """
+            if not name in [ "VADN", "VOAT" ]:
+                continue
+            """
+            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, name))
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
             m1np.setPos(aX, aY, 10)
