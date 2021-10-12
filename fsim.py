@@ -14,6 +14,7 @@ from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
 from panda3d.core import TextNode, NodePath, CardMaker, TextFont
 from direct.gui.OnscreenText import OnscreenText
+from direct.stdpy import threading
 
 import p3dprims as pp
 
@@ -283,14 +284,16 @@ class FSim(ShowBase):
             txtnp.hide()
             self.objs[self.objsCnt] = { 'm': m1np, 't': txtnp, 'n': name }
             self.objsNPA[self.objsCnt] = [aX, aY, aZ]
+        self.uoPos = Vec3(0,0,0)
+        self.uoThread = threading.Thread(target=self.update_objects, args=[ self ])
 
 
-    def update_objects(self, cPos):
-        tX = self.objsNPA[:,0] - cPos.x
-        tY = self.objsNPA[:,1] - cPos.y
+    def update_objects(self, dummy):
+        tX = self.objsNPA[:,0] - self.uoPos.x
+        tY = self.objsNPA[:,1] - self.uoPos.y
         d = tX**2 + tY**2
         l = numpy.argwhere(d < self.objsDistThreshold)
-        print("INFO:UpdateObjects:", cPos, self.objsDistThreshold, l[l < self.objsCnt])
+        print("INFO:UpdateObjects:", self.uoPos, self.objsDistThreshold, l[l < self.objsCnt])
         for i in range(self.objsCnt):
             if i in l:
                 self.objs[i]['m'].show()
@@ -357,7 +360,10 @@ class FSim(ShowBase):
         updateDelta = (self.updateCPos - cPo).length()
         if (updateDelta > self.updateDelta):
             self.terrain.update()
-            self.update_objects(cPo)
+            self.uoPos.x = cPo.x
+            self.uoPos.y = cPo.y
+            self.uoPos.z = cPo.z
+            self.uoThread.run()
             self.updateCPos = cPo
         # Update instruments
         if (self.frameCnt%4) == 0:
