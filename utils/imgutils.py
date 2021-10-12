@@ -11,7 +11,19 @@ import numpy
 import odb
 
 
-gCfg = {}
+gCfg = {
+        'bDebug': False,
+        'bBoostAmplify': False,
+        'bMoreBluey': True,
+        'bAddNoise': True,
+        'fNoiseRatio': 0.1,
+        'bBlur': True,
+        'iBlurSize': 8,
+        'bBlurEdges': True,
+        'bFlip': True,
+        'bFlipVert': True,
+        'iResizeFilter': PIL.Image.BILINEAR,
+        }
 
 
 class GTImage:
@@ -440,7 +452,7 @@ def amplify_shades_rimg(rImg, bBoostAmplify=True):
     return rImg
 
 
-def handle_args(args, cb=None, bInitInternalCfg=True):
+def handle_args(args, cfg=gCfg, cb=None):
     """
     Put arguments which follow a standard template of
         --<[s|b|i|f]ArgKey> ArgValue
@@ -452,19 +464,6 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
         it ate from the args list passed.
     """
     iArg = 0
-    cfg = {
-            'bDebug': False,
-            'bBoostAmplify': False,
-            'bMoreBluey': True,
-            'bAddNoise': True,
-            'fNoiseRatio': 0.1,
-            'bBlur': True,
-            'iBlurSize': 8,
-            'bBlurEdges': True,
-            'bFlip': True,
-            'bFlipVert': True,
-            'iResizeFilter': PIL.Image.BILINEAR,
-            }
     while iArg < (len(args)-1):
         iArg += 1
         if args[iArg].startswith("--s"):
@@ -492,15 +491,18 @@ def handle_args(args, cb=None, bInitInternalCfg=True):
                 exit()
             else:
                 iArg += cb(args, iArg)
-    if bInitInternalCfg:
-        init(cfg)
     print(cfg)
     return cfg
 
 
 def init(cfg):
+    """
+    Update the internal gCfg dictionary with the key-value pairs in passed cfg dictionary.
+    """
     global gCfg
-    gCfg = cfg
+    for k in cfg:
+        gCfg[k] = cfg[k]
+    return gCfg
 
 
 if __name__ == "__main__":
