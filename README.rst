@@ -54,7 +54,7 @@ The apt.dat is the airports data file from X-Plane/Flightgear (one can get this 
 Additionally for each region/terrain, one needs to create the corresponding objects file,
 which will help place the airports into the 3D scenery.
 
-NOTE: Airports/etal appear as simple floating boxes above the ground, for now.
+NOTE: Airports/etal appear as simple floating boxes (with their ICAO code on one side) above the ground, for now.
 
 
 Creating the terrain and related file

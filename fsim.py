@@ -242,6 +242,7 @@ class FSim(ShowBase):
         print("INFO:CreateModels:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
         self.objs = {}
         objCnt = 0
+        alreadyIn = set()
         for l in f:
             objCnt += 1
             la = l.strip()
@@ -258,6 +259,9 @@ class FSim(ShowBase):
             if not name in [ "VADN", "VOAT" ]:
                 continue
             """
+            if name in alreadyIn:
+                continue
+            alreadyIn.add(name)
             print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(objCnt, x,y, aX, aY, name))
             m1 = pp.create_cube("{}".format(objCnt))
             m1np = self.render.attachNewNode(m1)
