@@ -12,7 +12,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from panda3d.core import GeoMipTerrain, PNMImage, Vec3
 from panda3d.core import AmbientLight, DirectionalLight
-from panda3d.core import TextNode, NodePath, CardMaker
+from panda3d.core import TextNode, NodePath, CardMaker, TextFont
 from direct.gui.OnscreenText import OnscreenText
 
 import p3dprims as pp
@@ -221,13 +221,15 @@ class FSim(ShowBase):
         print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
-    def create_models(self, baseFName):
+    def create_models(self, baseFName, bFont3D=False):
         objsFName = "{}.objects".format(baseFName)
         try:
             f = open(objsFName)
         except:
             print("WARN:CreateModels:Returning empty handed")
             return
+        if bFont3D:
+            ttfFont = loader.loadFont("data/comic.ttf", color = (1,1,1,1), renderMode = TextFont.RMSolid)
         hf=self.terrain.heightfield()
         hdr1 = f.readline()
         hdr2 = f.readline()
@@ -268,7 +270,10 @@ class FSim(ShowBase):
             m1np.setPos(aX, aY, aZ)
             m1np.setScale(4)
             txt = OnscreenText(text=name)
-            txtnp = self.render.attachNewNode(txt.node())
+            txtn = txt.node()
+            if bFont3D:
+                txtn.setFont(ttfFont)
+            txtnp = self.render.attachNewNode(txtn)
             txtnp.setPos(aX+2, aY-1, aZ+1)
             txtnp.setScale(10)
             self.objs[objCnt] = m1np
