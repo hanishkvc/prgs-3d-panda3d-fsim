@@ -2,7 +2,7 @@
 FSim Readme
 ##############
 Author: HanishKVC
-Version: v20211010IST2022
+Version: v20211012IST2006
 
 Intro
 ########
@@ -32,7 +32,7 @@ Intro
 
 This involves
 
-* first creating the terrain files
+* first creating the terrain and related files
 
 followed by
 
@@ -42,12 +42,29 @@ followed by
 One liners
 --------------
 
-Creating the terrain file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One time airports(airfields/etal) objects db creation [MakeItOptional]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+utils/hkvc-aptdat.py data/apt.dat
+
+This creates a odb.pickle file under data.
+
+The apt.dat is the airports data file from X-Plane/Flightgear (one can get this from flightgears fgdata repo).
+
+NOTE: Airports/etal appear as simple floating boxes above the ground.
+
+
+Creating the terrain and related file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 utils/hkvc_imgutils.py --sCmd p3dterrain --sFNameSrc data/10n060e_20101117_gmted_mea300.tif
 
 This creates <terrain>.hf.png and <terrain>.cm.png files
+
+utils/hkvc_imgutils.py --sCmd mapobjects --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameODB data/odb.pickle
+
+This creates the <terrain>.objects file
+
 
 Flying
 ~~~~~~~~
