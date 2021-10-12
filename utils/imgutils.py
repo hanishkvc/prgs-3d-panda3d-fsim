@@ -150,21 +150,22 @@ def to_uint8(dIn, minV=None, maxV=None, bExpand=False):
     Else if Expand is given then map the min and or max in passed data into full uint8 space.
     Else if not Expand then map the min and or max of dIn.dtype into full uint8 space.
     """
+    #breakpoint()
     if maxV == None:
         if bExpand:
-            maxV = dIn.max()
+            maxV = float(dIn.max())
         else:
-            maxV = numpy.iinfo(dIn.dtype).max
+            maxV = float(numpy.iinfo(dIn.dtype).max)
     if minV == None:
         if bExpand:
-            minV = dIn.min()
+            minV = float(dIn.min())
         else:
-            minV = numpy.iinfo(dIn.dtype).min
+            minV = float(numpy.iinfo(dIn.dtype).min)
     if gCfg['bDebug']:
         print("INFO:2Uint8:", dIn.min(), dIn.max(), "expected range:", minV, maxV)
     if (dIn.min() < minV) or (dIn.max() > maxV):
         raise RuntimeError("2UInt8: Data beyond expected range of {} to {}".format(minV, maxV))
-    dTmp = (dIn + abs(minV))/(maxV+abs(minV))
+    dTmp = (dIn-minV)/(maxV-minV)
     dOut = dTmp*255
     dOut = dOut.astype(numpy.uint8)
     return dOut
