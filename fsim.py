@@ -19,7 +19,7 @@ from direct.stdpy import threading
 import p3dprims as pp
 
 
-VERSION='v20211010IST2229'
+VERSION='v20211013IST1703'
 
 
 class FSim(ShowBase):
@@ -45,6 +45,9 @@ class FSim(ShowBase):
 
 
     def init_with_world(self):
+        """
+        Adjust things based on loaded terrain and initialise.
+        """
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
@@ -79,6 +82,13 @@ class FSim(ShowBase):
 
 
     def setup_hud(self):
+        """
+        Setup the instrument cluster, which shows
+            current position and orientation,
+            translation and rotation actions that are being applied,
+            the height above ground,
+            distance moved relative to last world update.
+        """
         self.hud = {}
         self.hud['frame'] = CardMaker("HUD")
         self.hud['frame'].setColor(0.1,0.2,0.1,0.2)
@@ -112,6 +122,9 @@ class FSim(ShowBase):
 
 
     def setup_lights(self, bAmbient=True, bDirectional=True):
+        """
+        Setup a ambient as well as a direction light.
+        """
         if bAmbient:
             al = AmbientLight('AmbLight')
             al.setColor((0.5, 0.5, 0.5, 1))
@@ -128,6 +141,9 @@ class FSim(ShowBase):
 
 
     def _create_heightfield(self):
+        """
+        If user doesnt specify any terrain, then generate a simple terrain.
+        """
         hf = PNMImage(self.gndWidth, self.gndHeight, PNMImage.CTGrayscale)
         # Setup a height map
         for x in range(hf.getXSize()):
@@ -142,6 +158,17 @@ class FSim(ShowBase):
 
 
     def _create_colormap(self, hf):
+        """
+        Color the passed terrain based on height.
+            With Below SeaLevel data (maybe)
+                0.0 - 0.1 : SeaLevel and Below
+                0.1 - 0.6 : ground and hills plus
+                0.6 - 1.0 : Mountains etal
+            No Below SeatLevel:
+                0.0 - 0.0001 : Sea Level and Below
+                0.0001 - 0.5 : Ground and Hills plus
+                0.5   -  1.0 : Mountains etal
+        """
         cm = PNMImage(hf.getXSize(), hf.getYSize())
         print("DBUG:Terrain:CM:{}x{}".format(cm.getXSize(), cm.getYSize()))
         hfMin, hfMax = 256, 0
@@ -175,15 +202,7 @@ class FSim(ShowBase):
 
     def create_terrain(self, hfFile, bCMGrayShades=False, bHFNoBelowSeaLevel=True):
         """
-        Terrain Auto Colormap based on heightfield could be
-            With Below SeaLevel data (maybe)
-                0.0 - 0.1 : SeaLevel and Below
-                0.1 - 0.6 : ground and hills plus
-                0.6 - 1.0 : Mountains etal
-            No Below SeatLevel:
-                0.0 - 0.0001 : Sea Level and Below
-                0.0001 - 0.5 : Ground and Hills plus
-                0.5   -  1.0 : Mountains etal
+        Create a terrain based on the passed heightfield and colormap.
         """
         self.cfg['bCMGrayShades'] = bCMGrayShades
         self.cfg['bHFNoBelowSeaLevel'] = bHFNoBelowSeaLevel
@@ -203,7 +222,7 @@ class FSim(ShowBase):
             hf = PNMImage(hfFName)
             self.gndWidth, self.gndHeight = hf.getXSize(), hf.getYSize()
         print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
-        # Color the terrain based on height
+        # Colormap for the terrain
         if cmFName == None:
             cm = self._create_colormap(hf)
         else:
@@ -215,9 +234,6 @@ class FSim(ShowBase):
         blockSize = int((hf.getXSize()-1)/8)
         lodFar = blockSize*4
         lodNear = max(64,lodFar/4)
-        #blockSize = 1024
-        #lodFar = 2048
-        #lodNear = 512
         print("DBUG:Terrain:LOD:BlockSize:{}:Far:{}:Near:{}".format(blockSize, lodFar, lodNear))
         self.terrain.setBlockSize(blockSize)
         self.terrain.setNear(lodNear)
@@ -231,15 +247,19 @@ class FSim(ShowBase):
         tRoot.setSz(100)
         tRoot.reparentTo(self.render)
         self.terrain.generate()
+        print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
         # Add some objects
         p = self.loader.loadModel("models/panda-model")
         p.setPos(50,100,0)
         p.setScale(0.01)
         p.reparentTo(self.render)
-        print("DBUG:Terrain:AfterScale:{}x{}".format(self.terrain.heightfield().getXSize(), self.terrain.heightfield().getYSize()))
 
 
     def create_objects(self, baseFName, bFont3D=False):
+        """
+        Create objects corresponding to the entries in the objects file.
+        For now it creates a floating cube with its name, wrt each entry.
+        """
         objsFName = "{}.objects".format(baseFName)
         try:
             f = open(objsFName)
@@ -276,10 +296,6 @@ class FSim(ShowBase):
             self.update_xyheight_img(x, aY)
             aZ = self.terrainXYHeight+10
             name = la[2].strip()[1:-1]
-            """
-            if not name in [ "VADN", "VOAT" ]:
-                continue
-            """
             if name in alreadyIn:
                 continue
             self.objsCnt += 1
@@ -303,6 +319,10 @@ class FSim(ShowBase):
 
 
     def update_objects(self):
+        """
+        Based on distance wrt current plane position, decide whether to show a object or not.
+        NOTE: It doesnt worry about z axis(ie height).
+        """
         tX = self.objsNPA[:,0] - self.uoPos.x
         tY = self.objsNPA[:,1] - self.uoPos.y
         d = tX**2 + tY**2
@@ -319,11 +339,18 @@ class FSim(ShowBase):
 
 
     def update_world_tf(self):
+        """
+        The thread function, which triggers the objects and terrain update logics within it.
+        """
         self.update_objects()
         self.terrain.update()
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
+        """
+        Update the instrument cluster in the HUD.
+        Also trigger a shaking of the HUD, if the speed along any axis is very large.
+        """
         if (max(cTr) > 2):
             r = numpy.random.random(2)
             self.hud['frameNP'].setPos(0-r[0]*0.01, 0, 0-r[1]*0.02)
@@ -342,16 +369,27 @@ class FSim(ShowBase):
 
 
     def update_xyheight_3d(self, x, y):
+        """
+        Get the height of the ground/terrain wrt the passed x,y location in 3d world.
+        NOTE: The found value is stored into a internal variable.
+        """
         y = self.y_interchange(y)
         self.update_xyheight_img(x, y)
 
 
     def update_xyheight_img(self, x, y):
+        """
+        Get the height of the ground/terrain wrt the passed x,y location in texture/colormap/image space.
+        NOTE: The found value is stored into a internal variable.
+        """
         hf=self.terrain.heightfield()
         self.terrainXYHeight = hf.getGray(x, y)*self.terrain.getRoot().getSz()
 
 
     def update_terrain_height(self, cPos):
+        """
+        Get and update the height of the terrain, at current location (cPos) in the hud.
+        """
         try:
             self.update_xyheight_3d(int(cPos.x), int(cPos.y))
             self.hud['S2'].setText("H:{:06.3f}".format(self.terrainXYHeight/10))
@@ -365,6 +403,9 @@ class FSim(ShowBase):
 
 
     def update_world(self, cPos):
+        """
+        The helper which calls the thread for updating the world.
+        """
         self.uoPos.x = cPos.x
         self.uoPos.y = cPos.y
         self.uoPos.z = cPos.z
@@ -404,6 +445,9 @@ class FSim(ShowBase):
 
 
     def update_mc_ss(self):
+        """
+        Update the plane in Spaceship mode.
+        """
         self.camera.setHpr(self.camera, self.crot)
         self.camera.setPos(self.camera, self.ctrans)
 
