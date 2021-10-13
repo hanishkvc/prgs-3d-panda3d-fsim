@@ -289,8 +289,8 @@ class FSim(ShowBase):
         for l in f:
             la = l.strip()
             la = la[1:-1].split(',')
-            if la[0].upper() == "MODELPATH":
-                self.modelPaths[la[1]] = la[2]
+            if la[0].strip().upper() == "MODELPATH":
+                self.modelPaths[la[1].strip()] = la[2].strip()
                 continue
             x = int(la[0])
             aX = int(x*xMult)
@@ -305,7 +305,7 @@ class FSim(ShowBase):
             self.objsCnt += 1
             alreadyIn.add(name)
             if len(la) > 3:
-                model = la[3]
+                model = la[3].strip()
             else:
                 model = ''
             print("INFO:CreateObjects:{:4}:{:6}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, model, x, y, aX, aY, name))
