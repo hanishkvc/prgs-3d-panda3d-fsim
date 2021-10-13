@@ -27,37 +27,51 @@ class FSim(ShowBase):
     def __init__(self, cfg):
         ShowBase.__init__(self)
         self.cfg = cfg
+        # Init some defaults
         self.prevFrameTime = 0.0
         self.frameCnt = 0
-        # Camera is the Main Actor for now
         self.cDefPos = Vec3(0, 0, 25)
         self.cDefFace = Vec3(0, 0, 0)
         self.ctrans = Vec3(0, 0, 0)
         self.crot = Vec3(0, 0, 0)
         self.gndWidth = 4097
         self.gndHeight = 4097
+        # Setup the world
         self.setup_mc()
         self.setup_hud()
         self.create_terrain(cfg['sTerrainFile'])
         self.create_objects(cfg['sTerrainFile'])
+        self.init_with_world()
+
+
+    def init_with_world(self):
         hf=self.terrain.heightfield()
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
-        self.threadUpdate = threading.Thread(target=self.update_world_tf)
-        self.update_world(self.cDefPos)
+        self.uoPos = Vec3(self.cDefPos)
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
 
 
     def setup_mc(self):
+        """
+        Skeleton for the helper which will load/create the main character ie the plane.
+        Camera is the Main Actor for now
+        """
         #self.mc = NodePath()
         #self.mc.reparentTo(self.render)
         self.mc = self.render.attachNewNode("MC")
 
 
     def set_mcc(self, pos, hpr):
+        """
+        Skeleton of a helper for when there will be a plane model beyond the lone camera,
+        i.e to represent the plane/user/main-character.
+        Based on current plane position, one will have to adjust the camera according
+        to the view selected by user like 1st person or 3rd person or rotate or ...
+        """
         self.mc.setPos(pos)
         self.mc.setHpr(hpr)
         self.camera.setPos(pos)
@@ -187,6 +201,7 @@ class FSim(ShowBase):
                 cmFNameSave = cmFName
                 cmFName = None
             hf = PNMImage(hfFName)
+            self.gndWidth, self.gndHeight = hf.getXSize(), hf.getYSize()
         print("DBUG:Terrain:HF:{}:{}x{}".format(hfFile, hf.getXSize(), hf.getYSize()))
         # Color the terrain based on height
         if cmFName == None:
@@ -229,7 +244,7 @@ class FSim(ShowBase):
         try:
             f = open(objsFName)
         except:
-            print("WARN:CreateModels:Returning empty handed")
+            print("WARN:CreateObjects:Returning empty handed")
             return
         if bFont3D:
             ttfFont = loader.loadFont("data/comic.ttf", color = (1,1,1,1), renderMode = TextFont.RMSolid)
@@ -237,14 +252,14 @@ class FSim(ShowBase):
         hdr1 = f.readline()
         hdr2 = f.readline()
         if not hdr2.startswith("HDR2:"):
-            raise RuntimeError("ERRR:CreateModels:Invalid Objects file:{}".format(objsFName))
+            raise RuntimeError("ERRR:CreateObjects:Invalid Objects file:{}".format(objsFName))
         hdr2 = hdr2.split(":")
         oXW,oYH = int(hdr2[2]), int(hdr2[4])
         cXW = hf.getXSize()
         cYH = hf.getYSize()
         xMult = cXW/oXW
         yMult = cYH/oYH
-        print("INFO:CreateModels:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
+        print("INFO:CreateObjects:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
         self.objsDistThreshold = int(max(cXW, cYH)/4)**2
         self.objs = {}
         self.objsNPA = numpy.zeros(1024*3).reshape(1024,3)
@@ -269,7 +284,7 @@ class FSim(ShowBase):
                 continue
             self.objsCnt += 1
             alreadyIn.add(name)
-            print("INFO:CreateModels:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, x,y, aX, aY, name))
+            print("INFO:CreateObjects:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, x,y, aX, aY, name))
             m1 = pp.create_cube("{}".format(self.objsCnt))
             m1np = self.render.attachNewNode(m1)
             m1np.setPos(aX, aY, aZ)
@@ -508,6 +523,8 @@ class FSim(ShowBase):
         else:
             self.disableMouse()
         self.setup_lights()
+        self.threadUpdate = threading.Thread(target=self.update_world_tf)
+        self.update_world(self.cDefPos)
         if self.cfg['bModeAC']:
             self.setup_ac_keyshandler()
             self.update_mc = self.update_mc_ac
