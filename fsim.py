@@ -44,7 +44,8 @@ class FSim(ShowBase):
         if cfg['bTopView']:
             self.cDefPos = Vec3(hf.getXSize()/2, hf.getYSize()/2, hf.getXSize()*10)
             self.cDefFace = Vec3(0, -90, 0)
-        self.uothread_run(self.cDefPos)
+        self.threadUpdate = threading.Thread(target=self.update_world_tf)
+        self.update_world(self.cDefPos)
         self.set_mcc(self.cDefPos, self.cDefFace)
         self.updateCPos = self.camera.getPos()
         self.updateDelta = numpy.average((hf.getXSize(), hf.getYSize()))*0.05
@@ -284,8 +285,6 @@ class FSim(ShowBase):
             txtnp.hide()
             self.objs[self.objsCnt] = { 'm': m1np, 't': txtnp, 'n': name }
             self.objsNPA[self.objsCnt] = [aX, aY, aZ]
-        self.uoPos = Vec3(0,0,0)
-        self.uoThread = threading.Thread(target=self.update_objects)
 
 
     def update_objects(self):
@@ -302,6 +301,10 @@ class FSim(ShowBase):
             else:
                 self.objs[i]['m'].hide()
                 self.objs[i]['t'].hide()
+
+
+    def update_world_tf(self):
+        self.update_objects()
         self.terrain.update()
 
 
@@ -346,11 +349,11 @@ class FSim(ShowBase):
                 self.camera.setHpr(self.camera, crot)
 
 
-    def uothread_run(self, cPos):
+    def update_world(self, cPos):
         self.uoPos.x = cPos.x
         self.uoPos.y = cPos.y
         self.uoPos.z = cPos.z
-        self.uoThread.run()
+        self.threadUpdate.run()
 
 
     def update(self, task):
@@ -364,11 +367,10 @@ class FSim(ShowBase):
         cOr = self.camera.getHpr()
         cTr = self.ctrans
         cRo = self.crot
-        # Update terrain or not
+        # Update World or not
         updateDelta = (self.updateCPos - cPo).length()
         if (updateDelta > self.updateDelta):
-            #self.terrain.update()
-            self.uothread_run(cPo)
+            self.update_world(cPo)
             self.updateCPos = cPo
         # Update instruments
         if (self.frameCnt%4) == 0:
