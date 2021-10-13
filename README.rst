@@ -64,11 +64,13 @@ Creating the terrain and related file
 
 1. Create <terrain>.hf.png and <terrain>.cm.png files
 
-   Option 1: Auto color the terrain based on height of ground
+   Option 1: If you want to auto color the terrain based on height of ground
 
    utils/hkvc_imgutils.py --sCmd p3dterrain --sFNameSrc data/10n060e_20101117_gmted_mea300.tif
 
-   Option 2: Color the terrain based on the coloring in a reference image
+   Option 2: If you want to color the terrain based on the coloring in a reference image
+
+   utils/hkvc_imgutils.py --sCmd p3dhf --sFNameSrc data/10n060e_20101117_gmted_mea300.tif
 
    utils/hkvc_imgutils.py --sCmd mapto --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameRef data/world_ndvi_veg.tiff
 
