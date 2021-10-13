@@ -302,6 +302,7 @@ class FSim(ShowBase):
             else:
                 self.objs[i]['m'].hide()
                 self.objs[i]['t'].hide()
+        self.terrain.update()
 
 
     def update_instruments_text(self, cPo, cOr, cTr, cRo):
@@ -366,7 +367,7 @@ class FSim(ShowBase):
         # Update terrain or not
         updateDelta = (self.updateCPos - cPo).length()
         if (updateDelta > self.updateDelta):
-            self.terrain.update()
+            #self.terrain.update()
             self.uothread_run(cPo)
             self.updateCPos = cPo
         # Update instruments
