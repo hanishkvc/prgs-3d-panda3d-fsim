@@ -281,6 +281,7 @@ class FSim(ShowBase):
         yMult = cYH/oYH
         print("INFO:CreateObjects:Adj:{}x{}:{}x{}:{}x{}".format(oXW, oYH, cXW, cYH, xMult, yMult))
         self.objsDistThreshold = int(max(cXW, cYH)/4)**2
+        self.modelPaths = {}
         self.objs = {}
         self.objsNPA = numpy.zeros(1024*3).reshape(1024,3)
         self.objsCnt = -1
@@ -288,6 +289,9 @@ class FSim(ShowBase):
         for l in f:
             la = l.strip()
             la = la[1:-1].split(',')
+            if la[0].upper() == "MODELPATH":
+                self.modelPaths[la[1]] = la[2]
+                continue
             x = int(la[0])
             aX = int(x*xMult)
             y = int(la[1])
@@ -300,20 +304,31 @@ class FSim(ShowBase):
                 continue
             self.objsCnt += 1
             alreadyIn.add(name)
-            print("INFO:CreateObjects:{:4}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, x,y, aX, aY, name))
-            m1 = pp.create_cube("{}".format(self.objsCnt))
-            m1np = self.render.attachNewNode(m1)
+            if len(la) > 3:
+                model = la[3]
+            else:
+                model = ''
+            print("INFO:CreateObjects:{:4}:{:6}:{:4}x{:4}:{:4}x{:4}:{}".format(self.objsCnt, model, x, y, aX, aY, name))
+            if model == '':
+                m1 = pp.create_cube("{}".format(self.objsCnt))
+                m1np = self.render.attachNewNode(m1)
+            else:
+                m1np = loader.loadModel(self.modelPaths[model])
+                m1np.reparentTo(self.render)
             m1np.setPos(aX, aY, aZ)
             m1np.setScale(4)
             m1np.hide()
-            txt = OnscreenText(text=name)
-            txtn = txt.node()
-            if bFont3D:
-                txtn.setFont(ttfFont)
-            txtnp = self.render.attachNewNode(txtn)
-            txtnp.setPos(aX+2, aY-1, aZ+1)
-            txtnp.setScale(10)
-            txtnp.hide()
+            if model == '':
+                txt = OnscreenText(text=name)
+                txtn = txt.node()
+                if bFont3D:
+                    txtn.setFont(ttfFont)
+                txtnp = self.render.attachNewNode(txtn)
+                txtnp.setPos(aX+2, aY-1, aZ+1)
+                txtnp.setScale(10)
+                txtnp.hide()
+            else:
+                txtnp = None
             self.objs[self.objsCnt] = { 'm': m1np, 't': txtnp, 'n': name }
             self.objsNPA[self.objsCnt] = [aX, aY, aZ]
 
@@ -331,11 +346,13 @@ class FSim(ShowBase):
         for i in range(self.objsCnt):
             if i in l:
                 self.objs[i]['m'].show()
-                self.objs[i]['t'].show()
+                if self.objs[i]['t'] != None:
+                    self.objs[i]['t'].show()
                 print(self.objs[i]['n'], d[i])
             else:
                 self.objs[i]['m'].hide()
-                self.objs[i]['t'].hide()
+                if self.objs[i]['t'] != None:
+                    self.objs[i]['t'].hide()
 
 
     def update_world_tf(self):
