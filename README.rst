@@ -62,15 +62,22 @@ which will help place the airports into the 3D scenery.
 Creating the terrain and related file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create <terrain>.hf.png and <terrain>.cm.png files
+1. Create <terrain>.hf.png and <terrain>.cm.png files
 
-utils/hkvc_imgutils.py --sCmd p3dterrain --sFNameSrc data/10n060e_20101117_gmted_mea300.tif
+   Option 1: Auto color the terrain based on height of ground
 
-Optionally create the <terrain>.objects file
+   utils/hkvc_imgutils.py --sCmd p3dterrain --sFNameSrc data/10n060e_20101117_gmted_mea300.tif
 
-utils/hkvc_imgutils.py --sCmd mapobjects --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameODB data/odb.pickle
+   Option 2: Color the terrain based on the coloring in a reference image
 
-NOTE: If objects file is missing, then the objects wont be shown.
+   utils/hkvc_imgutils.py --sCmd mapto --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameRef data/world_ndvi_veg.tiff
+
+2. Optionally create the <terrain>.objects file
+
+   utils/hkvc_imgutils.py --sCmd mapobjects --sFNameSrc data/10n060e_20101117_gmted_mea300.tif --sFNameODB data/odb.pickle
+
+   NOTE: If objects file is missing, then the objects wont be shown.
+
 
 Flying
 ~~~~~~~~
